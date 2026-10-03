@@ -167,6 +167,7 @@ export default function App() {
     [includeContext, setIncludeContext] = useState(false),
     [redactions, setRedactions] = useState(""),
     [reviewed, setReviewed] = useState(false),
+    [reviewedTape, setReviewedTape] = useState<Tape | null>(null),
     [published, setPublished] = useState(""),
     [shares, setShares] = useState<Share[]>([]);
   const input = useRef<HTMLInputElement>(null);
@@ -175,6 +176,9 @@ export default function App() {
     otherTape = tapes.find((t) => t.run.id === other),
     total = tape ? duration(tape) : 1;
   const events = useMemo(() => (tape ? visibleEvents(tape) : []), [tape]);
+  // Approval is tied to the exact recording object. A live poll can replace it
+  // while the dialog is open; changed evidence must be reviewed again.
+  const clipReviewed = reviewed && reviewedTape === tape;
   const event =
     events.find((e) => e.id === selected) ??
     events.filter((e) => e.elapsed_ms !== null && e.elapsed_ms <= time).at(-1);
@@ -399,12 +403,12 @@ export default function App() {
         to,
         includeContext,
         redactions.split("\n"),
-        reviewed,
+        clipReviewed,
       );
     } catch {
       return null;
     }
-  }, [tape, modal, from, to, includeContext, redactions, reviewed]);
+  }, [tape, modal, from, to, includeContext, redactions, clipReviewed]);
   const safe = async (fn: () => Promise<void>) => {
     setError("");
     setBusy(true);
@@ -1538,14 +1542,17 @@ export default function App() {
           <label className="checkbox">
             <input
               type="checkbox"
-              checked={reviewed}
-              onChange={(e) => setReviewed(e.target.checked)}
+              checked={clipReviewed}
+              onChange={(e) => {
+                setReviewedTape(tape);
+                setReviewed(e.target.checked);
+              }}
             />
             I reviewed this clip for private or sensitive information.
           </label>
           <div className="modal-actions">
             <button
-              disabled={!clip || !reviewed}
+              disabled={!clip || !clipReviewed}
               onClick={() => {
                 if (clip) download(clip);
               }}
@@ -1555,7 +1562,7 @@ export default function App() {
             </button>
             <button
               className="primary"
-              disabled={!clip || !reviewed || busy}
+              disabled={!clip || !clipReviewed || busy}
               onClick={() =>
                 safe(async () => {
                   if (!clip) return;

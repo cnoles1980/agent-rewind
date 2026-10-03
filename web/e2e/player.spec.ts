@@ -1,5 +1,48 @@
 import { test, expect } from "@playwright/test";
 import { readFileSync } from "node:fs";
+
+test("new live evidence invalidates clip review before export or sharing", async ({
+  page,
+}) => {
+  const tape = JSON.parse(readFileSync("../examples/stale.json", "utf8"));
+  tape.run.name = "Updating live fixture";
+  let updated = false;
+  let initial = true;
+  await page.route("**/api/status", (r) =>
+    r.fulfill({
+      json: { authenticated: true, live_available: false, blockers: [] },
+    }),
+  );
+  await page.route("**/api/demo-runs", (r) =>
+    r.fulfill({ json: [{ id: "review-update", status: "running" }] }),
+  );
+  await page.route("**/api/demo-runs/review-update", (r) => {
+    // No fresh tape until the test simulates new evidence, avoiding a timing race.
+    const includeTape = initial || updated;
+    initial = false;
+    return r.fulfill({
+      json: { status: "running", ...(includeTape ? { tape } : {}) },
+    });
+  });
+  await page.goto("/");
+  await expect(
+    page.getByRole("heading", { name: "Updating live fixture" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Clip & share" }).click();
+  const review = page.getByRole("checkbox", { name: "I reviewed" });
+  await review.check();
+  await expect(page.getByRole("button", { name: "Export clip" })).toBeEnabled();
+  tape.events.find((e: any) => e.kind === "tool.end").data.output =
+    "New evidence arrived after review";
+  updated = true;
+  await expect(review).not.toBeChecked();
+  await expect(
+    page.getByRole("button", { name: "Export clip" }),
+  ).toBeDisabled();
+  await expect(
+    page.getByRole("button", { name: "Create share" }),
+  ).toBeDisabled();
+});
 test("investigates policy evidence, paired differences, notes, and a reviewed clip", async ({
   page,
 }) => {

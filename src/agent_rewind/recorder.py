@@ -1,5 +1,6 @@
 import hashlib
 import json
+import re
 import threading
 import time
 import warnings
@@ -27,11 +28,14 @@ class Recorder:
         if capture != "redacted":
             raise ValueError("Only redacted capture is supported")
         self.redactor = Redactor(secrets, sensitive_keys)
+        if run_id is not None and not re.fullmatch(r"[A-Za-z0-9_-]{1,120}", run_id):
+            raise ValueError("Recorder run_id must use only letters, numbers, underscores, or hyphens")
+        safe_id = run_id if self.redactor.clean(run_id) == run_id else None
         self.run = Run(
-            name=name,
-            id=run_id or uid(),
-            model=model,
-            provider=provider,
+            name=self.redactor.clean(name),
+            id=safe_id or uid(),
+            model=self.redactor.clean(model),
+            provider=self.redactor.clean(provider),
             source=source,
             configuration=self.redactor.clean(configuration or {}),
             capabilities={
@@ -62,7 +66,7 @@ class Recorder:
 
     def __exit__(self, exc_type, exc, tb):
         if not self._finished:
-            self.finish("failed" if exc else "success")
+            self.finish("failed" if exc_type is not None else "success")
         try:
             self._file.close()
         except OSError:
@@ -82,7 +86,7 @@ class Recorder:
                 seq=self._seq,
                 kind=kind,
                 lane=lane,
-                name=name,
+                name=self.redactor.clean(name),
                 elapsed_ms=(time.monotonic() - self._start) * 1000,
                 **self.redactor.clean(fields),
             )
@@ -140,7 +144,7 @@ class Recorder:
             parent_id=parent_id,
             duration_ms=(time.monotonic() - started) * 1000,
             snapshot_id=snapshot_id or self._model_snapshots.get(parent_id),
-            status="failed" if error else "success",
+            status="failed" if error is not None else "success",
             data={"output": output, "error": error},
         )
         if category == "model" and isinstance(event.data.get("output"), dict):
@@ -150,7 +154,7 @@ class Recorder:
                     for call in message.get("tool_calls") or []:
                         if isinstance(call, dict) and isinstance(call.get("id"), str):
                             self._tool_parents[call["id"]] = span
-        if error:
+        if error is not None:
             self.emit("error", "errors", name, parent_id=span, status="failed", data={"error": error})
 
     def model_call(self, function, **kwargs):
@@ -159,7 +163,14 @@ class Recorder:
         try:
             result = function(**kwargs)
         except BaseException as exc:
-            self._end("model", "Model call", span, started, error=str(exc), snapshot_id=snapshot)
+            self._end(
+                "model",
+                "Model call",
+                span,
+                started,
+                error=str(exc) or type(exc).__name__,
+                snapshot_id=snapshot,
+            )
             raise
         self._end("model", "Model response", span, started, output=result, snapshot_id=snapshot)
         return result
@@ -170,7 +181,14 @@ class Recorder:
         try:
             result = await function(**kwargs)
         except BaseException as exc:
-            self._end("model", "Model call", span, started, error=str(exc), snapshot_id=snapshot)
+            self._end(
+                "model",
+                "Model call",
+                span,
+                started,
+                error=str(exc) or type(exc).__name__,
+                snapshot_id=snapshot,
+            )
             raise
         self._end("model", "Model response", span, started, output=result, snapshot_id=snapshot)
         return result
@@ -180,7 +198,7 @@ class Recorder:
         try:
             result = function(**arguments)
         except BaseException as exc:
-            self._end("tool", name, span, started, error=str(exc))
+            self._end("tool", name, span, started, error=str(exc) or type(exc).__name__)
             raise
         self._end("tool", name, span, started, output=result)
         return result
@@ -190,13 +208,13 @@ class Recorder:
         try:
             result = await function(**arguments)
         except BaseException as exc:
-            self._end("tool", name, span, started, error=str(exc))
+            self._end("tool", name, span, started, error=str(exc) or type(exc).__name__)
             raise
         self._end("tool", name, span, started, output=result)
         return result
 
     def memory_write(self, key, value):
-        clean_value = self.redactor.clean({str(key): value})[str(key)]
+        clean_value = next(iter(self.redactor.clean({str(key): value}).values()))
         return self.emit("memory", "memory", "Memory write", data={"key": key, "value": clean_value})
 
     def annotate(self, text, elapsed_ms=None, event_id=None):
@@ -204,7 +222,7 @@ class Recorder:
             note = Note(
                 run_id=self.run.id,
                 text=self.redactor.clean(text),
-                event_id=event_id,
+                event_id=self.redactor.clean(event_id),
                 elapsed_ms=elapsed_ms if elapsed_ms is not None else (time.monotonic() - self._start) * 1000,
             )
             self._notes.append(note)

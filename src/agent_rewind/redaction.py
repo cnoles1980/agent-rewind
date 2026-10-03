@@ -29,12 +29,21 @@ class Redactor:
         if hasattr(value, "model_dump"):
             value = value.model_dump(mode="json")
         if isinstance(value, dict):
-            return {
-                str(k): "[REDACTED]"
-                if SENSITIVE.match(str(k)) or str(k).lower() in self.keys
-                else self.clean(v, depth + 1)
-                for k, v in value.items()
-            }
+            result = {}
+            for key, item in value.items():
+                original = str(key)
+                label = self._clean_text(original)
+                unique = label
+                suffix = 2
+                while unique in result:
+                    unique = f"{label} ({suffix})"
+                    suffix += 1
+                result[unique] = (
+                    "[REDACTED]"
+                    if SENSITIVE.match(original) or original.lower() in self.keys
+                    else self.clean(item, depth + 1)
+                )
+            return result
         if isinstance(value, (list, tuple)):
             return [self.clean(v, depth + 1) for v in value]
         if isinstance(value, str):
@@ -45,13 +54,16 @@ class Redactor:
                     return json.dumps(self.clean(parsed, depth + 1), ensure_ascii=False)
                 except (ValueError, RecursionError):
                     pass
-            for secret in self.secrets:
-                value = value.replace(secret, "[REDACTED]")
-            for pattern in PATTERNS:
-                value = pattern.sub("[REDACTED]", value)
-            if self.paths:
-                value = PATHS.sub("[LOCAL PATH]", value)
-            return value
+            return self._clean_text(value)
         if value is None or isinstance(value, (bool, int, float)):
             return value
         return "[UNSERIALIZABLE]"
+
+    def _clean_text(self, value: str) -> str:
+        for secret in self.secrets:
+            value = value.replace(secret, "[REDACTED]")
+        for pattern in PATTERNS:
+            value = pattern.sub("[REDACTED]", value)
+        if self.paths:
+            value = PATHS.sub("[LOCAL PATH]", value)
+        return value

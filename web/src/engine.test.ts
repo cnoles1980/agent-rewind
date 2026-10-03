@@ -9,10 +9,28 @@ import {
   validateTape,
   visibleEvents,
   normalize,
+  contextForEvent,
+  redact,
 } from "./engine";
 const fixture = () =>
   validateTape(JSON.parse(readFileSync("../examples/stale.json", "utf8")));
 describe("recording integrity", () => {
+  it("does not resolve state from a forward snapshot reference", () => {
+    const t = fixture();
+    const early = t.events.find((e) => e.kind === "model.start")!;
+    const future = t.events.filter((e) => e.kind === "context").at(-1)!;
+    early.snapshot_id = future.snapshot_id;
+    expect(contextForEvent(t, early)).toBeUndefined();
+    expect(atTime(t, early.elapsed_ms!)).not.toBe(future);
+    const clip = clipTape(t, 0, 10000, true);
+    expect(clip.events.some((e) => e.id === future.id)).toBe(false);
+  });
+  it("preserves unpaired starts when span identifiers are unknown", () => {
+    const t = fixture();
+    t.events[1].span_id = null;
+    t.events[2].span_id = null;
+    expect(visibleEvents(t).some((e) => e.id === t.events[1].id)).toBe(true);
+  });
   it("resolves reused context snapshots at the current model boundary", () => {
     const t = fixture(),
       first = t.events.find((e) => e.kind === "context")!;
@@ -68,6 +86,16 @@ describe("recording integrity", () => {
   });
 });
 describe("comparison", () => {
+  it("detects changed error evidence even when status is unchanged", () => {
+    const a = fixture(),
+      b = fixture();
+    const left = a.events.find((e) => e.kind === "tool.end")!;
+    const right = b.events.find((e) => e.kind === "tool.end")!;
+    left.status = right.status = "failed";
+    left.data.error = "Timeout";
+    right.data.error = "Permission denied";
+    expect(compare(a, b).some((d) => d.type === "behavior")).toBe(true);
+  });
   it("normalizes JSON arguments and provider call IDs while preserving business IDs", () => {
     expect(normalize('{"b":2,"a":1}')).toEqual(normalize({ a: 1, b: 2 }));
     expect(
@@ -142,6 +170,20 @@ describe("comparison", () => {
   });
 });
 describe("clip privacy", () => {
+  it("redacts object property names without dropping colliding values", () => {
+    const clean = redact({ "private-customer": 1, "other-customer": 2 }, [
+      "private-customer",
+      "other-customer",
+    ]);
+    expect(JSON.stringify(clean)).not.toContain("customer");
+    expect(Object.values(clean)).toEqual([1, 2]);
+  });
+  it("preserves partial capture labels when clipping again", () => {
+    const t = fixture();
+    t.events.find((e) => e.kind === "tool.end")!.partial = true;
+    const clip = clipTape(t, 0, 30000);
+    expect(clip.events.find((e) => e.kind === "tool.end")!.partial).toBe(true);
+  });
   it("excludes the original tape, earlier context and future outcomes", () => {
     const a = fixture(),
       clip = clipTape(a, 18000, 30000, false, [], true);

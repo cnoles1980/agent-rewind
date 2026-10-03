@@ -42,13 +42,22 @@ export function redact(value: unknown, phrases: string[] = [], depth = 0): any {
   if (depth > 35) return "[DEPTH LIMIT]";
   if (Array.isArray(value))
     return value.map((v) => redact(v, phrases, depth + 1));
-  if (value && typeof value === "object")
-    return Object.fromEntries(
-      Object.entries(value).map(([k, v]) => [
-        k,
-        sensitive.test(k) ? "[REDACTED]" : redact(v, phrases, depth + 1),
-      ]),
-    );
+  if (value && typeof value === "object") {
+    const entries: [string, unknown][] = [];
+    const used = new Set<string>();
+    for (const [key, item] of Object.entries(value)) {
+      const label = redactText(key, phrases);
+      let unique = label;
+      for (let suffix = 2; used.has(unique); suffix++)
+        unique = `${label} (${suffix})`;
+      used.add(unique);
+      entries.push([
+        unique,
+        sensitive.test(key) ? "[REDACTED]" : redact(item, phrases, depth + 1),
+      ]);
+    }
+    return Object.fromEntries(entries);
+  }
   if (typeof value !== "string") return value;
   if (/^[\s]*[\[{]/.test(value)) {
     try {
@@ -57,6 +66,9 @@ export function redact(value: unknown, phrases: string[] = [], depth = 0): any {
       /* plain text */
     }
   }
+  return redactText(value, phrases);
+}
+function redactText(value: string, phrases: string[]) {
   let s = value
     .replace(/Bearer\s+[A-Za-z0-9._~+\/-]+=*/gi, "[REDACTED]")
     .replace(/\b(?:sk-|ghp_|github_pat_|hf_)[A-Za-z0-9_-]{12,}/g, "[REDACTED]")
@@ -155,14 +167,14 @@ export function atTime(t: Tape, time: number) {
   }
   // A later model call can reuse an earlier deduplicated snapshot.
   return boundary?.kind === "model.start"
-    ? t.events.find(
-        (e) => e.kind === "context" && e.snapshot_id === boundary!.snapshot_id,
-      )
+    ? contextForEvent(t, boundary)
     : boundary;
 }
 export function visibleEvents(t: Tape) {
   const ended = new Set(
-    t.events.filter((e) => e.kind.endsWith(".end")).map((e) => e.span_id),
+    t.events
+      .filter((e) => e.kind.endsWith(".end") && e.span_id)
+      .map((e) => e.span_id),
   );
   return t.events.filter(
     (e) =>
@@ -187,7 +199,15 @@ export function evidence(t: Tape, e: Event, time = Infinity) {
 export function contextForEvent(t: Tape, e: Event) {
   const snapshot = e.snapshot_id ?? startOf(t, e)?.snapshot_id;
   return snapshot
-    ? t.events.find((x) => x.kind === "context" && x.snapshot_id === snapshot)
+    ? t.events.find(
+        (x) =>
+          x.kind === "context" &&
+          x.snapshot_id === snapshot &&
+          x.seq <= e.seq &&
+          (x.elapsed_ms === null ||
+            e.elapsed_ms === null ||
+            x.elapsed_ms <= e.elapsed_ms),
+      )
     : undefined;
 }
 export function normalize(value: unknown): unknown {
@@ -282,7 +302,11 @@ export function compare(a: Tape, b: Tape): Difference[] {
         type: "input",
         message: `${x.name}: arguments changed`,
       });
-    if (!equal(ax.output, by.output) || x.status !== y.status)
+    if (
+      !equal(ax.output, by.output) ||
+      !equal(ax.error, by.error) ||
+      x.status !== y.status
+    )
       diffs.push({
         a: x,
         b: y,
@@ -381,13 +405,10 @@ export function clipTape(
   if (!includeContext) events = events.filter((e) => e.kind !== "context");
   else {
     const preceding = atTime(t, from);
-    const referenced = new Set(
-      events.map((e) => e.snapshot_id).filter(Boolean),
-    );
-    if (preceding?.snapshot_id) referenced.add(preceding.snapshot_id);
-    const support = t.events.filter(
-      (e) => e.kind === "context" && referenced.has(e.snapshot_id),
-    );
+    const support = events
+      .map((e) => contextForEvent(t, e))
+      .filter((e): e is Event => !!e);
+    if (preceding) support.push(preceding);
     events = [...new Set([...support, ...events])].sort(
       (a, b) => a.seq - b.seq,
     );
@@ -397,13 +418,19 @@ export function clipTape(
     result.run_id = id;
     result.seq = seq;
     result.partial =
+      e.partial ||
+      e.elapsed_ms === null ||
       (e.elapsed_ms ?? 0) < from ||
       (e.kind.endsWith(".start") &&
         !events.some(
           (x) => x.kind.endsWith(".end") && x.span_id === e.span_id,
         ));
-    result.elapsed_ms = Math.max(0, (e.elapsed_ms ?? from) - from);
-    if (result.duration_ms !== null && result.duration_ms > result.elapsed_ms) {
+    result.elapsed_ms =
+      e.elapsed_ms === null ? null : Math.max(0, e.elapsed_ms - from);
+    if (
+      result.duration_ms !== null &&
+      (result.elapsed_ms === null || result.duration_ms > result.elapsed_ms)
+    ) {
       result.duration_ms = null;
       result.partial = true;
     }

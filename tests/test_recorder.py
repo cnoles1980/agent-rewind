@@ -1,3 +1,4 @@
+import asyncio
 import json
 
 import pytest
@@ -5,6 +6,54 @@ import pytest
 from agent_rewind import Recorder
 from agent_rewind.redaction import Redactor
 from agent_rewind.tapes import loads, read
+
+
+@pytest.mark.parametrize("run_id", ["../escaped", "nested/file", "C:\\outside", ".", ""])
+def test_run_id_cannot_escape_output_directory(tmp_path, run_id):
+    with pytest.raises(ValueError, match="run_id"):
+        Recorder("unsafe filename", tmp_path / "runs", run_id=run_id)
+    assert list(tmp_path.rglob("*.jsonl")) == []
+
+
+async def test_cancellation_without_message_records_failure(tmp_path):
+    async def cancel():
+        raise asyncio.CancelledError()
+
+    with pytest.raises(asyncio.CancelledError):
+        async with Recorder("cancelled", tmp_path) as tape:
+            await tape.atool_call("cancel", cancel, arguments={})
+    loaded = read(tape.path)
+    assert loaded.run.status == "failed"
+    end = next(e for e in loaded.events if e.kind == "tool.end")
+    assert end.status == "failed"
+    assert end.data["error"] == "CancelledError"
+
+
+def test_registered_secrets_are_redacted_in_labels_keys_and_notes(tmp_path):
+    secret = "private-customer-seeded-42"
+    with Recorder(secret, tmp_path, model=secret, provider=secret, secrets=[secret]) as tape:
+        tape.tool_call(secret, lambda: {secret: {"nested": secret}}, arguments={})
+        tape.memory_write(secret, "memory value")
+        tape.annotate("note", event_id=secret)
+    assert secret not in tape.path.read_text()
+    assert secret not in tape.path.with_suffix(".notes.json").read_text()
+    encoded = Redactor(secrets=[secret]).clean(json.dumps({secret: "value"}))
+    assert secret not in encoded
+    # Redacting two property names must not silently drop either captured value.
+    assert len(Redactor(secrets=[secret, "other-customer"]).clean({secret: 1, "other-customer": 2})) == 2
+
+
+def test_exception_without_message_is_a_failed_span(tmp_path):
+    def fail():
+        raise ValueError()
+
+    with pytest.raises(ValueError):
+        with Recorder("empty failure", tmp_path) as tape:
+            tape.tool_call("fail", fail, arguments={})
+    loaded = read(tape.path)
+    assert loaded.run.status == "failed"
+    assert next(e for e in loaded.events if e.kind == "tool.end").status == "failed"
+    assert any(e.kind == "error" and e.data["error"] for e in loaded.events)
 
 
 def test_recording_preserves_actual_context_and_redacts_before_disk(tmp_path):
