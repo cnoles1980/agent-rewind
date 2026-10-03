@@ -4,8 +4,7 @@ import ast
 import asyncio
 import json
 
-import httpx
-
+from .inference import complete
 from .recorder import Recorder
 from .sandbox import NebiusSandbox
 
@@ -102,25 +101,6 @@ def validate_source(source):
             type(node.value) not in (int, float) or abs(node.value) > 1_000_000
         ):
             raise ValueError("Only bounded numeric constants are supported")
-
-
-async def complete(config, **body):
-    async with httpx.AsyncClient(timeout=60, follow_redirects=False) as client:
-        async with client.stream(
-            "POST",
-            "https://api.tokenfactory.nebius.com/v1/chat/completions",
-            headers={"Authorization": f"Bearer {config.api_key}"},
-            json=body,
-        ) as response:
-            if response.status_code != 200:
-                raise RuntimeError(f"Nebius inference returned HTTP {response.status_code}")
-            chunks, size = [], 0
-            async for chunk in response.aiter_bytes():
-                size += len(chunk)
-                if size > 1_000_000:
-                    raise RuntimeError("Nebius response exceeded capture limit")
-                chunks.append(chunk)
-            return json.loads(b"".join(chunks))
 
 
 async def run_demo(config, store, job, sandbox_factory=NebiusSandbox, model_call=complete):

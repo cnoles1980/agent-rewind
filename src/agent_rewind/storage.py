@@ -10,6 +10,16 @@ def digest(value):
     return hashlib.sha256(value.encode()).hexdigest()
 
 
+def _reserved_by_role(db):
+    """Read both paid workflows using the caller's existing transaction."""
+    rows = db.execute(
+        "SELECT role,SUM(reservation) AS total FROM "
+        "(SELECT role,reservation FROM jobs UNION ALL SELECT role,reservation FROM analyses) "
+        "GROUP BY role"
+    ).fetchall()
+    return {row["role"]: row["total"] for row in rows}
+
+
 class Store:
     def __init__(self, directory):
         directory.mkdir(parents=True, exist_ok=True)
@@ -85,19 +95,13 @@ class Store:
                 if old["variant"] != variant:
                     raise ValueError("Idempotency key already used for a different variant")
                 return old["id"]
-            used = db.execute(
-                "SELECT COALESCE(SUM(reservation),0) FROM jobs WHERE role=?", (role,)
-            ).fetchone()[0]
-            used += db.execute(
-                "SELECT COALESCE(SUM(reservation),0) FROM analyses WHERE role=?", (role,)
-            ).fetchone()[0]
+            reservations = _reserved_by_role(db)
             budget = settings.judge_budget_cents if role == "judge" else settings.test_budget_cents
-            if used + settings.reserve_cents > budget:
+            if reservations.get(role, 0) + settings.reserve_cents > budget:
                 raise ValueError(
                     "Execution budget reserved. Contact the project owner; recordings remain available."
                 )
-            total = db.execute("SELECT COALESCE(SUM(reservation),0) FROM jobs").fetchone()[0]
-            total += db.execute("SELECT COALESCE(SUM(reservation),0) FROM analyses").fetchone()[0]
+            total = sum(reservations.values())
             if total + settings.non_execution_cents + settings.reserve_cents > 10000:
                 raise ValueError("Total $100 project budget reserved")
             if (
@@ -133,10 +137,7 @@ class Store:
 
     def budget(self):
         with self.db() as db:
-            rows = db.execute(
-                "SELECT role,SUM(reservation) AS total FROM (SELECT role,reservation FROM jobs UNION ALL SELECT role,reservation FROM analyses) GROUP BY role"
-            ).fetchall()
-            return {r["role"]: r["total"] for r in rows}
+            return _reserved_by_role(db)
 
     def reserve_analysis(self, owner, role, idem, settings):
         # Keep only admission/accounting metadata. Never persist personal evidence or results.
@@ -148,15 +149,12 @@ class Store:
                 )
             if db.execute("SELECT 1 FROM analyses WHERE status='running'").fetchone():
                 raise ValueError("Another analysis is running. Try again shortly.")
-            rows = db.execute(
-                "SELECT role,SUM(reservation) AS total FROM (SELECT role,reservation FROM jobs UNION ALL SELECT role,reservation FROM analyses) GROUP BY role"
-            ).fetchall()
-            budgets = {r["role"]: r["total"] for r in rows}
+            reservations = _reserved_by_role(db)
             limit = settings.judge_budget_cents if role == "judge" else settings.test_budget_cents
             reserve = settings.analysis_reserve_cents
-            if reserve < 1 or budgets.get(role, 0) + reserve > limit:
+            if reserve < 1 or reservations.get(role, 0) + reserve > limit:
                 raise ValueError("Analysis budget reserved. Contact the project owner.")
-            if sum(budgets.values()) + settings.non_execution_cents + reserve > 10000:
+            if sum(reservations.values()) + settings.non_execution_cents + reserve > 10000:
                 raise ValueError("Total $100 project budget reserved")
             db.execute(
                 "INSERT INTO analyses VALUES(?,?,?,?,?,'running',NULL)",

@@ -8,7 +8,7 @@ from fastapi.testclient import TestClient
 from agent_rewind.analysis import analyze
 from agent_rewind.api import create_app
 from agent_rewind.config import settings
-from agent_rewind.demo import complete
+from agent_rewind.inference import complete
 from agent_rewind.storage import digest
 
 

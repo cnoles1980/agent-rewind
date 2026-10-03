@@ -9,7 +9,8 @@ from pathlib import Path
 from dotenv import dotenv_values
 
 from agent_rewind.config import Settings
-from agent_rewind.demo import complete, TOOLS
+from agent_rewind.demo import TOOLS
+from agent_rewind.inference import complete
 from agent_rewind.recorder import Recorder
 
 

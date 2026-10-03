@@ -5,7 +5,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from .demo import complete
+from .inference import complete
 from .redaction import Redactor
 
 MAX_EVIDENCE_BYTES = 48_000
