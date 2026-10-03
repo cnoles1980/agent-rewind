@@ -6,10 +6,10 @@ Status: **local implementation verified; live sandbox and hosting blocked on ext
 
 | Check | Evidence |
 |---|---|
-| Python recorder, import, API, isolated runner and analysis contracts | 41 pytest tests passing |
-| Context/time integrity, reuse of deduplicated snapshots, partial clips, redaction, tool alignment | 29 Vitest tests passing |
-| Browser investigation and security flows | 16 Playwright end-to-end tests passing |
-| 1,000-event scrubbing | Latest measured paint intervals: 31.0, 33.0, 33.5 ms on this Windows development machine; threshold 100 ms |
+| Python recorder, import, API, isolated runner and analysis contracts | 49 pytest tests passing |
+| Context/time integrity, reuse of deduplicated snapshots, partial clips, redaction, tool alignment | 34 Vitest tests passing |
+| Browser investigation and security flows | 17 Playwright end-to-end tests passing |
+| 1,000-event scrubbing | Latest measured paint intervals: 31.7, 33.5, 33.3 ms on this Windows development machine; threshold 100 ms |
 | Personal tape privacy | Browser test observed no non-GET requests while importing, searching, selecting and playing a synthetic personal tape |
 | Clip lifecycle | Production bundle: invitation login, reviewed publication, a separate anonymous browser reading the clip, UI revocation, then HTTP 404 |
 | Production CSP | Full app and clip flow work without `unsafe-eval`; schema validator compiled ahead of time |
@@ -25,6 +25,8 @@ Status: **local implementation verified; live sandbox and hosting blocked on ext
 | Dependency audits | npm audit: zero reported vulnerabilities; pip-audit on locked runtime dependencies: none known at check time |
 
 Pytest reports one upstream Starlette deprecation warning about its httpx-backed test client. It does not affect the production runtime; test-client migration should be considered with the next dependency update.
+
+The requested quality and simplification pass resolved privacy, clip-consent, recording-error, and temporal-evidence edge cases. Shared inference and accounting paths were simplified separately from fixes. Full findings, checks, and remaining boundaries: [code review record](code-review-2026-10-03.md).
 
 ## Settings, source importers, and reports
 
