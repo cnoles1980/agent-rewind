@@ -24,7 +24,7 @@ class Run(StrictModel):
     schema_version: Literal[1] = 1
     id: str = Field(default_factory=uid, min_length=1, max_length=120)
     name: str = Field(max_length=200)
-    source: Literal["python", "codex", "demo", "example", "clip"] = "python"
+    source: Literal["python", "codex", "claude-code", "factory", "n8n", "custom", "demo", "example", "clip"] = "python"
     version: str = "0.1.0"
     started_at: str = Field(default_factory=now)
     model: str | None = None

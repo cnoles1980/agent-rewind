@@ -7,9 +7,9 @@ Status: **local implementation verified; live sandbox and hosting blocked on ext
 | Check | Evidence |
 |---|---|
 | Python recorder, import, API, isolated runner contracts | 28 pytest tests passing |
-| Context/time integrity, reuse of deduplicated snapshots, partial clips, redaction, tool alignment | 12 Vitest tests passing |
-| Browser investigation and security flows | 5 Playwright end-to-end tests passing |
-| 1,000-event scrubbing | Latest measured paint intervals: 24.8, 32.9, 33.5 ms on this Windows development machine; threshold 100 ms |
+| Context/time integrity, reuse of deduplicated snapshots, partial clips, redaction, tool alignment | 27 Vitest tests passing |
+| Browser investigation and security flows | 8 Playwright end-to-end tests passing |
+| 1,000-event scrubbing | Latest measured paint intervals: 29.7, 33.1, 32.9 ms on this Windows development machine; threshold 100 ms |
 | Personal tape privacy | Browser test observed no non-GET requests while importing, searching, selecting and playing a synthetic personal tape |
 | Clip lifecycle | Production bundle: invitation login, reviewed publication, a separate anonymous browser reading the clip, UI revocation, then HTTP 404 |
 | Production CSP | Full app and clip flow work without `unsafe-eval`; schema validator compiled ahead of time |
@@ -25,6 +25,14 @@ Status: **local implementation verified; live sandbox and hosting blocked on ext
 | Dependency audits | npm audit: zero reported vulnerabilities; pip-audit on locked runtime dependencies: none known at check time |
 
 Pytest reports one upstream Starlette deprecation warning about its httpx-backed test client. It does not affect the production runtime; test-client migration should be considered with the next dependency update.
+
+## Settings, source importers, and reports
+
+- Added direct browser Codex import, Claude Code transcript and n8n execution adapters, explicit Factory summary-only import, and a downloadable custom tape template. Synthetic fixtures cover correlations, deduplication, unknown timing, malformed/truncated data, unfinished attempts, private metadata/attachments, and event limits. Real Claude/n8n/Factory user exports remain an acceptance gap.
+- Browser tests cover Settings on mobile, preference persistence, source selection, reviewed report copy/download, redaction of both observations and evidence, review invalidation after edits, and zero requests during Claude/n8n imports. The Codex/report flow emits no mutation requests.
+- An API-restart check exposed an existing startup bug: failed example loading also hid IndexedDB tapes. Startup now handles local storage and example retrieval independently; a regression test blocks the examples endpoint and still opens the saved local recording.
+- Manual browser inspection confirmed discoverable Settings actions and readable Codex instructions/report preview. Screenshot: `docs/screenshots/settings-sources.jpg`.
+- Security review found no unresolved material issue in this change. Files remain local; no provider keys, live chat connections, automatic posting, or repair execution were introduced. Reports explicitly distinguish evidence from diagnosis and require review. Prototype-grade: provider format drift and unrecognized private data remain risks.
 
 ## Real provider evidence
 

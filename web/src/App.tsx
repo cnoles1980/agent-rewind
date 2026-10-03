@@ -12,6 +12,8 @@ import {
   FastForward,
   FolderOpen,
   GitBranch,
+  GearSix,
+  Bug,
   ListBullets,
   LockSimple,
   MagnifyingGlass,
@@ -34,6 +36,9 @@ import Timeline from "./Timeline";
 import logo from "./assets/ar-logo.png";
 import EventLog from "./EventLog";
 import Comparison from "./Comparison";
+import Settings, { readPreferences, type Preferences } from "./Settings";
+import DebugReport from "./DebugReport";
+import { importRecording, type ImportSource } from "./imports";
 import {
   atTime,
   clipTape,
@@ -42,7 +47,6 @@ import {
   download,
   duration,
   evidence,
-  parseTape,
   startOf,
   validateTape,
   visibleEvents,
@@ -114,12 +118,14 @@ function Modal({
   );
 }
 export default function App() {
+  const [preferences, setPreferences] = useState(readPreferences);
+  const importSource = useRef<ImportSource>("auto");
   const [tapes, setTapes] = useState<Tape[]>([]),
     [current, setCurrent] = useState("example-stale"),
     [selected, setSelected] = useState(""),
     [time, setTime] = useState(22000);
   const [playing, setPlaying] = useState(false),
-    [speed, setSpeed] = useState(1),
+    [speed, setSpeed] = useState(preferences.speed),
     [zoom, setZoom] = useState(1),
     [tab, setTab] = useState("Event"),
     [query, setQuery] = useState("");
@@ -127,7 +133,14 @@ export default function App() {
     [other, setOther] = useState("example-corrected"),
     [matched, setMatched] = useState<number | null>(null);
   const [modal, setModal] = useState<
-      "demo" | "clip" | "notes" | "library" | "shares" | null
+      | "demo"
+      | "clip"
+      | "notes"
+      | "library"
+      | "shares"
+      | "settings"
+      | "report"
+      | null
     >(null),
     [notice, setNotice] = useState(""),
     [error, setError] = useState(""),
@@ -172,10 +185,22 @@ export default function App() {
     let disposed = false;
     (async () => {
       try {
-        const [examples, local] = await Promise.all([
+        const [exampleResult, localResult] = await Promise.allSettled([
           api<any[]>("/examples"),
           listTapes(),
         ]);
+        const examples =
+          exampleResult.status === "fulfilled" ? exampleResult.value : [];
+        const local =
+          localResult.status === "fulfilled" ? localResult.value : [];
+        if (!disposed && exampleResult.status === "rejected")
+          setError(
+            "Example recordings are unavailable. You can still open and inspect local files.",
+          );
+        if (!disposed && localResult.status === "rejected")
+          setError(
+            "Browser storage is unavailable. Previously saved local recordings could not be loaded.",
+          );
         let all = [...examples.map(validateTape)];
         for (const t of local) {
           try {
@@ -199,7 +224,14 @@ export default function App() {
         }
         if (!disposed) {
           setTapes(all);
-          if (!token) setSelected("example-stale-e9");
+          if (!token) {
+            setSelected("example-stale-e9");
+            if (!all.some((t) => t.run.id === "example-stale") && all.length) {
+              setCurrent(all[0].run.id);
+              setSelected("");
+              setTime(0);
+            }
+          }
         }
       } catch (e) {
         if (!disposed) setError((e as Error).message);
@@ -374,11 +406,27 @@ export default function App() {
   };
   const importFile = async (file: File) => {
     if (file.size > 20 * 1024 * 1024) throw new Error("Tape exceeds 20 MB.");
-    const t = parseTape(await file.text());
+    const t = importRecording(await file.text(), importSource.current);
     await saveTape(t);
     setTapes((old) => [t, ...old.filter((x) => x.run.id !== t.run.id)]);
     choose(t.run.id);
-    setNotice("Opened privately in this browser. Nothing was uploaded.");
+    setModal(null);
+    setNotice(
+      `Opened ${t.events.length} events privately. Nothing was uploaded. ${t.run.warnings.join(" ")}`,
+    );
+  };
+  const openFile = (source: ImportSource = "auto") => {
+    importSource.current = source;
+    input.current?.click();
+  };
+  const changePreferences = (p: Preferences) => {
+    setPreferences(p);
+    setSpeed(p.speed);
+    try {
+      localStorage.setItem("rewind.preferences.v1", JSON.stringify(p));
+    } catch {
+      setError("Preferences apply now, but browser storage is unavailable.");
+    }
   };
   const jump = (d: (typeof differences)[number] | undefined) => {
     if (!d) return;
@@ -419,7 +467,19 @@ export default function App() {
           <span /> Personal workspace
         </div>
         <div className="top-actions">
-          <button onClick={() => input.current?.click()}>
+          <button
+            className="icon-button"
+            aria-label="Settings & sources"
+            title="Settings & sources"
+            onClick={() => {
+              setPlaying(false);
+              refresh();
+              setModal("settings");
+            }}
+          >
+            <GearSix />
+          </button>
+          <button onClick={() => openFile()}>
             <FolderOpen />
             Open tape
           </button>
@@ -475,6 +535,17 @@ export default function App() {
           Shared clips
         </button>
         <div className="side-divider" />
+        <button
+          className="nav"
+          onClick={() => {
+            setPlaying(false);
+            refresh();
+            setModal("settings");
+          }}
+        >
+          <GearSix />
+          Settings & sources
+        </button>
         <div className="side-heading">
           RECENT RUNS
           <button
@@ -514,7 +585,7 @@ export default function App() {
             Imported recordings stay in this browser until you choose to share a
             clip.
           </p>
-          <button onClick={() => input.current?.click()}>
+          <button onClick={() => openFile()}>
             Open a recording <UploadSimple />
           </button>
         </div>
@@ -552,9 +623,7 @@ export default function App() {
             <Rewind size={44} />
             <h1>Open a run. Find the moment.</h1>
             <p>{error || "Loading example recordings…"}</p>
-            <button onClick={() => input.current?.click()}>
-              Open local tape
-            </button>
+            <button onClick={() => openFile()}>Open local tape</button>
           </div>
         ) : (
           <>
@@ -603,6 +672,16 @@ export default function App() {
                 </div>
               </div>
               <div className="run-actions">
+                <button
+                  disabled={!event}
+                  onClick={() => {
+                    setPlaying(false);
+                    setModal("report");
+                  }}
+                >
+                  <Bug />
+                  Debug report
+                </button>
                 <button
                   onClick={() => setComparing(!comparing)}
                   className={comparing ? "selected-button" : ""}
@@ -1050,6 +1129,36 @@ export default function App() {
           </>
         )}
       </main>
+      {modal === "settings" && (
+        <Modal title="Settings & sources" onClose={() => setModal(null)}>
+          {error && (
+            <p role="alert" className="toast error">
+              {error}
+            </p>
+          )}
+          <Settings
+            preferences={preferences}
+            onPreferences={changePreferences}
+            onOpen={openFile}
+            onLibrary={() => setModal("library")}
+            status={status}
+            onDemo={() => {
+              refresh();
+              setModal("demo");
+            }}
+          />
+        </Modal>
+      )}
+      {modal === "report" && tape && event && (
+        <Modal title="Prepare debugging report" onClose={() => setModal(null)}>
+          <DebugReport
+            key={tape.run.id + event.id}
+            tape={tape}
+            event={event}
+            preceding={preferences.reportPreceding}
+          />
+        </Modal>
+      )}
       {modal === "demo" && (
         <Modal
           title="Run the checkout experiment"
@@ -1415,10 +1524,15 @@ export default function App() {
           ))}
           <div className="callout">
             <b>Import a Codex session</b>
-            <pre>rewind import codex --file session.jsonl --out tape.jsonl</pre>
-            <p>Run locally, then open the converted tape here.</p>
+            <p>
+              Open the selected session JSONL directly. Settings & sources
+              includes file locations and setup instructions for each source.
+            </p>
+            <button onClick={() => setModal("settings")}>
+              Choose a recording source
+            </button>
           </div>
-          <button onClick={() => input.current?.click()}>
+          <button onClick={() => openFile()}>
             <FolderOpen />
             Open tape
           </button>

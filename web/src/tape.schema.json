@@ -257,6 +257,10 @@
           "enum": [
             "python",
             "codex",
+            "claude-code",
+            "factory",
+            "n8n",
+            "custom",
             "demo",
             "example",
             "clip"

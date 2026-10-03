@@ -30,3 +30,8 @@
 Automated browser checks cover paired evidence, note creation/editing, search, local imports, clip review/export, invitation login, share/revoke, production CSP and narrow viewport overflow. Inspector content scrolls independently; the page may scroll vertically. The timeline deliberately scrolls horizontally on narrow screens while persistent controls remain visible.
 
 P3 follow-up: tune small-label contrast and exact font weight with Corey during the first usability sessions. The final logo/asset rights and a real hosted/live run need owner review. No remaining P0/P1/P2 visual issue was identified in the reviewed desktop state; this does not replace the planned three-person comprehension test.
+
+
+## Settings and source imports follow-up
+
+Added Settings in both the sidebar and mobile-visible top bar. Source cards show support level, local file instructions, and an opening action above the longer guide. Factory is explicitly summary-only. Reports have an exact text preview, optional linked context, redaction, and a review-gated copy/download action. Checked the live browser at its normal viewport; mobile 390px automated checks pass with no horizontal overflow. Saved `docs/screenshots/settings-sources.jpg`. No changes to the logo or mockup-derived visual direction.

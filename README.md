@@ -93,12 +93,20 @@ Never pass authorization headers or environment dumps as application state. Pass
 
 ## Import one Codex recording
 
+The easiest route is now **Settings & sources → Codex → Open Codex log**. Select the original session JSONL; the browser converts it locally without uploading it. Settings includes default file locations, import limits, capture limitations, playback preferences, and hosted-demo configuration status. **Open tape** also recognizes Codex, Claude Code, n8n execution JSON, and Rewind v1 files automatically. Factory result JSON requires explicit source selection because its shape is shared by other vendors.
+
+See [recording source instructions and limitations](docs/sources.md) for Claude Code, n8n, Factory, and custom adapters. These are selected-file imports, not live account connections. The original CLI remains available:
+
 ```text
 uv run rewind import codex --file <selected-session.jsonl> --out <new-tape.jsonl>
 uv run rewind validate <new-tape.jsonl>
 ```
 
 Then choose **Open tape** in the browser. The importer reads only your selected file, never searches your chat history, and makes no network request. Existing output files are not overwritten. It correlates tool IDs, removes known duplicate representations, strips account metadata/local home paths, preserves exposed summaries, and reports unsupported records and truncated captures. It does **not** reconstruct the full model prompt. The isolated 0.1.0 adapter is covered by compatibility fixtures; Codex's local format may change.
+
+## Hand evidence back to your agent
+
+Select an event, then choose **Debug report**. Describe the observed problem and expected behavior, optionally include the event's explicitly linked context, redact extra phrases, and review the exact preview. After checking the review box, copy the Markdown into the agent's existing chat or download it. The report includes recorded evidence and capture limitations; it does not infer a root cause, send messages, invoke a model, or apply a repair. The number of preceding events is configurable in Settings. Context is excluded by default because it can include earlier private messages. Changed evidence or form fields invalidate the review.
 
 ## Live invited demo
 

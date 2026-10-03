@@ -1714,3 +1714,102 @@ label.checkbox {
     height: 38px;
   }
 }
+.settings-intro {
+  color: var(--muted, #657187);
+  line-height: 1.65;
+}
+.source-picker {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 16px 0;
+}
+.source-picker button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 14px;
+  text-align: left;
+}
+.source-picker small,
+.source-support {
+  font-size: 11px;
+  color: #657187;
+  font-weight: 400;
+}
+.source-guide {
+  border: 1px solid #dce5ed;
+  border-radius: 12px;
+  background: #f8fbfd;
+  padding: 20px;
+}
+.source-guide h3 {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.source-guide li,
+.settings-section li {
+  margin-bottom: 10px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.source-guide pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.source-guide a {
+  font-size: 12px;
+}
+.source-guide details {
+  margin: 18px 0;
+}
+.source-guide summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+.settings-section {
+  border-top: 1px solid #e4eaf0;
+  margin-top: 24px;
+  padding-top: 12px;
+}
+.settings-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.settings-panel p,
+.report-panel p {
+  line-height: 1.65;
+}
+.report-preview {
+  font:
+    11px/1.65 "IBM Plex Mono",
+    monospace;
+  min-height: 290px;
+  resize: vertical;
+}
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 18px 0 4px;
+}
+.run-actions {
+  flex-wrap: wrap;
+}
+@media (max-width: 600px) {
+  .source-picker {
+    grid-template-columns: 1fr 1fr;
+  }
+  .settings-fields {
+    grid-template-columns: 1fr;
+  }
+  .source-guide {
+    padding: 14px;
+  }
+}

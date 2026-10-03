@@ -9,13 +9,12 @@ export type Record = "run";
 export type SchemaVersion = 1;
 export type Id = string;
 export type Name = string;
-export type Source = "python" | "codex" | "demo" | "example" | "clip";
+export type Source = "python" | "codex" | "claude-code" | "factory" | "n8n" | "custom" | "demo" | "example" | "clip";
 export type Version = string;
 export type StartedAt = string;
 export type Model = string | null;
 export type Provider = string | null;
-export type Status =
-  "running" | "success" | "failed" | "cancelled" | "incomplete";
+export type Status = "running" | "success" | "failed" | "cancelled" | "incomplete";
 export type DurationMs = number | null;
 export type Warnings = string[];
 export type Record1 = "event";
@@ -23,15 +22,7 @@ export type Id1 = string;
 export type RunId = string;
 export type Seq = number;
 export type Kind =
-  | "model.start"
-  | "model.end"
-  | "tool.start"
-  | "tool.end"
-  | "context"
-  | "memory"
-  | "error"
-  | "message"
-  | "run.end";
+  "model.start" | "model.end" | "tool.start" | "tool.end" | "context" | "memory" | "error" | "message" | "run.end";
 export type Lane = "model" | "tools" | "context" | "memory" | "errors";
 export type Name1 = string;
 export type Timestamp = string;
@@ -40,8 +31,7 @@ export type DurationMs1 = number | null;
 export type SpanId = string | null;
 export type ParentId = string | null;
 export type SnapshotId = string | null;
-export type Status1 =
-  "running" | "success" | "failed" | "cancelled" | "unknown";
+export type Status1 = "running" | "success" | "failed" | "cancelled" | "unknown";
 export type Provenance = "captured" | "imported" | "fixture" | "derived";
 export type Partial = boolean;
 /**
