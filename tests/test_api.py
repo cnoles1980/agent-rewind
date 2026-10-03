@@ -65,6 +65,36 @@ def test_session_csrf_and_cookie(app):
         assert client.get("/api/status").json()["authenticated"] is False
 
 
+def test_https_judge_session_secure_cookie_origin_and_logout(tmp_path):
+    origin = "https://rewind.example.test"
+    judge_code = "synthetic-judge-invitation-12345"
+    cfg = Settings(
+        data_dir=tmp_path,
+        origin=origin,
+        secure_cookies=True,
+        judge_hash=digest(judge_code),
+        tester_hash=digest(CODE),
+        api_key="",
+        live_enabled=False,
+        analysis_enabled=False,
+    )
+    with TestClient(create_app(cfg), base_url=origin) as client:
+        assert client.get("/api/demo-runs").status_code == 401
+        assert client.post(
+            "/api/session", json={"code": judge_code}, headers={"origin": "https://other.example"}
+        ).status_code == 403
+        response = client.post("/api/session", json={"code": judge_code}, headers={"origin": origin})
+        assert response.status_code == 200 and response.json()["role"] == "judge"
+        cookie = response.headers["set-cookie"]
+        for attribute in ("Secure", "HttpOnly", "SameSite=strict", "Max-Age=604800"):
+            assert attribute in cookie
+        assert judge_code not in cookie
+        assert client.get("/api/status").json()["role"] == "judge"
+        assert client.get("/api/demo-runs").status_code == 200
+        assert client.delete("/api/session", headers={"origin": origin}).status_code == 200
+        assert client.get("/api/demo-runs").status_code == 401
+
+
 def test_clip_review_auth_revocation_and_redaction(app):
     tape = Tape(
         run=Run(

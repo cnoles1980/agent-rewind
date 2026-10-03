@@ -106,6 +106,7 @@ export default function Settings({
   onLibrary,
   status,
   onDemo,
+  onTutorial,
 }: {
   preferences: Preferences;
   onPreferences: (p: Preferences) => void;
@@ -119,11 +120,13 @@ export default function Settings({
     analysis_blockers?: string[];
   } | null;
   onDemo: () => void;
+  onTutorial: () => void;
 }) {
   const [active, setActive] = useState<ImportSource>("codex");
   const source = sources.find((s) => s.id === active)!;
   return (
     <div className="settings-panel">
+      <button onClick={onTutorial}>First-use tutorial</button>
       <p className="settings-intro">
         Bring a recording from your agent. Files are read and stored in this
         browser; no account connection is needed.

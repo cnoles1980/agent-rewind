@@ -6,9 +6,9 @@ Status: **local implementation verified; live sandbox and hosting blocked on ext
 
 | Check | Evidence |
 |---|---|
-| Python recorder, import, API, isolated runner and analysis contracts | 49 pytest tests passing |
+| Python recorder, import, API, isolated runner and analysis contracts | 50 pytest tests passing |
 | Context/time integrity, reuse of deduplicated snapshots, partial clips, redaction, tool alignment | 34 Vitest tests passing |
-| Browser investigation and security flows | 17 Playwright end-to-end tests passing |
+| Browser investigation and security flows | 18 Playwright end-to-end tests passing |
 | 1,000-event scrubbing | Latest measured paint intervals: 31.7, 33.5, 33.3 ms on this Windows development machine; threshold 100 ms |
 | Personal tape privacy | Browser test observed no non-GET requests while importing, searching, selecting and playing a synthetic personal tape |
 | Clip lifecycle | Production bundle: invitation login, reviewed publication, a separate anonymous browser reading the clip, UI revocation, then HTTP 404 |
@@ -27,6 +27,8 @@ Status: **local implementation verified; live sandbox and hosting blocked on ext
 Pytest reports one upstream Starlette deprecation warning about its httpx-backed test client. It does not affect the production runtime; test-client migration should be considered with the next dependency update.
 
 The requested quality and simplification pass resolved privacy, clip-consent, recording-error, and temporal-evidence edge cases. Shared inference and accounting paths were simplified separately from fixes. Full findings, checks, and remaining boundaries: [code review record](code-review-2026-10-03.md).
+
+First-use onboarding now includes a dismissible welcome, six-step in-app tutorial, and a [written walkthrough](first-use.md). Browser coverage verifies navigation, reopening, persistence, mobile width, and no mutation requests. The [deployment preflight](deployment-check-2026-10-03.md) records the published Render-schema validation, HTTPS judge-session regression, and missing hosted/sandbox configuration. These are local checks, not real hosted or sandbox acceptance.
 
 ## Settings, source importers, and reports
 

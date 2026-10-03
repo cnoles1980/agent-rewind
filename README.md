@@ -8,6 +8,8 @@ This is a controlled-use hackathon prototype. The offline examples are **illustr
 
 ## Run locally
 
+**First visit?** Follow the [five-minute tutorial](docs/first-use.md), or choose **Start tutorial** in the app. It walks through the example, your first import, reviewed debugging reports, optional Nemotron analysis, and sharing. Reopen it anytime in Settings & sources.
+
 Requires Python 3.12, [uv](https://docs.astral.sh/uv/getting-started/installation/), and Node.js 24 LTS. The source is a separate project and has no dependency on Agent Bridge.
 
 From the repository root:

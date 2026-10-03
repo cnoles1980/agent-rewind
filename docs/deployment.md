@@ -2,6 +2,8 @@
 
 ## Current external blockers
 
+Latest result: [October 3 deployment preflight](deployment-check-2026-10-03.md). Blueprint and local judge-session checks pass; a hosted URL and sandbox project/image are still needed for live acceptance. The local dedicated inference key is already configured.
+
 Evidence analysis can be enabled independently of live coding execution. It needs the dedicated Nebius key, verified inference pricing/reservation, and separate analysis enable flags; no sandbox is required. Follow [analysis configuration](analysis.md). Both kinds of paid calls share the same role budgets and total ceiling.
 
 The implementation is ready for configuration, but hosted/live acceptance is **not verified**. Corey needs to provide a dedicated Nebius key, a Sandbox-enabled project, a verified Python image, confirmed prices, and Render access/billing. Do not paste keys into chat. Put them in local `.env` or the Render secret settings.

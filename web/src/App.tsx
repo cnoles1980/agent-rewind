@@ -38,6 +38,7 @@ import EventLog from "./EventLog";
 import Comparison from "./Comparison";
 import Settings, { readPreferences, type Preferences } from "./Settings";
 import DebugReport from "./DebugReport";
+import Tutorial, { TutorialPrompt } from "./Tutorial";
 import type { ImportSource } from "./imports";
 import { importLocalFile, type ImportProgress } from "./importFile";
 import {
@@ -152,6 +153,7 @@ export default function App() {
       | "settings"
       | "report"
       | "import"
+      | "tutorial"
       | null
     >(null),
     [notice, setNotice] = useState(""),
@@ -672,6 +674,12 @@ export default function App() {
             </button>
           </div>
         )}
+        <TutorialPrompt
+          onOpen={() => {
+            setPlaying(false);
+            setModal("tutorial");
+          }}
+        />
         {!tape ? (
           <div className="empty">
             <Rewind size={44} />
@@ -1239,6 +1247,11 @@ export default function App() {
           )}
         </Modal>
       )}
+      {modal === "tutorial" && (
+        <Modal title="First-use tutorial" onClose={() => setModal(null)}>
+          <Tutorial />
+        </Modal>
+      )}
       {modal === "settings" && (
         <Modal title="Settings & sources" onClose={() => setModal(null)}>
           {error && (
@@ -1251,6 +1264,7 @@ export default function App() {
             onPreferences={changePreferences}
             onOpen={openFile}
             onLibrary={() => setModal("library")}
+            onTutorial={() => setModal("tutorial")}
             status={status}
             onDemo={() => {
               refresh();
