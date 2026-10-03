@@ -1,0 +1,5 @@
+src/tape.validator.js
+src/tape.generated.ts
+src/tape.schema.json
+dist
+node_modules

@@ -1,0 +1,9 @@
+{"type":"session_meta","timestamp":"2026-10-03T00:00:00Z","payload":{"cwd":"C:/Users/Example/private-project","creator_account_id":"SYNTHETIC_ACCOUNT"}}
+{"type":"turn_context","payload":{"model":"codex-fixture-model"}}
+{"type":"response_item","timestamp":"2026-10-03T00:00:01Z","payload":{"type":"message","role":"user","content":[{"type":"input_text","text":"Check the shipping boundary."}]}}
+{"type":"response_item","timestamp":"2026-10-03T00:00:02Z","payload":{"type":"reasoning","id":"summary-1","summary":[{"type":"summary_text","text":"Inspect the implementation and boundary test."}],"encrypted_content":"SYNTHETIC_ENCRYPTED_PAYLOAD"}}
+{"type":"response_item","timestamp":"2026-10-03T00:00:03Z","payload":{"type":"function_call","call_id":"call-1","name":"read_file","arguments":"{\"path\":\"shipping.py\"}"}}
+{"type":"response_item","timestamp":"2026-10-03T00:00:04Z","payload":{"type":"function_call_output","call_id":"call-1","output":"def shipping_fee(subtotal): return 5"}}
+{"type":"response_item","timestamp":"2026-10-03T00:00:04Z","payload":{"type":"function_call_output","call_id":"call-1","output":"def shipping_fee(subtotal): return 5"}}
+{"type":"future_record","payload":{"ignored":"synthetic"}}
+{"type":"event_msg","timestamp":"2026-10-03T00:00:05Z","payload":{"type":"task_complete"}}

@@ -1,0 +1,43 @@
+services:
+  - type: web
+    name: agent-rewind
+    runtime: python
+    plan: starter
+    buildCommand: bash scripts/render-build.sh
+    startCommand: .venv/bin/uvicorn agent_rewind.api:app --host 0.0.0.0 --port $PORT --workers 1
+    healthCheckPath: /api/health
+    disk:
+      name: rewind-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.12
+      - key: NODE_VERSION
+        value: 24.11.1
+      - key: REWIND_DATA_DIR
+        value: /var/data
+      - key: REWIND_ORIGIN
+        sync: false
+      - key: REWIND_SECURE_COOKIES
+        value: "true"
+      - key: REWIND_TESTER_CODE_HASH
+        sync: false
+      - key: REWIND_JUDGE_CODE_HASH
+        sync: false
+      - key: NEBIUS_API_KEY
+        sync: false
+      - key: NEBIUS_PROJECT_ID
+        sync: false
+      - key: NEBIUS_SANDBOX_IMAGE
+        sync: false
+      - key: NEBIUS_MODEL
+        value: nvidia/Nemotron-3_5-Lightning
+      - key: REWIND_LIVE_ENABLED
+        value: "false"
+      - key: REWIND_PRICES_VERIFIED
+        value: "false"
+      - key: REWIND_RUN_RESERVATION_CENTS
+        value: "100"
+      - key: REWIND_NON_EXECUTION_CENTS
+        value: "3000"

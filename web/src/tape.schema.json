@@ -1,0 +1,380 @@
+{
+  "$defs": {
+    "Event": {
+      "additionalProperties": false,
+      "properties": {
+        "record": {
+          "const": "event",
+          "default": "event",
+          "title": "Record",
+          "type": "string"
+        },
+        "id": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "run_id": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "minimum": 0,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "kind": {
+          "enum": [
+            "model.start",
+            "model.end",
+            "tool.start",
+            "tool.end",
+            "context",
+            "memory",
+            "error",
+            "message",
+            "run.end"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "lane": {
+          "enum": [
+            "model",
+            "tools",
+            "context",
+            "memory",
+            "errors"
+          ],
+          "title": "Lane",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 200,
+          "title": "Name",
+          "type": "string"
+        },
+        "timestamp": {
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "elapsed_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Elapsed Ms"
+        },
+        "duration_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration Ms"
+        },
+        "span_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Span Id"
+        },
+        "parent_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Id"
+        },
+        "snapshot_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Snapshot Id"
+        },
+        "status": {
+          "default": "success",
+          "enum": [
+            "running",
+            "success",
+            "failed",
+            "cancelled",
+            "unknown"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "provenance": {
+          "default": "captured",
+          "enum": [
+            "captured",
+            "imported",
+            "fixture",
+            "derived"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        },
+        "partial": {
+          "default": false,
+          "title": "Partial",
+          "type": "boolean"
+        },
+        "data": {
+          "additionalProperties": true,
+          "title": "Data",
+          "type": "object"
+        }
+      },
+      "required": [
+        "run_id",
+        "seq",
+        "kind",
+        "lane",
+        "name"
+      ],
+      "title": "Event",
+      "type": "object"
+    },
+    "Note": {
+      "additionalProperties": false,
+      "properties": {
+        "record": {
+          "const": "note",
+          "default": "note",
+          "title": "Record",
+          "type": "string"
+        },
+        "id": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "event_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Id"
+        },
+        "elapsed_ms": {
+          "minimum": 0,
+          "title": "Elapsed Ms",
+          "type": "number"
+        },
+        "text": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "created_at": {
+          "title": "Created At",
+          "type": "string"
+        },
+        "updated_at": {
+          "title": "Updated At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "elapsed_ms",
+        "text"
+      ],
+      "title": "Note",
+      "type": "object"
+    },
+    "Run": {
+      "additionalProperties": false,
+      "properties": {
+        "record": {
+          "const": "run",
+          "default": "run",
+          "title": "Record",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "default": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "id": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 200,
+          "title": "Name",
+          "type": "string"
+        },
+        "source": {
+          "default": "python",
+          "enum": [
+            "python",
+            "codex",
+            "demo",
+            "example",
+            "clip"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "version": {
+          "default": "0.1.0",
+          "title": "Version",
+          "type": "string"
+        },
+        "started_at": {
+          "title": "Started At",
+          "type": "string"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model"
+        },
+        "provider": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Provider"
+        },
+        "status": {
+          "default": "running",
+          "enum": [
+            "running",
+            "success",
+            "failed",
+            "cancelled",
+            "incomplete"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "duration_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration Ms"
+        },
+        "capabilities": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Capabilities",
+          "type": "object"
+        },
+        "configuration": {
+          "additionalProperties": true,
+          "title": "Configuration",
+          "type": "object"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Run",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "run": {
+      "$ref": "#/$defs/Run"
+    },
+    "events": {
+      "items": {
+        "$ref": "#/$defs/Event"
+      },
+      "maxItems": 10000,
+      "title": "Events",
+      "type": "array"
+    },
+    "notes": {
+      "items": {
+        "$ref": "#/$defs/Note"
+      },
+      "maxItems": 1000,
+      "title": "Notes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "run",
+    "events"
+  ],
+  "title": "Tape",
+  "type": "object"
+}
