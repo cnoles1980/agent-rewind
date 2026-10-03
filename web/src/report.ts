@@ -14,18 +14,13 @@ export type ReportOptions = {
   phrases: string[];
   observation: string;
 };
-/** An evidence handoff, not an LLM diagnosis. No model, tool, or network invocation. */
-export function debuggingReport(
-  tape: Tape,
-  anchor: Event,
-  options: ReportOptions,
-): string {
+export function reportEvents(tape: Tape, anchor: Event, preceding: number) {
   const events = visibleEvents(tape);
   const index = events.findIndex((e) => e.id === anchor.id);
   if (index < 0) throw new Error("Select a recorded event first.");
-  const count = Math.max(0, Math.min(10, Math.floor(options.preceding) || 0));
+  const count = Math.max(0, Math.min(10, Math.floor(preceding) || 0));
   // Sequence defines a bounded excerpt even when timestamps are missing or out of order.
-  const selected = events
+  return events
     .slice(0, index + 1)
     .filter(
       (e) =>
@@ -34,6 +29,15 @@ export function debuggingReport(
         e.elapsed_ms <= anchor.elapsed_ms,
     )
     .slice(-(count + 1));
+}
+
+/** An evidence handoff, not an LLM diagnosis. No model, tool, or network invocation. */
+export function debuggingReport(
+  tape: Tape,
+  anchor: Event,
+  options: ReportOptions,
+): string {
+  const selected = reportEvents(tape, anchor, options.preceding);
   const clean = (x: unknown) => redact(x, options.phrases);
   const block = (x: unknown) => {
     const raw = JSON.stringify(clean(x), null, 2) ?? "Not captured";

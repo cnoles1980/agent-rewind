@@ -10,7 +10,7 @@ export function readPreferences(): Preferences {
     const p = JSON.parse(localStorage.getItem("rewind.preferences.v1") ?? "{}");
     return {
       speed: [0.5, 1, 2, 4].includes(p?.speed) ? p.speed : 1,
-      reportPreceding: [0, 2, 4, 8].includes(p?.reportPreceding)
+      reportPreceding: [0, 2, 4, 8, 10].includes(p?.reportPreceding)
         ? p.reportPreceding
         : 4,
     };
@@ -115,6 +115,8 @@ export default function Settings({
     authenticated?: boolean;
     live_available?: boolean;
     blockers?: string[];
+    analysis_available?: boolean;
+    analysis_blockers?: string[];
   } | null;
   onDemo: () => void;
 }) {
@@ -218,7 +220,7 @@ export default function Settings({
                 })
               }
             >
-              {[0, 2, 4, 8].map((n) => (
+              {[0, 2, 4, 8, 10].map((n) => (
                 <option key={n} value={n}>
                   {n} events
                 </option>
@@ -227,8 +229,9 @@ export default function Settings({
           </label>
         </div>
         <p className="muted">
-          Preferences are saved on this device. Reports are generated locally
-          and require review before copying or downloading.
+          Preferences are saved on this device. Evidence reports are generated
+          locally. Optional Nemotron analysis sends only your reviewed excerpt
+          to Nebius.
         </p>
       </section>
       <section className="settings-section">
@@ -242,6 +245,16 @@ export default function Settings({
       </section>
       <section className="settings-section">
         <h3>Hosted demo access</h3>
+        <p>
+          {status?.analysis_available
+            ? "Nemotron evidence analysis is configured."
+            : "Nemotron evidence analysis is unavailable."}
+          {status?.analysis_blockers?.length
+            ? " " + status.analysis_blockers.join("; ") + "."
+            : ""}{" "}
+          Open Debug report on a selected event to review evidence and request
+          analysis.
+        </p>
         <p>
           {status?.authenticated
             ? "Invitation session is active."

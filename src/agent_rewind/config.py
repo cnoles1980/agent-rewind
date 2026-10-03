@@ -19,6 +19,15 @@ class Settings:
     sandbox_image: str = field(default_factory=lambda: os.getenv("NEBIUS_SANDBOX_IMAGE", ""))
     model: str = field(default_factory=lambda: os.getenv("NEBIUS_MODEL", "nvidia/Nemotron-3_5-Lightning"))
     live_enabled: bool = field(default_factory=lambda: os.getenv("REWIND_LIVE_ENABLED", "false") == "true")
+    analysis_enabled: bool = field(
+        default_factory=lambda: os.getenv("REWIND_ANALYSIS_ENABLED", "false") == "true"
+    )
+    analysis_prices_verified: bool = field(
+        default_factory=lambda: os.getenv("REWIND_ANALYSIS_PRICES_VERIFIED", "false") == "true"
+    )
+    analysis_reserve_cents: int = field(
+        default_factory=lambda: int(os.getenv("REWIND_ANALYSIS_RESERVATION_CENTS", "25"))
+    )
     prices_verified: bool = field(
         default_factory=lambda: os.getenv("REWIND_PRICES_VERIFIED", "false") == "true"
     )
@@ -28,6 +37,20 @@ class Settings:
     non_execution_cents: int = field(
         default_factory=lambda: int(os.getenv("REWIND_NON_EXECUTION_CENTS", "3000"))
     )
+
+    def analysis_blockers(self):
+        missing = []
+        for label, value in (
+            ("Dedicated Nebius key", self.api_key),
+            ("Verified analysis pricing", self.analysis_prices_verified),
+            ("Nemotron analysis enabled", self.analysis_enabled),
+            ("Positive analysis cost reservation", self.analysis_reserve_cents > 0),
+        ):
+            if not value:
+                missing.append(label)
+        if not self.model.lower().startswith("nvidia/") or "nemotron" not in self.model.lower():
+            missing.append("NVIDIA Nemotron model")
+        return missing
 
     def blockers(self):
         missing = []

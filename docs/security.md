@@ -5,7 +5,7 @@ This is a prototype for invited, bounded execution. It is not a public arbitrary
 - Imported personal tapes are parsed, redacted and stored in IndexedDB. No telemetry or third-party fonts/scripts are loaded. Do not serve this application alongside untrusted scripts on the same origin.
 - The Python recorder redacts before writing. It excludes known credential fields, authorization/cookie values, encrypted reasoning payloads, configured secrets and sensitive keys. It cannot discover every private business detail, so sharing requires review.
 - Context means captured messages/tool definitions and explicit application state. Missing context and timing are unknown. Imported Codex summaries do not imply access to hidden reasoning or full requests.
-- Request size limits apply before JSON parsing (100 MB local tapes, 10,000 events, 2 MB hosted clips). API mutation bodies other than clips are capped at 8 KB. Hosted clip storage has a 128 MB global ceiling.
+- Request size limits apply before JSON parsing (100 MB local tapes, 10,000 events, 2 MB hosted clips). Analysis allows a 320,000-byte JSON envelope and validates a 48,000-byte UTF-8 excerpt; other API mutation bodies are capped at 8 KB. Hosted clip storage has a 128 MB global ceiling.
 - Session cookies are HttpOnly, SameSite=Strict, expiring, and Secure on HTTPS. Invitation tokens have high entropy and are stored as hashes. Mutation routes require the exact configured Origin. Job access is session-owned. Rate limits and reservations are transactional in SQLite.
 - Clips are unlisted, not authenticated for readers. Their management credential is separate from the viewing token. Revocation removes the hosted content, not copies already downloaded. Export or otherwise preserve management credentials before clearing browser storage if ongoing revocation matters.
 - The server API holds the inference key. Generated code is constrained by an AST allowlist to a tiny shipping function, then executed only in a disposable remote VM. No imports, calls, filesystem access, networking, credentials, or personal repositories are provided. The acceptance harness is constructed server-side and never an editable tool target.
@@ -13,6 +13,8 @@ This is a prototype for invited, bounded execution. It is not a public arbitrary
 - Live requests have an eight-model-call limit and five-minute deadline. Sandbox operations have a separate remote 20-second limit. No automatic retry follows ambiguous execution/patch failures. Operation IDs are persisted for cancellation/restart recovery.
 
 ## Residual risks to verify before public release
+
+Optional Nemotron analysis uploads an explicitly reviewed excerpt to Nebius. The server retains accounting metadata only, enforces shared budget admission, timeout, no automatic retry, and allowlisted event references. It grants the model no tools. Prompt injection and incorrect reasoning remain possible; event references do not prove conclusions. See [analysis privacy and failure boundaries](analysis.md).
 
 1. Nebius beta behavior, image isolation, remote cancellation, billing and quotas need a real-account check. SDK contract doubles cannot establish those facts.
 2. Login rate limiting sees the network peer supplied by the hosting proxy. Validate Render's proxy behavior with separate browsers/networks; do not blindly trust arbitrary forwarded-IP headers.

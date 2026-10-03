@@ -112,7 +112,13 @@ Select an event, then choose **Debug report**. Describe the observed problem and
 
 ## Live invited demo
 
-**Publishing on GitHub does not require sharing your Nebius key.** Public visitors can inspect recordings without a key. Judges use your invitation-protected hosted runner; your key stays in server environment settings. People cloning the source configure their own key only if they want fresh live runs. See the [step-by-step source, secrets, and judge-access guide](docs/publishing.md).
+### Optional Nemotron evidence analysis
+
+In **Debug report**, review the evidence preview and explicitly consent to **Analyze selected evidence**. Nemotron returns cited facts, uncertain explanations, missing evidence, verification steps, and a repair prompt. Review the output, then copy it with the source excerpt to your coding agent. It never executes a fix. Editing evidence clears consent and the prior analysis.
+
+This feature makes a real runtime call to Nebius, requires invited access and a server-side key, and works independently of sandbox execution. Analysis is disabled until its separate pricing/configuration gate is complete. See [analysis setup, privacy, limits, and verification](docs/analysis.md). Local evidence-only reports still require no key.
+
+**Publishing on GitHub does not require sharing your Nebius key.** Public visitors can inspect recordings without a key. Judges use your invitation-protected hosted analysis and runner; your key stays in server environment settings. People cloning the source configure their own key for Nemotron analysis or fresh live runs. See the [step-by-step source, secrets, and judge-access guide](docs/publishing.md).
 
 See [deployment and provider setup](docs/deployment.md). The four agent tools are `read_file`, `read_policy`, `apply_patch`, and `run_tests`. Only a small, pure `shipping_fee(subtotal)` function can be edited. The server never executes generated Python; each evaluation uses a disposable remote Nebius sandbox with networking disabled and no credentials. An independent immutable acceptance harness tests exactly $50 after the agent finishes.
 

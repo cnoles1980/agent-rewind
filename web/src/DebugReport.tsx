@@ -1,16 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
 import { Copy, DownloadSimple } from "@phosphor-icons/react";
-import { debuggingReport, downloadText } from "./report";
+import { debuggingReport, downloadText, reportEvents } from "./report";
+import AnalysisPanel from "./AnalysisPanel";
 import type { Event, Tape } from "./engine";
 
 export default function DebugReport({
   tape,
   event,
   preceding,
+  onSelect,
+  onAccessChange,
 }: {
   tape: Tape;
   event: Event;
   preceding: number;
+  onSelect: (id: string) => void;
+  onAccessChange: () => void;
 }) {
   const [observation, setObservation] = useState(""),
     [phrases, setPhrases] = useState("");
@@ -40,8 +45,9 @@ export default function DebugReport({
   return (
     <div className="report-panel">
       <p>
-        A factual handoff for your agent chat. Includes the selected event and
-        up to {preceding} preceding events. Nothing is sent automatically.
+        Review the selected event and up to {preceding} preceding events. Then
+        analyze the evidence with Nemotron below, or copy a local report to your
+        agent chat. Nothing is sent automatically.
       </p>
       <label>
         What happened, and what did you expect?
@@ -134,6 +140,15 @@ export default function DebugReport({
         </button>
       </div>
       {message && <p role="status">{message}</p>}
+      <AnalysisPanel
+        report={report}
+        eventIds={reportEvents(tape, event, preceding)
+          .map((e) => e.id)
+          .filter((id) => report.includes(JSON.stringify(id)))}
+        reviewed={reviewed}
+        onSelect={onSelect}
+        onAccessChange={onAccessChange}
+      />
     </div>
   );
 }

@@ -12,6 +12,8 @@ The live coding agent must genuinely use NVIDIA Nemotron through Nebius. The inf
 
 ## Owner actions and gates
 
+Nemotron evidence analysis is now part of the debugger itself: select a bounded excerpt, review it, send it to Nemotron through Nebius, inspect cited findings, and hand a reviewed repair prompt to the coding agent. This makes runtime inference useful for imported recordings as well as the hosted coding experiment. Do not imply generated analysis is a verified diagnosis. Demonstrate this flow in the video, shortening the introductory and importer segments to stay below three minutes. Genuine coding runs and hosted judge access remain separate release gates.
+
 - [ ] Corey confirms registration and personal eligibility.
 - [ ] By October 5: Nebius access, execution/cancellation/network isolation, image and actual prices verified; fallback decision documented if needed.
 - [ ] Real stale and corrected runs are inspectable; results are not forced to fit the script.

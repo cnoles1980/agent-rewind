@@ -6,9 +6,9 @@ Status: **local implementation verified; live sandbox and hosting blocked on ext
 
 | Check | Evidence |
 |---|---|
-| Python recorder, import, API, isolated runner contracts | 30 pytest tests passing |
+| Python recorder, import, API, isolated runner and analysis contracts | 41 pytest tests passing |
 | Context/time integrity, reuse of deduplicated snapshots, partial clips, redaction, tool alignment | 29 Vitest tests passing |
-| Browser investigation and security flows | 12 Playwright end-to-end tests passing |
+| Browser investigation and security flows | 16 Playwright end-to-end tests passing |
 | 1,000-event scrubbing | Latest measured paint intervals: 31.0, 33.0, 33.5 ms on this Windows development machine; threshold 100 ms |
 | Personal tape privacy | Browser test observed no non-GET requests while importing, searching, selecting and playing a synthetic personal tape |
 | Clip lifecycle | Production bundle: invitation login, reviewed publication, a separate anonymous browser reading the clip, UI revocation, then HTTP 404 |
@@ -60,6 +60,16 @@ The sandbox read-only probe returned HTTP 400 for a missing project header. A Sa
 - Continued operation, backups and budget through December 15.
 
 The checked-in examples are intentionally synthetic. Backend test doubles and locally hosted production-bundle tests do not establish real cloud execution or deployment.
+
+## Nemotron evidence analysis
+
+- Added a separately enabled, invited analysis endpoint and reviewed browser flow. Selected evidence goes to Nebius only after explicit send consent; no automatic repair, tool use, chat posting, or whole-tape upload. Server SQLite stores accounting metadata without evidence/results. Local report export remains offline.
+- API tests cover auth, CSRF, separate enablement, byte/reference limits, pre-inference redaction, output schema and event-reference validation, pooled budgets with the judge reserve, concurrent admission, duplicate requests, cancellation, restart recovery, timeout/provider failures and retained reservations.
+- Production-bundle browser tests use explicit provider-response doubles to verify exact excerpt submission, consent, redaction, inert HTML, citations, reviewed copy/download, no automatic retry, consent clearing after success, discarded responses after edits, and omission of redacted IDs from metadata. They do not claim live model quality.
+- **Real provider verification:** a dedicated Rewind key passed the authenticated model catalog. Two early synthetic attempts failed safely; diagnostic output showed a 3,072-token completion cutoff, including provider reasoning. Increased the bounded allowance to 6,144 and requested schema-constrained JSON. The next real call through the authenticated application route succeeded: 729 prompt + 3,623 completion = **4,352 tokens**. A separate manual browser run on the reviewed illustrative checkout excerpt returned **4,696 total tokens**, cited recorded events, and suggested checking/correcting the shipping threshold. Screenshot: `docs/screenshots/nemotron-analysis.jpg`.
+- All four live analysis attempts reserve 25 cents each from the tester allocation, **$1 reserved**, not $1 claimed actual spend. No personal log was sent; no generated code ran. The judge reserve was not used. Published Lightning token rates were checked against Nebius's model catalog; account billing reconciliation remains a deployment step.
+- Review caught potential leakage of manually redacted event IDs in metadata; the browser now sends only references still visible in the preview. Consent is cleared after each paid call, including success. The dedicated key was absent from scanned source, history, and built assets.
+- **Prototype limitations:** a valid event citation cannot validate a model's conclusion. The real response identified the boundary issue, but also listed some already-captured information as missing and used ambiguous wording about an untested case. Guidance now explicitly distinguishes missing tests from failures and asks the model to inspect before/after fields. Further diagnostic-quality evaluation on real, reviewed failures is needed. Provider latency, account-specific billing, hosted sessions/proxy logging, and judge access still need deployment verification.
 
 ## Deep zoom, comparison visibility, and publishing review
 

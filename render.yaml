@@ -39,5 +39,11 @@ services:
         value: "false"
       - key: REWIND_RUN_RESERVATION_CENTS
         value: "100"
+      - key: REWIND_ANALYSIS_ENABLED
+        value: "false"
+      - key: REWIND_ANALYSIS_PRICES_VERIFIED
+        value: "false"
+      - key: REWIND_ANALYSIS_RESERVATION_CENTS
+        value: "25"
       - key: REWIND_NON_EXECUTION_CENTS
         value: "3000"

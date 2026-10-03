@@ -5,10 +5,12 @@ Agent Rewind has three access paths:
 | Audience | What they can use | Whose inference key pays for new runs? |
 |---|---|---|
 | Public visitors | Recorded examples, their own browser-local imports, notes, comparisons, local reports/exports, and links to published clips | None of these features calls a model |
-| Invited judges/testers on your hosted demo | The same tools, plus allowlisted fresh coding runs and reviewed clip publication | Your dedicated server-side Nebius key, behind invitations and budget admission |
-| People cloning the public GitHub repository | Run the player/API locally; optionally configure their own live runner | Their own Nebius account, key, sandbox project, image and budget |
+| Invited judges/testers on your hosted demo | The same tools, plus reviewed Nemotron analysis, allowlisted fresh coding runs and reviewed clip publication | Your dedicated server-side Nebius key, behind invitations and shared budget admission |
+| People cloning the public GitHub repository | Run the player/API locally; optionally configure analysis or their own live runner | Their own Nebius account/key for analysis; sandbox project/image additionally required for coding runs |
 
 Public source does not mean public access to your paid inference. Forks do not inherit your Render secret settings. Do not provide the judge invitation in the public README, demo video, screenshots, repository issues, or source.
+
+Evidence analysis has its own enable/pricing flags and does not need sandbox provisioning. Follow [analysis setup](analysis.md). Judges can enter their invitation directly in the Debug report analysis panel. Verify anonymous `POST /api/analyses` is denied as well as anonymous execution. All inference shares the project budget.
 
 ## Corey: when ready to publish
 

@@ -45,6 +45,8 @@ Per-block previews are capped at 16,000 characters with an explicit truncation m
 
 The report is assembled locally without another model or API charge. Paste it into the agent's original chat, ask it to inspect the current project and verify the proposed correction, then record a fresh run and compare. Automatic chat posting, execution, and repair remain outside this release.
 
+An additional **Analyze selected evidence** action sends that reviewed excerpt to Nemotron through Nebius, with separate explicit consent and invited access. It returns cited findings and a repair prompt. This optional model call is budgeted and distinct from local report export; see [analysis behavior and setup](analysis.md).
+
 ## Source references (checked October 3, 2026)
 
 - [Claude Code session storage and exports](https://code.claude.com/docs/en/sessions#export-and-locate-session-data) — internal transcript formats can change; structured capture differs from rendered `/export` text.

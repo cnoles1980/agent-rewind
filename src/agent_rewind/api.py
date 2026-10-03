@@ -12,6 +12,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
 
+from .analysis import AnalysisRequest, analyze
 from .config import settings
 from .demo import run_demo
 from .redaction import Redactor
@@ -30,7 +31,7 @@ class BodyLimit:
     async def __call__(self, scope, receive, send):
         if scope["type"] != "http" or scope.get("method") not in ("POST", "PUT", "PATCH", "DELETE"):
             return await self.app(scope, receive, send)
-        limit = 2 * 1024 * 1024 if scope.get("path") == "/api/clips" else 8192
+        limit = {"/api/clips": 2 * 1024 * 1024, "/api/analyses": 320_000}.get(scope.get("path"), 8192)
         chunks, size = [], 0
         while True:
             message = await receive()
@@ -69,7 +70,7 @@ class DemoRequest(BaseModel):
     idempotency_key: str = Field(min_length=8, max_length=100, pattern=r"^[a-zA-Z0-9_-]+$")
 
 
-def create_app(config=None, runner=run_demo):
+def create_app(config=None, runner=run_demo, analyzer=analyze):
     config = config or settings()
     if config.origin.startswith("https://") and not config.secure_cookies:
         raise ValueError("Set REWIND_SECURE_COOKIES=true for an HTTPS deployment")
@@ -100,6 +101,7 @@ def create_app(config=None, runner=run_demo):
     @asynccontextmanager
     async def lifespan(app):
         with store.db() as db:
+            db.execute("UPDATE analyses SET status='interrupted' WHERE status='running'")
             interrupted = [dict(r) for r in db.execute("SELECT * FROM jobs WHERE status='running'")]
         for job in interrupted:
             if job["operation"] and config.api_key and config.project:
@@ -159,6 +161,8 @@ def create_app(config=None, runner=run_demo):
         reserved = sum(store.budget().values()) + config.non_execution_cents
         return {
             "live_available": not config.blockers(),
+            "analysis_available": not config.analysis_blockers(),
+            "analysis_blockers": config.analysis_blockers(),
             "blockers": config.blockers(),
             "authenticated": bool(session),
             "role": session["role"] if session else None,
@@ -200,6 +204,45 @@ def create_app(config=None, runner=run_demo):
             )
         response.delete_cookie("rewind_session", path="/")
         return {"logged_out": True}
+
+    @app.post("/api/analyses")
+    async def analyze_evidence(body: AnalysisRequest, request: Request):
+        session = authenticate(request)
+        if config.analysis_blockers():
+            raise HTTPException(503, "Analysis needs configuration: " + ", ".join(config.analysis_blockers()))
+        if not store.rate_limit("analysis:" + session["id"], 10, 3600):
+            raise HTTPException(429, "Analysis limit reached; try later")
+        try:
+            store.reserve_analysis(session["id"], session["role"], body.idempotency_key, config)
+        except ValueError as exc:
+            raise HTTPException(409, str(exc)) from None
+        outcome, usage = "failed", None
+        try:
+            async with asyncio.timeout(60):
+                result, usage = await analyzer(config, body)
+            outcome = "completed"
+            return {
+                "analysis": result.model_dump(),
+                "model": config.model,
+                "provider": "Nebius Token Factory",
+                "usage": usage,
+            }
+        except asyncio.CancelledError:
+            outcome = "interrupted"
+            raise
+        except TimeoutError:
+            raise HTTPException(
+                504,
+                "Nemotron analysis timed out. No automatic retry was made; the cost reservation is retained.",
+            ) from None
+        except Exception:
+            # Provider errors can contain request data. Do not expose or log their text.
+            raise HTTPException(
+                502,
+                "Nemotron could not return a valid, cited analysis. No automatic retry was made; review the evidence before trying again.",
+            ) from None
+        finally:
+            store.finish_analysis(session["id"], body.idempotency_key, outcome, usage)
 
     @app.post("/api/demo-runs", status_code=202)
     def start(body: DemoRequest, request: Request):

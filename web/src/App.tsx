@@ -632,8 +632,8 @@ export default function App() {
           <ShieldCheck size={24} />
           <b>Your tapes stay yours.</b>
           <p>
-            Imported recordings stay in this browser until you choose to share a
-            clip.
+            Imported recordings stay in this browser. Only reviewed excerpts
+            leave when you request analysis or publish a clip.
           </p>
           <button onClick={() => openFile()}>
             Open a recording <UploadSimple />
@@ -1256,12 +1256,23 @@ export default function App() {
         </Modal>
       )}
       {modal === "report" && tape && event && (
-        <Modal title="Prepare debugging report" onClose={() => setModal(null)}>
+        <Modal
+          title="Debug report & Nemotron analysis"
+          onClose={() => setModal(null)}
+        >
           <DebugReport
             key={tape.run.id + event.id}
             tape={tape}
             event={event}
             preceding={preferences.reportPreceding}
+            onAccessChange={refresh}
+            onSelect={(id) => {
+              const linked = tape.events.find((e) => e.id === id);
+              if (linked) {
+                select(linked);
+                setModal(null);
+              }
+            }}
           />
         </Modal>
       )}

@@ -2,6 +2,8 @@
 
 ## Current external blockers
 
+Evidence analysis can be enabled independently of live coding execution. It needs the dedicated Nebius key, verified inference pricing/reservation, and separate analysis enable flags; no sandbox is required. Follow [analysis configuration](analysis.md). Both kinds of paid calls share the same role budgets and total ceiling.
+
 The implementation is ready for configuration, but hosted/live acceptance is **not verified**. Corey needs to provide a dedicated Nebius key, a Sandbox-enabled project, a verified Python image, confirmed prices, and Render access/billing. Do not paste keys into chat. Put them in local `.env` or the Render secret settings.
 
 The one selected adapter candidate is Nebius Sandboxes. The read-only sandbox check returned **HTTP 400: missing Project header**; it did not establish whether this account has beta access. A synthetic inference request succeeded with Nemotron 3.5 Lightning, tool calling, reasoning fields and usage reporting. No generated code was executed by that probe.

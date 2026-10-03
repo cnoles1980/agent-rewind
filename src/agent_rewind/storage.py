@@ -25,6 +25,10 @@ class Store:
                 operation TEXT, error TEXT, usage TEXT, UNIQUE(owner,idem));
             CREATE TABLE IF NOT EXISTS clips (
                 token TEXT PRIMARY KEY, owner TEXT NOT NULL, manage TEXT NOT NULL, tape TEXT NOT NULL, created REAL NOT NULL);
+            CREATE TABLE IF NOT EXISTS analyses (
+                owner TEXT NOT NULL, idem TEXT NOT NULL, role TEXT NOT NULL,
+                reservation INTEGER NOT NULL, created REAL NOT NULL, status TEXT NOT NULL,
+                usage TEXT, PRIMARY KEY(owner,idem));
             """)
 
     @contextmanager
@@ -84,12 +88,16 @@ class Store:
             used = db.execute(
                 "SELECT COALESCE(SUM(reservation),0) FROM jobs WHERE role=?", (role,)
             ).fetchone()[0]
+            used += db.execute(
+                "SELECT COALESCE(SUM(reservation),0) FROM analyses WHERE role=?", (role,)
+            ).fetchone()[0]
             budget = settings.judge_budget_cents if role == "judge" else settings.test_budget_cents
             if used + settings.reserve_cents > budget:
                 raise ValueError(
                     "Execution budget reserved. Contact the project owner; recordings remain available."
                 )
             total = db.execute("SELECT COALESCE(SUM(reservation),0) FROM jobs").fetchone()[0]
+            total += db.execute("SELECT COALESCE(SUM(reservation),0) FROM analyses").fetchone()[0]
             if total + settings.non_execution_cents + settings.reserve_cents > 10000:
                 raise ValueError("Total $100 project budget reserved")
             if (
@@ -125,8 +133,42 @@ class Store:
 
     def budget(self):
         with self.db() as db:
-            rows = db.execute("SELECT role,SUM(reservation) AS total FROM jobs GROUP BY role").fetchall()
+            rows = db.execute(
+                "SELECT role,SUM(reservation) AS total FROM (SELECT role,reservation FROM jobs UNION ALL SELECT role,reservation FROM analyses) GROUP BY role"
+            ).fetchall()
             return {r["role"]: r["total"] for r in rows}
+
+    def reserve_analysis(self, owner, role, idem, settings):
+        # Keep only admission/accounting metadata. Never persist personal evidence or results.
+        with self.db() as db:
+            db.execute("BEGIN IMMEDIATE")
+            if db.execute("SELECT 1 FROM analyses WHERE owner=? AND idem=?", (owner, idem)).fetchone():
+                raise ValueError(
+                    "This analysis request was already submitted; it will not be charged again. Review before starting a new request."
+                )
+            if db.execute("SELECT 1 FROM analyses WHERE status='running'").fetchone():
+                raise ValueError("Another analysis is running. Try again shortly.")
+            rows = db.execute(
+                "SELECT role,SUM(reservation) AS total FROM (SELECT role,reservation FROM jobs UNION ALL SELECT role,reservation FROM analyses) GROUP BY role"
+            ).fetchall()
+            budgets = {r["role"]: r["total"] for r in rows}
+            limit = settings.judge_budget_cents if role == "judge" else settings.test_budget_cents
+            reserve = settings.analysis_reserve_cents
+            if reserve < 1 or budgets.get(role, 0) + reserve > limit:
+                raise ValueError("Analysis budget reserved. Contact the project owner.")
+            if sum(budgets.values()) + settings.non_execution_cents + reserve > 10000:
+                raise ValueError("Total $100 project budget reserved")
+            db.execute(
+                "INSERT INTO analyses VALUES(?,?,?,?,?,'running',NULL)",
+                (owner, idem, role, reserve, time.time()),
+            )
+
+    def finish_analysis(self, owner, idem, status, usage=None):
+        with self.db() as db:
+            db.execute(
+                "UPDATE analyses SET status=?,usage=? WHERE owner=? AND idem=?",
+                (status, json.dumps(usage) if usage else None, owner, idem),
+            )
 
     def put_clip(self, owner, tape):
         token, manage = secrets.token_urlsafe(24), secrets.token_urlsafe(32)
