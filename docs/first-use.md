@@ -2,6 +2,8 @@
 
 Allow about five minutes. Start with the examples; no invitation, API key, or personal log is needed. Open the app and choose **Start tutorial**. You can reopen the six-step guide under **Settings & sources → First-use tutorial**.
 
+![First tutorial step in the app](screenshots/first-use-tutorial.png)
+
 ## 1. Find the bad policy
 
 In **Recent runs**, choose **checkout-flow — Example · stale**. Select **read_policy()** in the Tools lane. The right inspector shows the returned archived rule: free shipping strictly above $50.

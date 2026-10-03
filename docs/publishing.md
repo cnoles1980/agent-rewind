@@ -35,6 +35,6 @@ Revoke/rotate it first. Deleting the file or adding `.gitignore` does not remove
 - `NEBIUS_API_KEY` is read in Python configuration. API status uses an explicit safe field list and does not serialize configuration or credentials.
 - Fresh runs and clip publication authenticate the invitation session on the server; UI hiding alone is not the protection.
 - A synthetic-key regression test verifies public status, invitation login responses, and unauthorized launch responses do not expose the configured credential.
-- Hosting, real judge execution, and public publication still need their separate acceptance checks. These instructions do not claim deployment is complete.
+- Public source is published at [cnoles1980/agent-rewind](https://github.com/cnoles1980/agent-rewind). Hosting and real judge execution still need their separate acceptance checks. These instructions do not claim deployment is complete.
 
 References: [Render environment variables and secret placeholders](https://render.com/docs/configure-environment-variables), [Vite client environment-variable exposure](https://vite.dev/guide/env-and-mode), [GitHub guidance after secret exposure](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository).

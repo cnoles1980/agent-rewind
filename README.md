@@ -12,7 +12,14 @@ This is a controlled-use hackathon prototype. The offline examples are **illustr
 
 Requires Python 3.12, [uv](https://docs.astral.sh/uv/getting-started/installation/), and Node.js 24 LTS. The source is a separate project and has no dependency on Agent Bridge.
 
-From the repository root:
+Get the public source first (requires Git):
+
+```text
+git clone https://github.com/cnoles1980/agent-rewind.git
+cd agent-rewind
+```
+
+Then, from the repository root:
 
 ```powershell
 uv sync --frozen
