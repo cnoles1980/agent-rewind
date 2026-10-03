@@ -29,6 +29,15 @@ powershell -File scripts/start.ps1
 
 Open **http://127.0.0.1:5173**. You should see the stale-policy example, its timeline, and the policy evidence in the inspector. The app runs locally even without an inference key. Process IDs and logs are under `.local`; stop only those listed processes when finished.
 
+To stop the current preview immediately after your session:
+
+```powershell
+$rewindProcesses = Get-Content .local/processes.json | ConvertFrom-Json
+Stop-Process -Id $rewindProcesses.api, $rewindProcesses.web
+```
+
+Do not reuse old process IDs after a reboot; Windows may assign them to a different application.
+
 Alternatively, run these in two terminals (Windows, macOS, or Linux):
 
 ```text
