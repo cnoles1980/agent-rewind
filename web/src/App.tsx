@@ -38,7 +38,8 @@ import EventLog from "./EventLog";
 import Comparison from "./Comparison";
 import Settings, { readPreferences, type Preferences } from "./Settings";
 import DebugReport from "./DebugReport";
-import { importRecording, type ImportSource } from "./imports";
+import type { ImportSource } from "./imports";
+import { importLocalFile, type ImportProgress } from "./importFile";
 import {
   atTime,
   clipTape,
@@ -98,7 +99,10 @@ function Modal({
   return (
     <dialog
       ref={ref}
-      onCancel={onClose}
+      onCancel={(e) => {
+        e.preventDefault();
+        onClose();
+      }}
       onClick={(e) => {
         if (e.target === ref.current) onClose();
       }}
@@ -120,6 +124,13 @@ function Modal({
 export default function App() {
   const [preferences, setPreferences] = useState(readPreferences);
   const importSource = useRef<ImportSource>("auto");
+  const importAbort = useRef<AbortController | null>(null);
+  const importSaving = useRef(false);
+  const [importProgress, setImportProgress] = useState<ImportProgress | null>(
+    null,
+  );
+  const [importSize, setImportSize] = useState(0);
+  useEffect(() => () => importAbort.current?.abort(), []);
   const [tapes, setTapes] = useState<Tape[]>([]),
     [current, setCurrent] = useState("example-stale"),
     [selected, setSelected] = useState(""),
@@ -140,6 +151,7 @@ export default function App() {
       | "shares"
       | "settings"
       | "report"
+      | "import"
       | null
     >(null),
     [notice, setNotice] = useState(""),
@@ -405,15 +417,53 @@ export default function App() {
     }
   };
   const importFile = async (file: File) => {
-    if (file.size > 20 * 1024 * 1024) throw new Error("Tape exceeds 20 MB.");
-    const t = importRecording(await file.text(), importSource.current);
-    await saveTape(t);
-    setTapes((old) => [t, ...old.filter((x) => x.run.id !== t.run.id)]);
-    choose(t.run.id);
-    setModal(null);
-    setNotice(
-      `Opened ${t.events.length} events privately. Nothing was uploaded. ${t.run.warnings.join(" ")}`,
-    );
+    if (importAbort.current) return;
+    const controller = new AbortController();
+    importAbort.current = controller;
+    setPlaying(false);
+    setError("");
+    setImportSize(file.size);
+    setImportProgress({ phase: "Preparing local import…", percent: null });
+    setModal("import");
+    try {
+      const t = await importLocalFile(
+        file,
+        importSource.current,
+        controller.signal,
+        setImportProgress,
+      );
+      if (controller.signal.aborted)
+        throw new DOMException("Import cancelled", "AbortError");
+      importSaving.current = true;
+      setImportProgress({ phase: "Saving in this browser…", percent: null });
+      try {
+        await saveTape(t);
+      } catch {
+        throw new Error(
+          "The recording was read, but this browser could not save it. Export and remove unused recordings in Settings → Manage local recordings, then retry. Browser storage may be full or unavailable.",
+        );
+      }
+      setTapes((old) => [t, ...old.filter((x) => x.run.id !== t.run.id)]);
+      choose(t.run.id);
+      setModal(null);
+      setNotice(
+        `Opened ${t.events.length} events privately. Nothing was uploaded. ${t.run.warnings.join(" ")}`,
+      );
+    } catch (e) {
+      if (e instanceof DOMException && e.name === "AbortError") {
+        setModal(null);
+        setNotice("Import cancelled. No recording was saved.");
+      } else setError((e as Error).message);
+    } finally {
+      importAbort.current = null;
+      importSaving.current = false;
+      setImportProgress(null);
+    }
+  };
+  const cancelImport = () => {
+    if (importSaving.current) return;
+    if (importAbort.current) importAbort.current.abort();
+    else setModal(null);
   };
   const openFile = (source: ImportSource = "auto") => {
     importSource.current = source;
@@ -502,7 +552,7 @@ export default function App() {
         hidden
         onChange={(e) => {
           const file = e.target.files?.[0];
-          if (file) safe(() => importFile(file));
+          if (file) void importFile(file);
           e.target.value = "";
         }}
       />
@@ -1129,6 +1179,57 @@ export default function App() {
           </>
         )}
       </main>
+      {modal === "import" && (
+        <Modal
+          title={
+            error ? "Could not open recording" : "Opening recording locally"
+          }
+          onClose={cancelImport}
+        >
+          <p>
+            {(importSize / 1024 / 1024).toFixed(1)} MB · No upload · 100 MB
+            local limit
+          </p>
+          {error ? (
+            <>
+              <p role="alert">{error}</p>
+              <button
+                onClick={() => {
+                  setError("");
+                  setModal("settings");
+                }}
+              >
+                Back to Settings & sources
+              </button>
+            </>
+          ) : (
+            <>
+              <p role="status">
+                {importProgress?.phase ?? "Preparing…"}
+                {importProgress?.percent !== null &&
+                importProgress?.percent !== undefined
+                  ? ` ${importProgress.percent}%`
+                  : ""}
+              </p>
+              <progress
+                aria-label="Local import progress"
+                max={100}
+                value={importProgress?.percent ?? undefined}
+              />
+              <p className="muted">
+                Parsing and redaction run in the background. Your original file
+                is unchanged.
+              </p>
+              <button
+                disabled={importProgress?.phase === "Saving in this browser…"}
+                onClick={cancelImport}
+              >
+                Cancel import
+              </button>
+            </>
+          )}
+        </Modal>
+      )}
       {modal === "settings" && (
         <Modal title="Settings & sources" onClose={() => setModal(null)}>
           {error && (

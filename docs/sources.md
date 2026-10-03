@@ -1,6 +1,12 @@
 # Recording sources and debugging handoff
 
-All imports below read **one file selected by the user**, with a 20 MB / 10,000-event ceiling. They run in the browser, sanitize before IndexedDB persistence, and never upload the recording. They never scan a directory, resume a chat, or execute the original tools. This is a prototype import surface, not a live account connector. Browser adapters are versioned `browser-importer/0.2.0`; the original Python Codex CLI adapter remains `0.1.0`.
+All imports below read **one file selected by the user**, with a 100 MB / 10,000-event ceiling. They run in the browser, sanitize before IndexedDB persistence, and never upload the recording. They never scan a directory, resume a chat, or execute the original tools. This is a prototype import surface, not a live account connector. Browser adapters are versioned `browser-importer/0.2.0`; the original Python Codex CLI adapter remains `0.1.0`.
+
+## Larger local recordings
+
+Local files up to 100 MB are supported; the original 20 MB ceiling was too restrictive for a 22.4 MB user log. File reading, parsing, conversion, validation, and redaction now run in a dedicated worker. The UI shows read progress, conversion and save phases. Cancel terminates the worker before persistence; the brief IndexedDB save phase cannot be cancelled. Oversized files are rejected before reading, with their size and the current limit in the error. No content is silently truncated to fit.
+
+A worker keeps conversion off the UI thread; this is not unlimited or constant-memory streaming. JSON parsing still materializes the file in worker memory, and transferring/saving a large tape has a cost. The 100 MB file and 10,000-event limits remain protective bounds. The synthetic 24 MB retained-output case is verified; the 100 MB ceiling is not a performance guarantee on every device. Storage quota failures give recovery instructions. Public clip publication remains capped at 2 MB.
 
 ## Supported files
 

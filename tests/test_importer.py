@@ -3,6 +3,23 @@ import pytest
 from pathlib import Path
 
 from agent_rewind.importer import import_codex
+from agent_rewind.tapes import read, write
+
+
+def test_large_local_import_and_portable_roundtrip(tmp_path):
+    """A real retained output above the former 20 MB limit survives conversion."""
+    output = "x" * (23 * 1024 * 1024)
+    session = tmp_path / "large.jsonl"
+    session.write_text(json.dumps({
+        "type": "response_item", "payload": {
+            "type": "function_call_output", "call_id": "large-call", "output": output,
+        },
+    }), encoding="utf-8")
+    tape = import_codex(session)
+    assert tape.events[0].data["output"] == output
+    portable = tmp_path / "portable.jsonl"
+    write(portable, tape)
+    assert read(portable).events[0].data["output"] == output
 
 
 def test_codex_calls_duplicates_missing_context_and_private_metadata(tmp_path):

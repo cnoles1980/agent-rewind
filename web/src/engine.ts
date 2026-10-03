@@ -14,7 +14,7 @@ export type Tape = Omit<GeneratedTape, "run" | "events" | "notes"> & {
   events: Event[];
   notes: Note[];
 };
-export const MAX_BYTES = 20 * 1024 * 1024;
+export const MAX_BYTES = 100 * 1024 * 1024;
 export function validateTape(value: unknown): Tape {
   if (!validator(value))
     throw new Error("Invalid tape: " + validator.errors?.[0]?.message);
@@ -78,7 +78,9 @@ export function redact(value: unknown, phrases: string[] = [], depth = 0): any {
 }
 export function parseTape(text: string): Tape {
   if (new TextEncoder().encode(text).length > MAX_BYTES)
-    throw new Error("Tape exceeds 20 MB.");
+    throw new Error(
+      "Local tape exceeds 100 MB. Export a smaller session or a reviewed clip.",
+    );
   try {
     const json = JSON.parse(text);
     if (json.run) return validateTape(redact(json));

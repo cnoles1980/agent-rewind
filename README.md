@@ -93,6 +93,8 @@ Never pass authorization headers or environment dumps as application state. Pass
 
 ## Import one Codex recording
 
+Local imports support **100 MB / 10,000 events**. Conversion runs in a background worker with progress and cancellation; reviewed hosted clips retain their separate 2 MB limit.
+
 The easiest route is now **Settings & sources → Codex → Open Codex log**. Select the original session JSONL; the browser converts it locally without uploading it. Settings includes default file locations, import limits, capture limitations, playback preferences, and hosted-demo configuration status. **Open tape** also recognizes Codex, Claude Code, n8n execution JSON, and Rewind v1 files automatically. Factory result JSON requires explicit source selection because its shape is shared by other vendors.
 
 See [recording source instructions and limitations](docs/sources.md) for Claude Code, n8n, Factory, and custom adapters. These are selected-file imports, not live account connections. The original CLI remains available:

@@ -537,7 +537,9 @@ export function importRecording(
   requested: ImportSource = "auto",
 ): Tape {
   if (new TextEncoder().encode(text).length > MAX_BYTES)
-    throw new Error("Recording exceeds 20 MB.");
+    throw new Error(
+      "Local recording exceeds 100 MB. Export a smaller session or a reviewed clip.",
+    );
   const { rows, partial } = records(text);
   if (rows[0]?.record === "run" || rows[0]?.run)
     return parseTape(text.replace(/^\uFEFF/, ""));

@@ -234,9 +234,9 @@ export default function Settings({
       <section className="settings-section">
         <h3>Privacy & storage</h3>
         <p>
-          20 MB / 10,000 events per import. Export important tapes before
-          clearing browser data. Redaction reduces risk but cannot identify
-          every private detail.
+          100 MB / 10,000 events per local import. Shared clips are limited to 2
+          MB. Export important tapes before clearing browser data. Redaction
+          reduces risk but cannot identify every private detail.
         </p>
         <button onClick={onLibrary}>Manage local recordings</button>
       </section>

@@ -3,12 +3,12 @@ from pathlib import Path
 
 from .schema import Event, Note, Run, Tape
 
-MAX_BYTES = 20 * 1024 * 1024
+MAX_BYTES = 100 * 1024 * 1024
 
 
 def loads(text: str) -> Tape:
     if len(text.encode("utf-8")) > MAX_BYTES:
-        raise ValueError("Tape exceeds 20 MB")
+        raise ValueError("Local tape exceeds 100 MB; select a smaller session")
     try:
         document = json.loads(text)
     except ValueError:
@@ -53,7 +53,7 @@ def loads(text: str) -> Tape:
 
 def read(path: Path) -> Tape:
     if path.stat().st_size > MAX_BYTES:
-        raise ValueError("Tape exceeds 20 MB")
+        raise ValueError("Local tape exceeds 100 MB; select a smaller session")
     tape = loads(path.read_text(encoding="utf-8"))
     sidecar = path.with_suffix(".notes.json")
     if sidecar.exists():

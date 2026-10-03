@@ -19,7 +19,7 @@ def millis(value):
 
 def import_codex(path: Path) -> Tape:
     if path.stat().st_size > MAX_BYTES:
-        raise ValueError("Codex session exceeds 20 MB; select a smaller session")
+        raise ValueError("Codex session exceeds 100 MB; select a smaller session")
     lines = path.read_text(encoding="utf-8-sig").splitlines()
     raw, truncated = [], False
     for index, line in enumerate(lines):

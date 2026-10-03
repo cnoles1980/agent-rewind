@@ -6,9 +6,9 @@ Status: **local implementation verified; live sandbox and hosting blocked on ext
 
 | Check | Evidence |
 |---|---|
-| Python recorder, import, API, isolated runner contracts | 28 pytest tests passing |
-| Context/time integrity, reuse of deduplicated snapshots, partial clips, redaction, tool alignment | 27 Vitest tests passing |
-| Browser investigation and security flows | 8 Playwright end-to-end tests passing |
+| Python recorder, import, API, isolated runner contracts | 29 pytest tests passing |
+| Context/time integrity, reuse of deduplicated snapshots, partial clips, redaction, tool alignment | 29 Vitest tests passing |
+| Browser investigation and security flows | 10 Playwright end-to-end tests passing |
 | 1,000-event scrubbing | Latest measured paint intervals: 29.7, 33.1, 32.9 ms on this Windows development machine; threshold 100 ms |
 | Personal tape privacy | Browser test observed no non-GET requests while importing, searching, selecting and playing a synthetic personal tape |
 | Clip lifecycle | Production bundle: invitation login, reviewed publication, a separate anonymous browser reading the clip, UI revocation, then HTTP 404 |
@@ -33,6 +33,15 @@ Pytest reports one upstream Starlette deprecation warning about its httpx-backed
 - An API-restart check exposed an existing startup bug: failed example loading also hid IndexedDB tapes. Startup now handles local storage and example retrieval independently; a regression test blocks the examples endpoint and still opens the saved local recording.
 - Manual browser inspection confirmed discoverable Settings actions and readable Codex instructions/report preview. Screenshot: `docs/screenshots/settings-sources.jpg`.
 - Security review found no unresolved material issue in this change. Files remain local; no provider keys, live chat connections, automatic posting, or repair execution were introduced. Reports explicitly distinguish evidence from diagnosis and require review. Prototype-grade: provider format drift and unrecognized private data remain risks.
+
+## Large-file import follow-up
+
+A reported 22.4 MB log exceeded the original arbitrary 20 MB ceiling. Local browser and Python limits are now 100 MB; hosted clips stay 2 MB. The browser imports in a worker with progress, termination-based cancellation, explicit errors, and no silent truncation.
+
+- Production CSP browser test imports a synthetic 24 MB Codex JSONL file, retains all 128 large tool outputs (257 events), verifies IndexedDB persistence, observes no non-GET requests, and checks for browser errors. Entire test completed in approximately three seconds on the development machine.
+- A held worker startup test cancels the import, reloads, and confirms no tape was saved. Unit tests reject files above 100 MB before reading or starting a worker.
+- Python regression test imports a retained 23 MB output and validates its portable export round-trip.
+- Actual user log contents were not inspected or uploaded. Format compatibility and the remaining 10,000-event limit may still affect that specific file. The worker bounds memory with a file limit but still materializes JSON; it does not establish unlimited-scale performance.
 
 ## Real provider evidence
 

@@ -139,7 +139,12 @@ test("new source imports remain browser-local and display explicit capture gaps"
     page.getByRole("heading", { name: "read_policy()", exact: true }),
   ).toBeVisible();
   const requests: string[] = [];
-  page.on("request", (r) => requests.push(r.url()));
+  // Loading the local worker's script/modules is allowed; recording data must
+  // never cause an API request or a write to any endpoint.
+  page.on("request", (r) => {
+    if (r.method() !== "GET" || new URL(r.url()).pathname.startsWith("/api/"))
+      requests.push(r.url());
+  });
   const cases = [
     {
       name: "claude.jsonl",
