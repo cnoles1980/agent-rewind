@@ -35,3 +35,8 @@ P3 follow-up: tune small-label contrast and exact font weight with Corey during 
 ## Settings and source imports follow-up
 
 Added Settings in both the sidebar and mobile-visible top bar. Source cards show support level, local file instructions, and an opening action above the longer guide. Factory is explicitly summary-only. Reports have an exact text preview, optional linked context, redaction, and a review-gated copy/download action. Checked the live browser at its normal viewport; mobile 390px automated checks pass with no horizontal overflow. Saved `docs/screenshots/settings-sources.jpg`. No changes to the logo or mockup-derived visual direction.
+
+
+## Zoom and comparison follow-up
+
+Observed Differences is now a visible blue summary panel above the timeline; paired evidence expands there on selection. Added 400–6,400% zoom levels, automatic playhead visibility, additional ruler ticks, responsive Fit, and fixed lane labels. Verified 800% visually using only the illustrative checkout example and 6,400% through browser tests. Screenshot: `docs/screenshots/zoom-differences.jpg`.

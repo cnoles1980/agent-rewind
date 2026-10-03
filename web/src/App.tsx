@@ -757,6 +757,27 @@ export default function App() {
                 </button>
               </div>
             )}
+            {comparing && (
+              <Comparison
+                key={current + other}
+                a={tape}
+                b={otherTape}
+                tapes={tapes}
+                time={time}
+                timeB={
+                  matched ?? Math.min(time, otherTape ? duration(otherTape) : 0)
+                }
+                differences={differences}
+                error={comparison.error}
+                onChoose={(id) => {
+                  setOther(id);
+                  setMatched(null);
+                }}
+                onSeek={seek}
+                onSeekB={setMatched}
+                onJump={jump}
+              />
+            )}
             <div className="studio">
               <div className="player">
                 <div className="transport">
@@ -812,6 +833,11 @@ export default function App() {
                     <option value={1}>Fit</option>
                     <option value={1.5}>150%</option>
                     <option value={2}>200%</option>
+                    {[4, 8, 16, 32, 64].map((level) => (
+                      <option key={level} value={level}>
+                        {level * 100}%
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div className="seek">
@@ -1145,27 +1171,6 @@ export default function App() {
                 )}
               </aside>
             </div>
-            {comparing && (
-              <Comparison
-                key={current + other}
-                a={tape}
-                b={otherTape}
-                tapes={tapes}
-                time={time}
-                timeB={
-                  matched ?? Math.min(time, otherTape ? duration(otherTape) : 0)
-                }
-                differences={differences}
-                error={comparison.error}
-                onChoose={(id) => {
-                  setOther(id);
-                  setMatched(null);
-                }}
-                onSeek={seek}
-                onSeekB={setMatched}
-                onJump={jump}
-              />
-            )}
             <footer className="workspace-footer">
               <span>
                 <Rewind weight="fill" />

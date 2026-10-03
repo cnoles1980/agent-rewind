@@ -22,6 +22,29 @@ def login(client, code=CODE):
     return client.post("/api/session", json={"code": code}, headers={"origin": ORIGIN})
 
 
+def test_server_key_never_reaches_public_or_invited_status(tmp_path):
+    key = "synthetic-nebius-credential-never-send-to-browser"
+    cfg = Settings(data_dir=tmp_path, origin=ORIGIN, api_key=key, judge_hash=digest(CODE))
+    with TestClient(create_app(cfg)) as client:
+        public_status = client.get("/api/status")
+        assert public_status.status_code == 200
+        assert key not in public_status.text
+        denied = client.post(
+            "/api/demo-runs",
+            json={"variant": "stale", "idempotency_key": "public-denied-123"},
+            headers={"origin": ORIGIN},
+        )
+        assert denied.status_code == 401
+        assert key not in denied.text
+        result = login(client)
+        assert result.status_code == 200
+        assert key not in result.text
+        invited_status = client.get("/api/status")
+        assert invited_status.json()["authenticated"] is True
+        assert key not in invited_status.text
+        assert "api_key" not in invited_status.json()
+
+
 def test_session_csrf_and_cookie(app):
     with TestClient(app) as client:
         assert client.post("/api/session", json={"code": CODE}).status_code == 403

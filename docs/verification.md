@@ -6,10 +6,10 @@ Status: **local implementation verified; live sandbox and hosting blocked on ext
 
 | Check | Evidence |
 |---|---|
-| Python recorder, import, API, isolated runner contracts | 29 pytest tests passing |
+| Python recorder, import, API, isolated runner contracts | 30 pytest tests passing |
 | Context/time integrity, reuse of deduplicated snapshots, partial clips, redaction, tool alignment | 29 Vitest tests passing |
-| Browser investigation and security flows | 10 Playwright end-to-end tests passing |
-| 1,000-event scrubbing | Latest measured paint intervals: 29.7, 33.1, 32.9 ms on this Windows development machine; threshold 100 ms |
+| Browser investigation and security flows | 12 Playwright end-to-end tests passing |
+| 1,000-event scrubbing | Latest measured paint intervals: 31.0, 33.0, 33.5 ms on this Windows development machine; threshold 100 ms |
 | Personal tape privacy | Browser test observed no non-GET requests while importing, searching, selecting and playing a synthetic personal tape |
 | Clip lifecycle | Production bundle: invitation login, reviewed publication, a separate anonymous browser reading the clip, UI revocation, then HTTP 404 |
 | Production CSP | Full app and clip flow work without `unsafe-eval`; schema validator compiled ahead of time |
@@ -60,3 +60,12 @@ The sandbox read-only probe returned HTTP 400 for a missing project header. A Sa
 - Continued operation, backups and budget through December 15.
 
 The checked-in examples are intentionally synthetic. Backend test doubles and locally hosted production-bundle tests do not establish real cloud execution or deployment.
+
+## Deep zoom, comparison visibility, and publishing review
+
+- Zoom now reaches 6,400%, keeps the current playhead in view, adds ruler detail, and pins readable lane labels. Fit follows the available panel width. Browser checks verify deep zoom, event navigation, constant lane height, return to Fit, and no page overflow.
+- Observed Differences appears above the player. Its first-difference actions expand paired evidence; A/B playback and run selection are available on demand. Browser checks verify order and the expand/collapse path.
+- Added `docs/publishing.md` with explicit public, judge, and self-hosted access paths. No repository was pushed and no hosted service was deployed in this change.
+- Checked 88 workspace files, 110 historical Git blobs, and 16 built assets for common credential patterns and available known local secret values: no candidate matches. No private env files or runtime recording directories were tracked. This is a heuristic check, not a guarantee against every kind of confidential content; repeat before publication after configuring the real dedicated key.
+- A synthetic configured key stays absent from public/invited status and login responses. An unauthenticated live launch returns 401. Live judge execution still requires the provider/hosting gates above.
+- Prototype review: no unresolved material issue found in this change. Preserve invitation controls and budget admission when deploying public source.

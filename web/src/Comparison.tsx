@@ -77,10 +77,12 @@ export default function Comparison({
   onJump: (d: Difference) => void;
 }) {
   const [index, setIndex] = useState<number | null>(null);
+  const [expanded, setExpanded] = useState(false);
   const selected = index === null ? undefined : differences[index];
   const jump = (d: Difference | undefined) => {
     if (d) {
       setIndex(differences.indexOf(d));
+      setExpanded(true);
       onJump(d);
     }
   };
@@ -98,66 +100,68 @@ export default function Comparison({
         }
       : { capture: "No paired event" };
   return (
-    <section className="comparison">
-      <div className="comparison-main">
-        <div className="section-bar">
-          <div>
-            <h2>A / B sync playback</h2>
-            <p>
-              Shared elapsed time. Paired jumps show each event’s actual time.
-            </p>
+    <section className="comparison" aria-label="Observed differences">
+      {expanded && (
+        <div className="comparison-main" id="comparison-evidence">
+          <div className="section-bar">
+            <div>
+              <h2>A / B sync playback</h2>
+              <p>
+                Shared elapsed time. Paired jumps show each event’s actual time.
+              </p>
+            </div>
+            <select
+              aria-label="Compare with run"
+              value={b?.run.id ?? ""}
+              onChange={(e) => onChoose(e.target.value)}
+            >
+              {tapes
+                .filter((t) => t.run.id !== a.run.id)
+                .map((t) => (
+                  <option key={t.run.id} value={t.run.id}>
+                    {t.run.name} ·{" "}
+                    {String(t.run.configuration.variant ?? t.run.source)}
+                  </option>
+                ))}
+            </select>
           </div>
-          <select
-            aria-label="Compare with run"
-            value={b?.run.id ?? ""}
-            onChange={(e) => onChoose(e.target.value)}
-          >
-            {tapes
-              .filter((t) => t.run.id !== a.run.id)
-              .map((t) => (
-                <option key={t.run.id} value={t.run.id}>
-                  {t.run.name} ·{" "}
-                  {String(t.run.configuration.variant ?? t.run.source)}
-                </option>
-              ))}
-          </select>
-        </div>
-        <div className="comparison-row">
-          <b>
-            Run A<small>{a.run.status}</small>
-          </b>
-          <Track tape={a} time={time} onSeek={onSeek} />
-          <span>{clock(time, true)}</span>
-        </div>
-        {b && (
           <div className="comparison-row">
             <b>
-              Run B<small>{b.run.status}</small>
+              Run A<small>{a.run.status}</small>
             </b>
-            <Track tape={b} time={timeB} onSeek={onSeekB} />
-            <span>{clock(timeB, true)}</span>
+            <Track tape={a} time={time} onSeek={onSeek} />
+            <span>{clock(time, true)}</span>
           </div>
-        )}
-        {selected && b && (
-          <div className="paired-evidence">
-            <h3>{selected.message}</h3>
-            <div>
-              {[detail(a, selected.a), detail(b, selected.b)].map(
-                (value, i) => (
-                  <section key={i}>
-                    <b>Run {i ? "B" : "A"}</b>
-                    <pre>{JSON.stringify(value, null, 2)}</pre>
-                  </section>
-                ),
-              )}
+          {b && (
+            <div className="comparison-row">
+              <b>
+                Run B<small>{b.run.status}</small>
+              </b>
+              <Track tape={b} time={timeB} onSeek={onSeekB} />
+              <span>{clock(timeB, true)}</span>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+          {selected && b && (
+            <div className="paired-evidence">
+              <h3>{selected.message}</h3>
+              <div>
+                {[detail(a, selected.a), detail(b, selected.b)].map(
+                  (value, i) => (
+                    <section key={i}>
+                      <b>Run {i ? "B" : "A"}</b>
+                      <pre>{JSON.stringify(value, null, 2)}</pre>
+                    </section>
+                  ),
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
       <div className="divergence">
         <div className="eyebrow">
           <GitBranch />
-          OBSERVED DIFFERENCES
+          <h2>Observed Differences</h2>
         </div>
         {error ? (
           <p role="alert">{error}</p>
@@ -168,7 +172,15 @@ export default function Comparison({
                 ? `${differences.length} evidence differences`
                 : "No observed differences"}
             </h3>
-            <p>Observed differences do not establish a root cause.</p>
+            <p>
+              Compared with{" "}
+              <b>
+                {b
+                  ? `${b.run.name} · ${String(b.run.configuration.variant ?? b.run.source)}`
+                  : "no second run selected"}
+              </b>
+              . Observed differences do not establish a root cause.
+            </p>
             <button
               onClick={() =>
                 jump(differences.find((d) => d.type === "behavior"))
@@ -200,6 +212,14 @@ export default function Comparison({
             </select>
           </>
         )}
+        <button
+          className="comparison-toggle"
+          aria-expanded={expanded}
+          aria-controls="comparison-evidence"
+          onClick={() => setExpanded(!expanded)}
+        >
+          {expanded ? "Hide A/B evidence" : "Show A/B evidence & choose run"}
+        </button>
       </div>
     </section>
   );
