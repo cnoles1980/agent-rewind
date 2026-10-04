@@ -2,6 +2,7 @@
 NEBIUS_API_KEY=
 TESTER_CODE_HASH=
 JUDGE_CODE_HASH=
+OWNER_CODE_HASH=
 # Seed once from previous development spending (cents, conservatively reserved).
 INITIAL_TESTER_CENTS=0
 INITIAL_JUDGE_CENTS=0

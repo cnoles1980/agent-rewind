@@ -1,14 +1,15 @@
 import { DurableObject } from "cloudflare:workers";
-import { equalHash, type Role } from "./common";
+import { equalHash, type Role, type AccessRole } from "./common";
 
-type Session = { role: Role; expires: number };
+type Session = { role: AccessRole; expires: number; invitation?: string };
 
 // One object per session or hashed login IP. Public page traffic never touches this state.
 export class AccessState extends DurableObject<Env> {
-  async create(role: Role) {
+  async create(role: AccessRole, invitation?: string) {
     await this.ctx.storage.put("session", {
       role,
       expires: Date.now() + 7 * 86400_000,
+      ...(invitation ? { invitation } : {}),
     });
     await this.ctx.storage.setAlarm(Date.now() + 7 * 86400_000);
   }
@@ -37,7 +38,7 @@ export class AccessState extends DurableObject<Env> {
 }
 
 // Only the shared cash budget and clip quotas require project-wide serialization.
-// No evidence, analysis output, session secrets, or clip content enters this object.
+// Feedback is explicitly submitted text; no tapes, analysis output or credentials are stored.
 export class BudgetLedger extends DurableObject<Env> {
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
@@ -46,6 +47,9 @@ export class BudgetLedger extends DurableObject<Env> {
       CREATE TABLE IF NOT EXISTS analyses(owner TEXT, idem TEXT, role TEXT, status TEXT, created INTEGER, usage TEXT, PRIMARY KEY(owner,idem));
       CREATE TABLE IF NOT EXISTS clips(token TEXT PRIMARY KEY, owner TEXT, size INTEGER);
       CREATE INDEX IF NOT EXISTS clips_owner ON clips(owner);
+      CREATE TABLE IF NOT EXISTS study_invites(id TEXT PRIMARY KEY, hash TEXT UNIQUE NOT NULL, label TEXT NOT NULL, revoked INTEGER NOT NULL DEFAULT 0);
+      CREATE TABLE IF NOT EXISTS study_admissions(owner TEXT, idem TEXT, invitation TEXT NOT NULL, PRIMARY KEY(owner,idem));
+      CREATE TABLE IF NOT EXISTS study_feedback(id TEXT PRIMARY KEY, invitation TEXT NOT NULL, created INTEGER NOT NULL, rating INTEGER NOT NULL, message TEXT NOT NULL, deleted INTEGER NOT NULL DEFAULT 0);
     `);
     // A missing or malformed migration baseline fails closed, avoiding a budget reset.
     const tester = Number(env.INITIAL_TESTER_CENTS),
@@ -70,7 +74,7 @@ export class BudgetLedger extends DurableObject<Env> {
       result[row.role] += row.cents;
     return result;
   }
-  reserve(owner: string, role: Role, idem: string) {
+  reserve(owner: string, role: Role, idem: string, invitation?: string) {
     return this.ctx.storage.transactionSync(() => {
       const sql = this.ctx.storage.sql;
       sql.exec(
@@ -90,6 +94,12 @@ export class BudgetLedger extends DurableObject<Env> {
       )
         return "Another analysis is running. Try again shortly.";
       const budget = this.budget();
+      if (invitation) {
+        if (role !== "tester" || !this.studyInvitation(invitation))
+          return "This tester invitation has been revoked.";
+        if (this.studyUsed() >= 20)
+          return "The testing group's $5 allowance is used. Replay and feedback still work.";
+      }
       if (budget[role] + 25 > (role === "judge" ? 3000 : 2000))
         return "Analysis budget reserved. Contact the project owner.";
       if (budget.tester + budget.judge + 3000 + 25 > 10000)
@@ -101,8 +111,145 @@ export class BudgetLedger extends DurableObject<Env> {
         role,
         Date.now(),
       );
+      if (invitation)
+        sql.exec(
+          "INSERT INTO study_admissions VALUES(?,?,?)",
+          owner,
+          idem,
+          invitation,
+        );
       return null;
     });
+  }
+  studyUsed(): number {
+    return this.ctx.storage.sql
+      .exec<{ n: number }>("SELECT COUNT(*) n FROM study_admissions")
+      .one().n;
+  }
+  studyInvitation(id: string) {
+    return (
+      this.ctx.storage.sql
+        .exec<{ id: string; label: string }>(
+          "SELECT id,label FROM study_invites WHERE id=? AND revoked=0",
+          id,
+        )
+        .toArray()[0] ?? null
+    );
+  }
+  studyLogin(hash: string) {
+    return (
+      this.ctx.storage.sql
+        .exec<{ id: string }>(
+          "SELECT id FROM study_invites WHERE hash=? AND revoked=0",
+          hash,
+        )
+        .toArray()[0]?.id ?? null
+    );
+  }
+  studyStatus(invitation: string) {
+    const record = this.studyInvitation(invitation);
+    if (!record) return null;
+    const budget = this.budget();
+    const remaining = Math.max(
+      0,
+      Math.min(
+        20 - this.studyUsed(),
+        Math.floor((2000 - budget.tester) / 25),
+        Math.floor((10000 - 3000 - budget.tester - budget.judge) / 25),
+      ),
+    );
+    return {
+      label: record.label,
+      remaining_calls: remaining,
+      group_limit_cents: 500,
+      group_reserved_cents: this.studyUsed() * 25,
+    };
+  }
+  createStudyInvitation(id: string, hash: string, label: string) {
+    return this.ctx.storage.transactionSync(() => {
+      const count = this.ctx.storage.sql
+        .exec<{ n: number }>("SELECT COUNT(*) n FROM study_invites")
+        .one().n;
+      if (count >= 10) return false;
+      this.ctx.storage.sql.exec(
+        "INSERT INTO study_invites(id,hash,label) VALUES(?,?,?)",
+        id,
+        hash,
+        label,
+      );
+      return true;
+    });
+  }
+  revokeStudyInvitation(id: string) {
+    this.ctx.storage.sql.exec(
+      "UPDATE study_invites SET revoked=1 WHERE id=?",
+      id,
+    );
+  }
+  studyOverview() {
+    return {
+      group_limit_cents: 500,
+      group_reserved_cents: this.studyUsed() * 25,
+      invitations: this.ctx.storage.sql
+        .exec<{ id: string; label: string; revoked: number; calls: number }>(
+          "SELECT i.id,i.label,i.revoked,(SELECT COUNT(*) FROM study_admissions a WHERE a.invitation=i.id) calls FROM study_invites i ORDER BY i.rowid",
+        )
+        .toArray(),
+      feedback: this.ctx.storage.sql
+        .exec<{
+          id: string;
+          label: string;
+          created: number;
+          rating: number;
+          message: string;
+        }>(
+          "SELECT f.id,i.label,f.created,f.rating,f.message FROM study_feedback f JOIN study_invites i ON i.id=f.invitation WHERE f.deleted=0 ORDER BY f.created DESC LIMIT 100",
+        )
+        .toArray(),
+    };
+  }
+  submitStudyFeedback(
+    id: string,
+    invitation: string,
+    rating: number,
+    message: string,
+  ) {
+    return this.ctx.storage.transactionSync(() => {
+      if (!this.studyInvitation(invitation)) return "revoked";
+      const prior = this.ctx.storage.sql
+        .exec<{ invitation: string; deleted: number }>(
+          "SELECT invitation,deleted FROM study_feedback WHERE id=?",
+          id,
+        )
+        .toArray()[0];
+      if (prior)
+        return prior.invitation === invitation && !prior.deleted
+          ? "saved"
+          : "conflict";
+      const count = this.ctx.storage.sql
+        .exec<{ n: number }>(
+          "SELECT COUNT(*) n FROM study_feedback WHERE invitation=?",
+          invitation,
+        )
+        .one().n;
+      if (count >= 10) return "full";
+      this.ctx.storage.sql.exec(
+        "INSERT INTO study_feedback(id,invitation,created,rating,message) VALUES(?,?,?,?,?)",
+        id,
+        invitation,
+        Date.now(),
+        rating,
+        message,
+      );
+      return "saved";
+    });
+  }
+  deleteStudyFeedback(id: string) {
+    // Retain only the receipt so deletion cannot reset quota or replay deleted content.
+    this.ctx.storage.sql.exec(
+      "UPDATE study_feedback SET deleted=1,message='',rating=0 WHERE id=?",
+      id,
+    );
   }
   finish(
     owner: string,

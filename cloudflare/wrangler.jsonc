@@ -6,7 +6,7 @@
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
   "preview_urls": false,
-  "secrets": {"required": ["NEBIUS_API_KEY", "TESTER_CODE_HASH", "JUDGE_CODE_HASH", "INITIAL_TESTER_CENTS", "INITIAL_JUDGE_CENTS"]},
+  "secrets": {"required": ["NEBIUS_API_KEY", "TESTER_CODE_HASH", "JUDGE_CODE_HASH", "OWNER_CODE_HASH", "INITIAL_TESTER_CENTS", "INITIAL_JUDGE_CENTS"]},
   "assets": {
     "directory": "../web/dist",
     "binding": "ASSETS",

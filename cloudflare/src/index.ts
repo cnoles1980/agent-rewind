@@ -7,11 +7,12 @@ import {
   json,
   randomToken,
   readJson,
-  type Role,
+  type AccessRole,
 } from "./common";
 import { redact, validateTape } from "../../web/src/engine";
 import corrected from "../../examples/corrected.json";
 import stale from "../../examples/stale.json";
+import { studyRoute } from "./study";
 export { AccessState, BudgetLedger, ClipStore } from "./storage";
 
 const LIVE_BLOCKERS = [
@@ -41,7 +42,14 @@ async function session(request: Request, env: Env) {
   if (!token || !/^[a-f0-9]{64}$/.test(token)) return null;
   const owner = await digest(token);
   const value = await env.ACCESS.getByName(`session:${owner}`).session();
-  return value ? { owner, role: value.role } : null;
+  if (
+    value?.invitation &&
+    !(await ledger(env).studyInvitation(value.invitation))
+  )
+    return null;
+  return value
+    ? { owner, role: value.role, invitation: value.invitation }
+    : null;
 }
 async function requireSession(request: Request, env: Env) {
   const value = await session(request, env);
@@ -79,6 +87,10 @@ async function route(request: Request, env: Env) {
       analysis_blockers: blockers,
       authenticated: !!auth,
       role: auth?.role ?? null,
+      study_supported: true,
+      study: auth?.invitation
+        ? await ledger(env).studyStatus(auth.invitation)
+        : null,
       model: env.MODEL,
       budget_reserved_cents: budget,
       total_reserved_cents: total,
@@ -111,12 +123,26 @@ async function route(request: Request, env: Env) {
     const hash = await digest(body.code);
     // Evaluate both comparisons, regardless of which role matches.
     const tester = equalHash(hash, env.TESTER_CODE_HASH ?? ""),
-      judge = equalHash(hash, env.JUDGE_CODE_HASH ?? "");
-    const role: Role | null = judge ? "judge" : tester ? "tester" : null;
+      judge = equalHash(hash, env.JUDGE_CODE_HASH ?? ""),
+      ownerRole = equalHash(hash, env.OWNER_CODE_HASH ?? "");
+    const invitation =
+      !tester && !judge && !ownerRole
+        ? await ledger(env).studyLogin(hash)
+        : null;
+    const role: AccessRole | null = ownerRole
+      ? "owner"
+      : judge
+        ? "judge"
+        : tester || invitation
+          ? "tester"
+          : null;
     if (!role) throw new HttpError(401, "Invalid invitation code");
     const token = randomToken(),
       owner = await digest(token);
-    await env.ACCESS.getByName(`session:${owner}`).create(role);
+    await env.ACCESS.getByName(`session:${owner}`).create(
+      role,
+      invitation ?? undefined,
+    );
     return json({ role }, 200, {
       "Set-Cookie": `${COOKIE}=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=604800`,
     });
@@ -128,6 +154,8 @@ async function route(request: Request, env: Env) {
       "Set-Cookie": `${COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0`,
     });
   }
+  if (path === "/api/study" || path.startsWith("/api/study/"))
+    return studyRoute(request, env, await requireSession(request, env));
   if (path === "/api/analyses" && method === "POST") {
     const auth = await requireSession(request, env);
     if (analysisBlockers(env).length)
@@ -141,8 +169,9 @@ async function route(request: Request, env: Env) {
     const store = ledger(env),
       problem = await store.reserve(
         auth.owner,
-        auth.role,
+        auth.role === "judge" ? "judge" : "tester",
         body.idempotency_key,
+        auth.invitation,
       );
     if (problem) throw new HttpError(409, problem);
     try {

@@ -1,5 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 export type Role = "tester" | "judge";
+export type AccessRole = Role | "owner";
 export class HttpError extends Error {
   constructor(
     public status: number,

@@ -31,6 +31,7 @@ The Python models and prompt are the source of the hosted analysis contract. Reg
 2. Create a private, ignored JSON secrets file, for example `../.local/cloudflare-secrets.json`, with these **string** fields:
    - `NEBIUS_API_KEY`: your dedicated inference key.
    - `TESTER_CODE_HASH` and `JUDGE_CODE_HASH`: SHA-256 hex hashes of separate cryptographically random invitation codes. Keep the actual codes in private testing instructions. Do not reuse development invitations.
+   - `OWNER_CODE_HASH`: SHA-256 hex hash of a separate owner invitation. Only this login can read private feedback and create/revoke individual study invitations. See [tester access](../docs/tester-access.md). Never distribute the owner code to testers.
    - `INITIAL_TESTER_CENTS` and `INITIAL_JUDGE_CENTS`: previous reserved spending for this project, or `"0"` for a genuinely new project. These seed the persistent ledger once; changing them later does not reset or adjust that ledger.
 3. Build and verify, then deploy with inference off:
 
