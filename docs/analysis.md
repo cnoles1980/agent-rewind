@@ -6,6 +6,8 @@ The hosted server calls NVIDIA Nemotron through Nebius Token Factory. The result
 
 After reviewing the generated response and its source excerpt, copy or download the analysis handoff for the coding agent that owns your project. Rewind does not post into chats, execute proposed commands, or apply fixes. Local evidence-only report export remains free of model calls.
 
+The [October 4 real-recording evaluation](report-quality-2026-10-04.md) found material diagnostic errors, including misread assertion values and premature repair advice. The quality gate remains open. The interface labels findings as model observations, and the handoff asks the receiving agent to verify the cause independently before editing. A larger model or a stronger prompt did not reliably solve the sampled failures.
+
 ## Privacy and failure behavior
 
 - Opening/importing a tape never uploads it. Analysis uploads only the previewed excerpt plus its listed event IDs, consent flag, and random request ID. This includes the user's observation. Linked context is excluded unless explicitly selected; it can contain earlier private messages.

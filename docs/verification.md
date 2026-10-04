@@ -2,6 +2,8 @@
 
 Status: **local implementation and hosted Cloudflare analysis/access verified; live sandbox coding execution remains blocked**. See the [actual hosted checks](cloudflare-deployment-check-2026-10-03.md). This is not yet a complete hackathon submission.
 
+**October 4 update:** [Real-recording report evaluation](report-quality-2026-10-04.md) found material diagnostic errors. Hosted/API success does not establish correct diagnoses; the report-quality gate remains open. The evaluation kept original recordings and exact results private.
+
 ## Passed locally
 
 | Check | Evidence |

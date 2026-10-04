@@ -71,7 +71,10 @@ test("editing during inference discards the old response", async ({ page }) => {
     }),
   ).toBeDisabled();
   await expect(
-    page.getByRole("heading", { name: "Observed facts", exact: true }),
+    page.getByRole("heading", {
+      name: "Model observations — verify against evidence",
+      exact: true,
+    }),
   ).toHaveCount(0);
   await expect(
     page.getByRole("checkbox", { name: "Send this reviewed excerpt" }),
@@ -148,7 +151,10 @@ test("reviewed Nemotron excerpt, safe cited findings, handoff, and event navigat
     .inputValue();
   await analyze.click();
   await expect(
-    page.getByRole("heading", { name: "Observed facts", exact: true }),
+    page.getByRole("heading", {
+      name: "Model observations — verify against evidence",
+      exact: true,
+    }),
   ).toBeVisible();
   expect(requests).toHaveLength(1);
   await expect(analyze).toBeDisabled();
@@ -170,6 +176,9 @@ test("reviewed Nemotron excerpt, safe cited findings, handoff, and event navigat
   );
   expect(await page.evaluate(() => navigator.clipboard.readText())).toContain(
     "Do not weaken tests",
+  );
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toContain(
+    "Confirm the cause independently",
   );
   const download = page.waitForEvent("download");
   await page
@@ -216,13 +225,19 @@ test("editing evidence clears consent and earlier analysis; failed calls do not 
     .getByRole("button", { name: "Analyze selected evidence", exact: true })
     .click();
   await expect(
-    page.getByRole("heading", { name: "Observed facts", exact: true }),
+    page.getByRole("heading", {
+      name: "Model observations — verify against evidence",
+      exact: true,
+    }),
   ).toBeVisible();
   await page
     .getByLabel("What happened, and what did you expect?")
     .fill("Changed expected behavior");
   await expect(
-    page.getByRole("heading", { name: "Observed facts", exact: true }),
+    page.getByRole("heading", {
+      name: "Model observations — verify against evidence",
+      exact: true,
+    }),
   ).toHaveCount(0);
   await expect(
     page.getByRole("checkbox", { name: "Send this reviewed excerpt" }),
