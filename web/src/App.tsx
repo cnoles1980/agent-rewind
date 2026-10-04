@@ -38,6 +38,7 @@ import EventLog from "./EventLog";
 import Comparison from "./Comparison";
 import Settings, { readPreferences, type Preferences } from "./Settings";
 import DebugReport from "./DebugReport";
+import StudyPanel from "./StudyPanel";
 import Tutorial, { TutorialPrompt } from "./Tutorial";
 import type { ImportSource } from "./imports";
 import { importLocalFile, type ImportProgress } from "./importFile";
@@ -154,6 +155,7 @@ export default function App() {
       | "report"
       | "import"
       | "tutorial"
+      | "feedback"
       | null
     >(null),
     [notice, setNotice] = useState(""),
@@ -523,6 +525,16 @@ export default function App() {
           <span /> Personal workspace
         </div>
         <div className="top-actions">
+          {status?.study_supported && (
+            <button
+              onClick={() => {
+                setPlaying(false);
+                setModal("feedback");
+              }}
+            >
+              Feedback
+            </button>
+          )}
           <button
             className="icon-button"
             aria-label="Settings & sources"
@@ -1196,6 +1208,11 @@ export default function App() {
           </>
         )}
       </main>
+      {modal === "feedback" && (
+        <Modal title="Feedback & tester access" onClose={() => setModal(null)}>
+          <StudyPanel onAccessChange={refresh} />
+        </Modal>
+      )}
       {modal === "import" && (
         <Modal
           title={
@@ -1295,10 +1312,7 @@ export default function App() {
         </Modal>
       )}
       {modal === "demo" && (
-        <Modal
-          title="Hosted access & demo runs"
-          onClose={() => setModal(null)}
-        >
+        <Modal title="Hosted access & demo runs" onClose={() => setModal(null)}>
           <p>
             Your invitation unlocks reviewed Nemotron analysis and clip sharing.
             Fresh coding runs additionally require an available sandbox. Imports

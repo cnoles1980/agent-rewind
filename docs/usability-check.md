@@ -22,6 +22,8 @@ After the timed task, ask the person to compare the runs and create an evidence-
 
 Use a separate tester invitation supplied privately by Corey. Have the participant review the selected excerpt and explicitly consent to one Nemotron call. Ask them to distinguish captured excerpts from model questions, follow a citation, and explain why a suggested explanation still needs verification. Budget one 25-cent reservation per participant; do not use the judge allowance. Never put invitation codes in this document, screenshots or public notes.
 
+The hosted study now provides individual revocable codes under one shared $5 cap. Testers can submit private feedback through the **Feedback** button; Corey reads it with his separate owner invitation. See [setup and feedback instructions](tester-access.md). The private, ready-to-send invitation messages are in `.local/tester-kit/` and are not part of the public repository.
+
 ## Record results
 
 | Participant | Time | Found policy | Found code/test consequence | Needed coaching | Understood model uncertainty | Main obstacle |

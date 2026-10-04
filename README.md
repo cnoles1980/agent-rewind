@@ -6,6 +6,8 @@ A personal debugger for recorded agent runs: a Python recorder, local Codex impo
 
 **Try the hosted app:** [Agent Rewind on Cloudflare](https://agent-rewind.cnoles1980.workers.dev/). Start the tutorial without an account. Judges and invited testers can unlock reviewed Nemotron analysis and clip publication using their private invitation; no provider key is needed.
 
+Individual usability testers share a capped analysis allowance and can submit private, text-only feedback through **Feedback**. The separate owner inbox supports reading feedback and revoking invitations. See [tester access and feedback](docs/tester-access.md); private invitation codes are never published here.
+
 This is a controlled-use hackathon prototype. The offline examples are **illustrative fixtures**, clearly labeled in the UI. Real hosted Nemotron analysis is verified; fresh coding execution remains disabled pending Nebius sandbox approval and runner verification. See the [hosted deployment check](docs/cloudflare-deployment-check-2026-10-03.md) and [Cloudflare setup](cloudflare/README.md).
 
 ## Run locally

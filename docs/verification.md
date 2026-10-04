@@ -12,8 +12,8 @@ Status: **local implementation and hosted Cloudflare analysis/access verified; l
 |---|---|
 | Python recorder, import, API, isolated runner and analysis contracts | 70 pytest tests passing |
 | Context/time integrity, reuse of deduplicated snapshots, partial clips, redaction, tool alignment | 52 Vitest tests passing |
-| Browser investigation and security flows | 20 Playwright end-to-end tests passing |
-| Cloudflare runtime, access, accounting and persistence | 8 integration tests passing with an explicit provider double |
+| Browser investigation and security flows | 23 Playwright end-to-end tests passing |
+| Cloudflare runtime, access, accounting and persistence | 10 integration tests passing with an explicit provider double |
 | 1,000-event scrubbing | Latest measured paint intervals: 31.7, 33.5, 33.3 ms on this Windows development machine; threshold 100 ms |
 | Personal tape privacy | Browser test observed no non-GET requests while importing, searching, selecting and playing a synthetic personal tape |
 | Clip lifecycle | Production bundle: invitation login, reviewed publication, a separate anonymous browser reading the clip, UI revocation, then HTTP 404 |
@@ -36,6 +36,13 @@ The requested quality and simplification pass resolved privacy, clip-consent, re
 First-use onboarding now includes a dismissible welcome, six-step in-app tutorial, and a [written walkthrough](first-use.md). Browser coverage verifies navigation, reopening, persistence, mobile width, and no mutation requests. The [deployment preflight](deployment-check-2026-10-03.md) records the published Render-schema validation, HTTPS judge-session regression, and missing hosted/sandbox configuration. These are local checks, not real hosted or sandbox acceptance.
 
 ## Settings, source importers, and reports
+
+### Hosted tester study — October 4
+
+- Three individual tester codes share a persistent $5 / 20-attempt analysis cap within the existing tester pool. Revocation invalidates existing sessions; relogging or changing devices cannot reset group usage. Concurrent last-slot admission, failed calls, restart persistence and judge separation pass integration checks.
+- Explicit text-only feedback requires a tester invitation and review consent. The separate owner login alone can read messages and revoke codes. Feedback retries are idempotent; deletion clears content and retains a receipt so a retry cannot restore it or reset the ten-message quota.
+- Hosted browser verification signed in with a separate verification invitation, submitted a synthetic message, and read it in the owner inbox. The synthetic message was then deleted and the verification invitation revoked. This is not a human usability result. No model calls were made; group reservations remain $0, tester ledger $9.25 and judge ledger $0.
+- Three new browser checks cover feedback consent and retries, no automatic attachments, mobile layout, inert hostile HTML, owner revocation, and the exhausted-analysis state. Existing browser checks also pass. The [tester instructions](tester-access.md) explain the private owner inbox and lack of automatic email notifications.
 
 - Added direct browser Codex import, Claude Code transcript and n8n execution adapters, explicit Factory summary-only import, and a downloadable custom tape template. Synthetic fixtures cover correlations, deduplication, unknown timing, malformed/truncated data, unfinished attempts, private metadata/attachments, and event limits. Real Claude/n8n/Factory user exports remain an acceptance gap.
 - Browser tests cover Settings on mobile, preference persistence, source selection, reviewed report copy/download, redaction of both observations and evidence, review invalidation after edits, and zero requests during Claude/n8n imports. The Codex/report flow emits no mutation requests.

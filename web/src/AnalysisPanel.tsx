@@ -21,6 +21,7 @@ type Status = {
   analysis_available: boolean;
   analysis_blockers: string[];
   model: string;
+  study?: { remaining_calls: number; label: string } | null;
 };
 
 export default function AnalysisPanel({
@@ -115,6 +116,10 @@ export default function AnalysisPanel({
         setConsent(false); // A new paid attempt always requires renewed consent.
       }
     } finally {
+      if (!controller.signal.aborted)
+        void api<Status>("/status")
+          .then(setStatus)
+          .catch(() => {});
       if (request.current === controller) {
         request.current = null;
         setBusy(false);
@@ -197,6 +202,12 @@ export default function AnalysisPanel({
           <button disabled={code.length < 12}>Unlock analysis</button>
         </form>
       )}
+      {status?.study && (
+        <p role="status">
+          {status.study.remaining_calls} analysis attempts remain for the
+          testing group. Replay and feedback are free.
+        </p>
+      )}
       {status && !status.analysis_available && (
         <p className="callout">
           Analysis is not configured:{" "}
@@ -238,6 +249,7 @@ export default function AnalysisPanel({
           !!evidenceProblem ||
           !status?.authenticated ||
           !status?.analysis_available ||
+          status?.study?.remaining_calls === 0 ||
           !eventIds.length
         }
         onClick={run}
