@@ -29,7 +29,7 @@ jobs:
         working-directory: cloudflare
       - run: npm run check && npm run build && npm test
         working-directory: cloudflare
-      - run: git diff --exit-code -- cloudflare/src/analysis-contract.json cloudflare/src/analysis.validator.js cloudflare/src/request.generated.ts cloudflare/src/result.generated.ts
+      - run: git diff --exit-code -- cloudflare/src/analysis-contract.json cloudflare/src/analysis.validator.js cloudflare/src/request.generated.ts cloudflare/src/result.generated.ts cloudflare/src/draft.generated.ts
       - run: npx --prefix web playwright install --with-deps chromium
       - run: npm --prefix web run test:e2e
       - uses: actions/upload-artifact@v4

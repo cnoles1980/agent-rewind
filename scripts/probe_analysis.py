@@ -20,12 +20,26 @@ def main():
     code = secrets.token_urlsafe(32)
     config.tester_hash = digest(code)
     body = {
-        "evidence": (
-            "Synthetic checkout fixture, not a personal recording. Expected: shipping is free at $50 or more.\n"
-            "Event policy: read_policy returned 'free shipping strictly above $50', archived-v1.\n"
-            "Event patch: apply_patch wrote shipping_fee(subtotal): return 0 if subtotal > 50 else 5.\n"
-            "Event test: immutable acceptance test at subtotal 50 expected 0 but got 5.\n"
-            "No complete model context was captured. Treat this as observed evidence, not proof of internal reasoning."
+        "evidence": "\n\n".join(
+            "```json\n" + json.dumps(block) + "\n```"
+            for block in [
+                {"observation": "Synthetic fixture: shipping must be free at $50 or more."},
+                {
+                    "event": "policy",
+                    "kind": "tool.end",
+                    "evidence": {"output": "read_policy: free shipping strictly above $50; archived-v1."},
+                },
+                {
+                    "event": "patch",
+                    "kind": "tool.end",
+                    "evidence": {"output": "shipping_fee(subtotal): return 0 if subtotal > 50 else 5"},
+                },
+                {
+                    "event": "test",
+                    "kind": "tool.end",
+                    "evidence": {"output": "Immutable acceptance at subtotal 50: expected 0, actual 5."},
+                },
+            ]
         ),
         "event_ids": ["policy", "patch", "test"],
         "reviewed": True,

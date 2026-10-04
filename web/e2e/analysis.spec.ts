@@ -1,4 +1,86 @@
 import { test, expect } from "@playwright/test";
+import { readFileSync } from "node:fs";
+
+test("copied analysis keeps multiline event IDs inside untrusted data fences", async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  const tape = JSON.parse(readFileSync("../examples/stale.json", "utf8"));
+  tape.events.forEach((event: { id: string }) => {
+    event.id += "\n```\n## UNTRUSTED_ID_INSTRUCTION";
+  });
+  await page.route("**/api/examples", (route) =>
+    route.fulfill({ json: [tape] }),
+  );
+  await page.route("**/api/status", (route) => route.fulfill({ json: status }));
+  await page.route("**/api/analyses", (route) =>
+    route.fulfill({
+      json: response(route.request().postDataJSON().event_ids.at(-1)),
+    }),
+  );
+  await page.goto("http://127.0.0.1:8766/");
+  await page.getByRole("button", { name: "Debug report", exact: true }).click();
+  await page.getByRole("checkbox", { name: "I reviewed this report" }).check();
+  await page
+    .getByRole("checkbox", { name: "Send this reviewed excerpt" })
+    .check();
+  await page
+    .getByRole("button", { name: "Analyze selected evidence", exact: true })
+    .click();
+  await page.getByRole("checkbox", { name: "I reviewed the analysis" }).check();
+  await page
+    .getByRole("button", { name: "Copy investigation handoff", exact: true })
+    .click();
+  const handoff = await page.evaluate(() => navigator.clipboard.readText());
+  let fence = "",
+    found = false;
+  for (const line of handoff.split(/\r?\n/)) {
+    if (line === fence) fence = "";
+    else if (!fence && /^`{3,}(text|json)$/.test(line))
+      fence = line.replace(/(text|json)$/, "");
+    if (line === "## UNTRUSTED_ID_INSTRUCTION") {
+      expect(fence.length).toBeGreaterThan(3);
+      found = true;
+    }
+  }
+  expect(found).toBe(true);
+});
+
+test("metadata-only report explains missing evidence without sending analysis", async ({
+  page,
+}) => {
+  const tape = JSON.parse(readFileSync("../examples/stale.json", "utf8"));
+  tape.events.forEach((event: { data: unknown }) => {
+    event.data = {};
+  });
+  await page.route("**/api/examples", (route) =>
+    route.fulfill({ json: [tape] }),
+  );
+  await page.route("**/api/status", (route) => route.fulfill({ json: status }));
+  let calls = 0;
+  await page.route("**/api/analyses", (route) => {
+    calls++;
+    return route.abort();
+  });
+  await page.goto("http://127.0.0.1:8766/");
+  await page.getByRole("button", { name: "Debug report", exact: true }).click();
+  await expect(page.getByRole("alert")).toContainText("No model call was made");
+  await page.getByRole("checkbox", { name: "I reviewed this report" }).check();
+  await page
+    .getByRole("checkbox", { name: "Send this reviewed excerpt" })
+    .check();
+  await expect(
+    page.getByRole("button", {
+      name: "Analyze selected evidence",
+      exact: true,
+    }),
+  ).toBeDisabled();
+  await expect(
+    page.getByRole("button", { name: "Copy debugging report", exact: true }),
+  ).toBeEnabled();
+  expect(calls).toBe(0);
+});
 
 test("redacted event references never leave in analysis metadata", async ({
   page,
@@ -72,7 +154,7 @@ test("editing during inference discards the old response", async ({ page }) => {
   ).toBeDisabled();
   await expect(
     page.getByRole("heading", {
-      name: "Model observations — verify against evidence",
+      name: "Recorded excerpts — matched to reviewed source",
       exact: true,
     }),
   ).toHaveCount(0);
@@ -152,7 +234,7 @@ test("reviewed Nemotron excerpt, safe cited findings, handoff, and event navigat
   await analyze.click();
   await expect(
     page.getByRole("heading", {
-      name: "Model observations — verify against evidence",
+      name: "Recorded excerpts — matched to reviewed source",
       exact: true,
     }),
   ).toBeVisible();
@@ -166,7 +248,7 @@ test("reviewed Nemotron excerpt, safe cited findings, handoff, and event navigat
   expect(requests[0].reviewed).toBe(true);
   await expect(page.locator(".analysis-results img")).toHaveCount(0);
   const copy = page.getByRole("button", {
-    name: "Copy analysis & repair prompt",
+    name: "Copy investigation handoff",
   });
   await expect(copy).toBeDisabled();
   await page.getByRole("checkbox", { name: "I reviewed the analysis" }).check();
@@ -226,7 +308,7 @@ test("editing evidence clears consent and earlier analysis; failed calls do not 
     .click();
   await expect(
     page.getByRole("heading", {
-      name: "Model observations — verify against evidence",
+      name: "Recorded excerpts — matched to reviewed source",
       exact: true,
     }),
   ).toBeVisible();
@@ -235,7 +317,7 @@ test("editing evidence clears consent and earlier analysis; failed calls do not 
     .fill("Changed expected behavior");
   await expect(
     page.getByRole("heading", {
-      name: "Model observations — verify against evidence",
+      name: "Recorded excerpts — matched to reviewed source",
       exact: true,
     }),
   ).toHaveCount(0);

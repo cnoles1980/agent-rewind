@@ -9,9 +9,11 @@ const contract = JSON.parse(
 const ajv = new Ajv({ strict: false, code: { source: true, esm: true } });
 ajv.addSchema(contract.request, "request");
 ajv.addSchema(contract.result, "result");
+ajv.addSchema(contract.draft, "draft");
 const source = standalone(ajv, {
   validateRequest: "request",
   validateResult: "result",
+  validateDraft: "draft",
 });
 const result = await build({
   stdin: {
@@ -29,12 +31,16 @@ writeFileSync(
   "// Generated from Python analysis models; do not edit.\n" +
     result.outputFiles[0].text,
 );
-for (const kind of ["request", "result"])
+for (const kind of ["request", "result", "draft"])
   writeFileSync(
     `../cloudflare/src/${kind}.generated.ts`,
     await compile(
       contract[kind],
-      kind === "request" ? "AnalysisRequest" : "AnalysisResult",
+      {
+        request: "AnalysisRequest",
+        result: "AnalysisResult",
+        draft: "AnalysisDraft",
+      }[kind],
       { ignoreMinAndMaxItems: true },
     ),
   );

@@ -4,13 +4,16 @@ Status: **local implementation and hosted Cloudflare analysis/access verified; l
 
 **October 4 update:** [Real-recording report evaluation](report-quality-2026-10-04.md) found material diagnostic errors. Hosted/API success does not establish correct diagnoses; the report-quality gate remains open. The evaluation kept original recordings and exact results private.
 
+**October 4 follow-up:** reports now use server-owned excerpts selected by Nemotron, clearly unverified questions, and a fixed investigation handoff. Seven final live reports returned successfully; the missing-evidence control stopped before inference. Harder interpretation errors remain documented in the evaluation. Read-only sandbox image listing still returns `ForbiddenError`; no new execution or access approval is established. A [three-person tester exercise](usability-check.md) is ready but has not been conducted.
+
 ## Passed locally
 
 | Check | Evidence |
 |---|---|
-| Python recorder, import, API, isolated runner and analysis contracts | 50 pytest tests passing |
-| Context/time integrity, reuse of deduplicated snapshots, partial clips, redaction, tool alignment | 34 Vitest tests passing |
-| Browser investigation and security flows | 18 Playwright end-to-end tests passing |
+| Python recorder, import, API, isolated runner and analysis contracts | 70 pytest tests passing |
+| Context/time integrity, reuse of deduplicated snapshots, partial clips, redaction, tool alignment | 52 Vitest tests passing |
+| Browser investigation and security flows | 20 Playwright end-to-end tests passing |
+| Cloudflare runtime, access, accounting and persistence | 8 integration tests passing with an explicit provider double |
 | 1,000-event scrubbing | Latest measured paint intervals: 31.7, 33.5, 33.3 ms on this Windows development machine; threshold 100 ms |
 | Personal tape privacy | Browser test observed no non-GET requests while importing, searching, selecting and playing a synthetic personal tape |
 | Clip lifecycle | Production bundle: invitation login, reviewed publication, a separate anonymous browser reading the clip, UI revocation, then HTTP 404 |

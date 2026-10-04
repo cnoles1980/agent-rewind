@@ -1,0 +1,5 @@
+[
+  { "name": "emoji at slice boundary", "prefix_length": 799, "suffix": "😀", "lengths": [800] },
+  { "name": "emoji followed by next slice", "prefix_length": 799, "suffix": "😀z", "lengths": [800, 1] },
+  { "name": "newline at slice boundary", "prefix_length": 798, "suffix": "\n😀z", "lengths": [799, 2] }
+]

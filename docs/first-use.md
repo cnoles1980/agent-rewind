@@ -41,7 +41,9 @@ For hosted access, open **Settings & sources → Manage invitation access**, ent
 
 Select the consequential event and choose **Debug report**. Describe what happened and what you expected. Review the exact evidence preview, add extra redaction phrases if needed, and check the review box. Copy or download the Markdown, then paste it into your existing agent chat yourself.
 
-This evidence-only report works without an API key. For **optional Nemotron analysis**, invited users enter their invitation code, review the excerpt, and explicitly consent to sending it. Choose **Analyze selected evidence**, inspect the cited findings, review the output, and copy the handoff. Suggestions may be wrong; verify them before applying a fix.
+This evidence-only report works without an API key. For **optional Nemotron analysis**, invited users enter their invitation code, review the excerpt, and explicitly consent to sending it. Choose **Analyze selected evidence**. Read the **Recorded excerpts** and follow their citations, then review the **Investigation questions** and suggested checks before copying the handoff. Rewind checks that quoted text exists in the selected evidence, but the questions may still be wrong. The handoff asks your agent to inspect the project and confirm the cause before changing anything.
+
+If the report only contains event metadata, choose an event with captured input/output or an error. Rewind will explain that more evidence is needed without making a paid call. Keep JSON blocks intact when editing the preview. Each admitted hosted analysis sets aside 25 cents of the host's internal allowance; this is a spending safeguard, not the supplier's actual charge.
 
 Only the reviewed excerpt is sent to Nebius. Analysis uses the host's server-side key and budget. Judges receive a private invitation and need no API key. Self-hosters configure their own key using [analysis setup](analysis.md). Rewind never posts into your agent chat or repairs code automatically.
 

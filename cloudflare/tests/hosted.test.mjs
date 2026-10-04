@@ -17,11 +17,17 @@ let mf,
   providerMode = "ok",
   release;
 const result = {
-  facts: [{ text: "The policy says above $50.", event_ids: ["e1"] }],
+  facts: [
+    {
+      text: 'output:\nPolicy says free shipping above $50. File "[LOCAL PATH]" failed. expected behavior: free at $50. [REDACTED]\nenvironment:\n[REDACTED]',
+      event_ids: ["e1"],
+    },
+  ],
   hypotheses: [],
   missing_evidence: ["The current implementation was not supplied."],
   verification_steps: ["Run the unchanged boundary test."],
-  repair_prompt: "Inspect the shipping boundary and test a minimal correction.",
+  repair_prompt: JSON.parse(readFileSync("src/analysis-contract.json", "utf8"))
+    .handoff,
 };
 function options() {
   const converted = convertV4MiniflareOptions({
@@ -68,9 +74,15 @@ function options() {
         });
       if (providerMode === "failure")
         return new Response("secret provider error", { status: 500 });
-      const answer = structuredClone(result);
-      if (providerMode === "bad-citation")
-        answer.facts[0].event_ids = ["not-reviewed"];
+      const answer = {
+        quotes: [{ excerpt_id: 1 }],
+        questions: [],
+        missing_evidence: result.missing_evidence,
+        verification_steps: result.verification_steps,
+      };
+      if (providerMode === "bad-citation") answer.quotes[0].excerpt_id = 999;
+      if (providerMode === "bad-quote")
+        answer.quotes[0].quote = "The captured array was not empty.";
       return Response.json({
         choices: [
           {
@@ -87,7 +99,11 @@ function options() {
       });
     },
   });
-  return { ...converted, resourcePersistencePath: persistence, unsafeInspectDurableObjects: true };
+  return {
+    ...converted,
+    resourcePersistencePath: persistence,
+    unsafeInspectDurableObjects: true,
+  };
 }
 const api = (path, method = "GET", body, cookie, extra = {}) =>
   mf.dispatchFetch(origin + "/api" + path, {
@@ -109,7 +125,17 @@ async function login(code = tester) {
 }
 const analysis = (key) => ({
   evidence:
-    "e1: Policy says free shipping above $50. expected behavior: free at $50. api_key=synthetic-secret-value",
+    "```json\n" +
+    JSON.stringify({
+      event: "e1",
+      kind: "tool.end",
+      evidence: {
+        output:
+          'Policy says free shipping above $50. File "/home/alice/project" failed. expected behavior: free at $50. api_key=synthetic-secret-value',
+        environment: { private: "PRIVATE_ENV_SENTINEL" },
+      },
+    }) +
+    "\n```",
   event_ids: ["e1"],
   reviewed: true,
   idempotency_key: key,
@@ -176,6 +202,10 @@ test("analysis validates, redacts, rejects replay, and reserves prior spending",
   assert.equal(r.status, 200);
   assert.deepEqual((await r.json()).analysis, result);
   assert.doesNotMatch(JSON.stringify(lastRequest), /synthetic-secret-value/);
+  assert.doesNotMatch(
+    JSON.stringify(lastRequest),
+    /PRIVATE_ENV_SENTINEL|\/home\/alice/,
+  );
   const charged = calls;
   assert.equal(
     (await api("/analyses", "POST", analysis("first-analysis"), cookie)).status,
@@ -208,7 +238,7 @@ test("concurrent sessions cannot admit two model calls", async () => {
 });
 test("provider errors and fabricated citations fail safely with reservations retained", async () => {
   const cookie = await login();
-  for (const mode of ["failure", "bad-citation"]) {
+  for (const mode of ["failure", "bad-citation", "bad-quote"]) {
     providerMode = mode;
     const response = await api(
       "/analyses",
@@ -217,11 +247,40 @@ test("provider errors and fabricated citations fail safely with reservations ret
       cookie,
     );
     assert.equal(response.status, 502);
-    assert.doesNotMatch(await response.text(), /secret provider error/);
+    const error = await response.text();
+    assert.doesNotMatch(error, /secret provider error/);
+    assert.match(
+      error,
+      mode === "failure"
+        ? /\[provider\]/
+        : mode === "bad-quote"
+          ? /\[format\]/
+          : /\[evidence_mismatch\]/,
+    );
   }
   providerMode = "ok";
   const status = await (await api("/status", "GET", undefined, cookie)).json();
-  assert.equal(status.budget_reserved_cents.tester, 275);
+  assert.equal(status.budget_reserved_cents.tester, 300);
+});
+test("metadata-only and malformed evidence never reserve budget or call provider", async () => {
+  const cookie = await login();
+  const before = await (await api("/status", "GET", undefined, cookie)).json();
+  const beforeCalls = calls;
+  for (const evidence of [
+    '```json\n{"event":"e1","evidence":{}}\n```',
+    '```json\n{"event":"e1"\n```',
+  ]) {
+    const response = await api(
+      "/analyses",
+      "POST",
+      { ...analysis("empty-evidence"), evidence },
+      cookie,
+    );
+    assert.equal(response.status, 422);
+  }
+  assert.equal(calls, beforeCalls);
+  const after = await (await api("/status", "GET", undefined, cookie)).json();
+  assert.deepEqual(after.budget_reserved_cents, before.budget_reserved_cents);
 });
 test("reviewed clip publication, redaction, persistence, anonymous read, and revocation", async () => {
   const cookie = await login(),
@@ -251,7 +310,7 @@ test("reviewed clip publication, redaction, persistence, anonymous read, and rev
   assert.doesNotMatch(content, /seeded-private-key/);
   assert.match(content, /<script>/);
   const status = await (await api("/status", "GET", undefined, cookie)).json();
-  assert.equal(status.budget_reserved_cents.tester, 275);
+  assert.equal(status.budget_reserved_cents.tester, 300);
   for (let i = 0; i < 2; i++)
     assert.equal(
       (
@@ -297,22 +356,49 @@ test("bounded malformed input and login throttling", async () => {
 
 test("tester budget exhaustion preserves judge allowance and crash reservations", async () => {
   const storage = await mf.unsafeGetDurableObjectStorage(
-    "agent-rewind-test", "BudgetLedger", { name: "rewind-hackathon-2026" },
+    "agent-rewind-test",
+    "BudgetLedger",
+    { name: "rewind-hackathon-2026" },
   );
-  await storage.exec("UPDATE baseline SET cents=1975-(SELECT COUNT(*)*25 FROM analyses WHERE role='tester') WHERE role='tester'");
+  await storage.exec(
+    "UPDATE baseline SET cents=1975-(SELECT COUNT(*)*25 FROM analyses WHERE role='tester') WHERE role='tester'",
+  );
   const cookie = await login();
-  assert.equal((await api("/analyses", "POST", analysis("last-tester-slot"), cookie)).status, 200);
+  assert.equal(
+    (await api("/analyses", "POST", analysis("last-tester-slot"), cookie))
+      .status,
+    200,
+  );
   const count = calls;
-  assert.equal((await api("/analyses", "POST", analysis("exhausted-budget"), cookie)).status, 409);
+  assert.equal(
+    (await api("/analyses", "POST", analysis("exhausted-budget"), cookie))
+      .status,
+    409,
+  );
   assert.equal(calls, count);
-  await storage.exec("INSERT INTO analyses VALUES('interrupted-owner','crashed-request','judge','running',?,NULL)", Date.now() - 100_000);
+  await storage.exec(
+    "INSERT INTO analyses VALUES('interrupted-owner','crashed-request','judge','running',?,NULL)",
+    Date.now() - 100_000,
+  );
   const judgeCookie = await login(judge);
-  assert.equal((await api("/analyses", "POST", analysis("judge-after-crash"), judgeCookie)).status, 200);
-  const status = await (await api("/status", "GET", undefined, judgeCookie)).json();
+  assert.equal(
+    (await api("/analyses", "POST", analysis("judge-after-crash"), judgeCookie))
+      .status,
+    200,
+  );
+  const status = await (
+    await api("/status", "GET", undefined, judgeCookie)
+  ).json();
   assert.equal(status.budget_reserved_cents.tester, 2000);
   assert.equal(status.budget_reserved_cents.judge, 50);
   assert.equal(status.budget_alert, 50);
   const rows = await storage.exec("SELECT * FROM analyses");
-  assert.equal(rows.find(r => r.idem === "crashed-request").status, "interrupted");
-  assert.doesNotMatch(JSON.stringify(rows), /synthetic-secret-value|policy says|repair_prompt|shipping/);
+  assert.equal(
+    rows.find((r) => r.idem === "crashed-request").status,
+    "interrupted",
+  );
+  assert.doesNotMatch(
+    JSON.stringify(rows),
+    /synthetic-secret-value|policy says|repair_prompt|shipping/,
+  );
 });

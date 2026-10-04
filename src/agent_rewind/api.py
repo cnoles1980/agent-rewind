@@ -12,7 +12,8 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
 
-from .analysis import AnalysisRequest, analyze
+from .analysis import AnalysisFailure, AnalysisRequest, analyze
+from .analysis_evidence import prepare_evidence
 from .config import settings
 from .demo import run_demo
 from .redaction import Redactor
@@ -210,6 +211,12 @@ def create_app(config=None, runner=run_demo, analyzer=analyze):
         session = authenticate(request)
         if config.analysis_blockers():
             raise HTTPException(503, "Analysis needs configuration: " + ", ".join(config.analysis_blockers()))
+        try:
+            prepare_evidence(
+                body.evidence, body.event_ids, Redactor(secrets=[config.api_key], paths=True).clean
+            )
+        except ValueError as exc:
+            raise HTTPException(422, str(exc)) from None
         if not store.rate_limit("analysis:" + session["id"], 10, 3600):
             raise HTTPException(429, "Analysis limit reached; try later")
         try:
@@ -230,6 +237,10 @@ def create_app(config=None, runner=run_demo, analyzer=analyze):
         except asyncio.CancelledError:
             outcome = "interrupted"
             raise
+        except AnalysisFailure as exc:
+            raise HTTPException(
+                502, f"[{exc.code}] {exc} Reservation retained; no automatic retry."
+            ) from None
         except TimeoutError:
             raise HTTPException(
                 504,

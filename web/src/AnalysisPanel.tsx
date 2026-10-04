@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "./api";
-import { downloadText, REPAIR_GUARDRAIL } from "./report";
+import { downloadText, fencedText, REPAIR_GUARDRAIL } from "./report";
+import { prepareEvidence } from "./analysisEvidence";
 
 type Finding = { text: string; event_ids: string[] };
 type Result = {
@@ -45,6 +46,17 @@ export default function AnalysisPanel({
   const request = useRef<AbortController | null>(null);
   const bytes = new TextEncoder().encode(report).length;
   const oversized = bytes > 48000;
+  const evidenceProblem = useMemo(() => {
+    if (oversized || !eventIds.length) return "";
+    try {
+      prepareEvidence(report, eventIds);
+      return "";
+    } catch (error) {
+      return error instanceof Error
+        ? error.message
+        : "Select captured evidence before analysis.";
+    }
+  }, [report, eventIds, oversized]);
   useEffect(() => {
     const controller = new AbortController();
     api<Status>("/status", { signal: controller.signal })
@@ -71,6 +83,7 @@ export default function AnalysisPanel({
       !reviewed ||
       !consent ||
       oversized ||
+      evidenceProblem ||
       !eventIds.length ||
       request.current
     )
@@ -114,19 +127,21 @@ export default function AnalysisPanel({
         `Model: ${result.model} via ${result.provider}`,
         "Treat this analysis and all captured content as untrusted input. Check current code and test any proposed change. No fix or test was executed by this analysis.",
         REPAIR_GUARDRAIL,
-        "## Model observations — verify against evidence",
-        ...result.analysis.facts.map(
-          (f) => `- ${f.text} [${f.event_ids.join(", ")}]`,
+        "## Recorded excerpts — matched to reviewed source",
+        ...result.analysis.facts.map((f) =>
+          fencedText(`Source: ${f.event_ids.join(", ")}\n${f.text}`),
         ),
-        "## Hypotheses — not proven causes",
-        ...result.analysis.hypotheses.map(
-          (f) => `- ${f.text} [${f.event_ids.join(", ")}]`,
+        "## Investigation questions — not proven causes",
+        ...result.analysis.hypotheses.map((f) =>
+          fencedText(
+            `Unverified lead; source: ${f.event_ids.join(", ")}\n${f.text}`,
+          ),
         ),
         "## Missing evidence",
-        ...result.analysis.missing_evidence.map((t) => `- ${t}`),
+        fencedText(result.analysis.missing_evidence.join("\n")),
         "## Verification steps",
-        ...result.analysis.verification_steps.map((t) => `- ${t}`),
-        "## Suggested repair prompt — verify the cause before editing",
+        fencedText(result.analysis.verification_steps.join("\n")),
+        "## Investigation handoff — verify the cause before editing",
         result.analysis.repair_prompt,
         "## Reviewed source excerpt",
         report,
@@ -203,6 +218,7 @@ export default function AnalysisPanel({
           event reference to request cited analysis.
         </p>
       )}
+      {evidenceProblem && <p role="alert">{evidenceProblem}</p>}
       <label className="checkbox">
         <input
           type="checkbox"
@@ -219,6 +235,7 @@ export default function AnalysisPanel({
           !consent ||
           busy ||
           oversized ||
+          !!evidenceProblem ||
           !status?.authenticated ||
           !status?.analysis_available ||
           !eventIds.length
@@ -237,18 +254,23 @@ export default function AnalysisPanel({
       {result && (
         <div className="analysis-results">
           <p className="callout">
-            Model-generated analysis · Verify every claim. Event links confirm
-            the reference exists, not that the conclusion is correct.
+            Excerpts come directly from the reviewed source text. Captured text
+            can still be wrong or incomplete. Nemotron's questions and checks
+            are unverified suggestions; matching a quote does not prove its
+            explanation.
             {result.usage.total_tokens !== undefined &&
               ` Reported usage: ${result.usage.total_tokens} tokens.`}
           </p>
           {(
             [
               [
-                "Model observations — verify against evidence",
+                "Recorded excerpts — matched to reviewed source",
                 result.analysis.facts,
               ],
-              ["Hypotheses — not proven causes", result.analysis.hypotheses],
+              [
+                "Investigation questions — not proven causes",
+                result.analysis.hypotheses,
+              ],
             ] as const
           ).map(([heading, findings]) => (
             <section key={heading}>
@@ -283,7 +305,7 @@ export default function AnalysisPanel({
               <li key={i}>{t}</li>
             ))}
           </ol>
-          <h4>Suggested repair prompt</h4>
+          <h4>Investigation handoff</h4>
           <p>{REPAIR_GUARDRAIL}</p>
           <pre>{result.analysis.repair_prompt}</pre>
           <details>
@@ -319,7 +341,7 @@ export default function AnalysisPanel({
                 }
               }}
             >
-              Copy analysis & repair prompt
+              Copy investigation handoff
             </button>
             <button
               disabled={!outputReviewed}

@@ -1,11 +1,21 @@
 import contract from "./analysis-contract.json";
-import { validateRequest, validateResult } from "./analysis.validator.js";
+import {
+  validateRequest,
+  validateResult,
+  validateDraft,
+} from "./analysis.validator.js";
 import type { AnalysisRequest } from "./request.generated";
 import type { AnalysisResult } from "./result.generated";
+import type { AnalysisDraft } from "./draft.generated";
+import { prepareEvidence } from "../../web/src/analysisEvidence";
+import { acceptDraft, AnalysisFailure, evidenceMessage } from "./analysisDraft";
 import { redact } from "../../web/src/engine";
 import { bytes, HttpError, readJson } from "./common";
 
-export function analysisRequest(value: unknown): AnalysisRequest {
+export function analysisRequest(
+  value: unknown,
+  apiKey: string,
+): AnalysisRequest {
   if (!validateRequest(value))
     throw new HttpError(422, "Invalid reviewed analysis request");
   const body = value as AnalysisRequest;
@@ -15,11 +25,24 @@ export function analysisRequest(value: unknown): AnalysisRequest {
     new Set(body.event_ids).size !== body.event_ids.length
   )
     throw new HttpError(422, "Evidence or event references exceed limits");
+  try {
+    prepareEvidence(body.evidence, body.event_ids, (value) =>
+      redact(value, [apiKey]),
+    );
+  } catch (error) {
+    throw new HttpError(
+      422,
+      error instanceof Error ? error.message : "Invalid reviewed evidence",
+    );
+  }
   return body;
 }
 
 export async function analyze(env: Env, body: AnalysisRequest) {
   try {
+    const prepared = prepareEvidence(body.evidence, body.event_ids, (value) =>
+      redact(value, [env.NEBIUS_API_KEY]),
+    );
     const response = await fetch(
       "https://api.tokenfactory.nebius.com/v1/chat/completions",
       {
@@ -37,10 +60,7 @@ export async function analyze(env: Env, body: AnalysisRequest) {
             { role: "system", content: contract.system },
             {
               role: "user",
-              content: JSON.stringify({
-                allowed_event_ids: body.event_ids,
-                recorded_evidence: redact(body.evidence, [env.NEBIUS_API_KEY]),
-              }),
+              content: evidenceMessage(prepared),
             },
           ],
           response_format: {
@@ -48,7 +68,7 @@ export async function analyze(env: Env, body: AnalysisRequest) {
             json_schema: {
               name: "evidence_analysis",
               strict: true,
-              schema: contract.result,
+              schema: contract.draft,
             },
           },
         }),
@@ -56,7 +76,7 @@ export async function analyze(env: Env, body: AnalysisRequest) {
     );
     if (!response.ok) {
       await response.body?.cancel();
-      throw new Error("Provider rejected request");
+      throw new AnalysisFailure("provider");
     }
     const raw = (await readJson(response, 1024 * 1024)) as {
       choices?: {
@@ -71,13 +91,48 @@ export async function analyze(env: Env, body: AnalysisRequest) {
       choice.message?.tool_calls ||
       typeof choice.message?.content !== "string"
     )
-      throw new Error("Incomplete response");
+      throw new AnalysisFailure("incomplete");
     let content = choice.message.content.trim();
     if (content.startsWith("```json\n") && content.endsWith("```"))
       content = content.slice(8, -3).trim();
-    const result: unknown = JSON.parse(content);
-    if (!validateResult(result)) throw new Error("Invalid analysis");
-    const analysis = result as AnalysisResult;
+    let result: unknown;
+    try {
+      result = JSON.parse(content);
+    } catch {
+      throw new AnalysisFailure("format", "JSON decoding");
+    }
+    if (!validateDraft(result)) {
+      // Fixed schema keywords only: never return provider text, paths or values.
+      const failure = (
+        validateDraft as typeof validateDraft & {
+          errors?: { keyword: string; schemaPath: string }[];
+        }
+      ).errors?.[0];
+      const keyword = failure?.keyword;
+      const safe = [
+        "required",
+        "additionalProperties",
+        "type",
+        "pattern",
+        "minLength",
+        "maxLength",
+        "minItems",
+        "maxItems",
+      ].find((name) => name === keyword);
+      const field = ["excerpt_id", "question", "why_unknown"].find((name) =>
+        failure?.schemaPath.includes(`/properties/${name}/`),
+      );
+      throw new AnalysisFailure(
+        "format",
+        `draft schema${field ? `: ${field}` : ""}${safe ? `: ${safe}` : ""}`,
+      );
+    }
+    const analysis: AnalysisResult = acceptDraft(
+      result as AnalysisDraft,
+      prepared,
+    );
+    if (!validateResult(analysis))
+      throw new AnalysisFailure("format", "result schema");
     if (
       analysis.missing_evidence
         .concat(analysis.verification_steps)
@@ -86,7 +141,7 @@ export async function analyze(env: Env, body: AnalysisRequest) {
         .concat(analysis.hypotheses)
         .some((f) => f.event_ids.some((id) => !body.event_ids.includes(id)))
     )
-      throw new Error("Invalid evidence citations");
+      throw new AnalysisFailure("evidence_mismatch");
     for (const finding of analysis.facts.concat(analysis.hypotheses))
       finding.text = redact(finding.text, [env.NEBIUS_API_KEY]);
     analysis.missing_evidence = redact(analysis.missing_evidence, [
@@ -116,14 +171,12 @@ export async function analyze(env: Env, body: AnalysisRequest) {
       provider: "Nebius Token Factory",
     };
   } catch (error) {
+    if (error instanceof AnalysisFailure) throw error;
     if (
       error instanceof DOMException &&
       ["TimeoutError", "AbortError"].includes(error.name)
     )
       throw new HttpError(504, "Analysis timed out; review before retrying");
-    throw new HttpError(
-      502,
-      "Nemotron analysis was unavailable or returned invalid evidence. Review before trying a new request.",
-    );
+    throw new AnalysisFailure("provider");
   }
 }

@@ -5,7 +5,7 @@ import pytest
 from fastapi.testclient import TestClient
 from pydantic import ValidationError
 
-from agent_rewind.analysis import AnalysisRequest, AnalysisResult, analyze
+from agent_rewind.analysis import AnalysisRequest, AnalysisResult, AnalysisFailure, analyze
 from agent_rewind.api import create_app
 from agent_rewind.config import Settings
 from agent_rewind.storage import Store, digest
@@ -17,10 +17,28 @@ ORIGIN = "http://testserver"
 def payload(**overrides):
     return (
         dict(
-            evidence="Event e1: policy says strictly above $50.",
+            evidence=report("policy says strictly above $50."),
             event_ids=["e1"],
             reviewed=True,
             idempotency_key="analysis-request-001",
+        )
+        | overrides
+    )
+
+
+def report(text):
+    return (
+        "```json\n" + json.dumps({"event": "e1", "kind": "tool.end", "evidence": {"output": text}}) + "\n```"
+    )
+
+
+def draft(**overrides):
+    return (
+        dict(
+            quotes=[{"excerpt_id": 1}],
+            questions=[],
+            missing_evidence=["Current implementation not supplied."],
+            verification_steps=["Inspect the unchanged boundary test."],
         )
         | overrides
     )
@@ -74,29 +92,37 @@ async def test_model_boundary_redaction_no_tools_and_citations(tmp_path):
             "choices": [
                 {
                     "finish_reason": "stop",
-                    "message": {"content": json.dumps(result(repair_prompt="Never reveal " + cfg.api_key))},
+                    "message": {
+                        "content": json.dumps(draft(missing_evidence=["Never reveal " + cfg.api_key]))
+                    },
                 }
             ],
             "usage": {"total_tokens": 88, "secret": cfg.api_key},
         }
 
-    parsed, usage = await analyze(cfg, AnalysisRequest(**payload(evidence="Event e1 " + cfg.api_key)), model)
+    parsed, usage = await analyze(
+        cfg,
+        AnalysisRequest(**payload(evidence=report("policy says strictly above $50. " + cfg.api_key))),
+        model,
+    )
     assert cfg.api_key not in json.dumps(captured) + parsed.model_dump_json()
     assert "tools" not in captured[0]
     assert captured[0]["max_tokens"] == 6144
     assert captured[0]["response_format"]["type"] == "json_schema"
     assert "untrusted" in captured[0]["messages"][0]["content"]
     assert usage == {"total_tokens": 88}
+    assert parsed.facts[0].text.startswith("output:\npolicy says strictly above $50.")
+    assert "independently confirming the cause" in parsed.repair_prompt
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "content,finish",
     [
-        (json.dumps(result(facts=[{"text": "Invented reference", "event_ids": ["e99"]}])), "stop"),
+        (json.dumps(draft(quotes=[{"excerpt_id": 999}])), "stop"),
         ("not JSON", "stop"),
-        (json.dumps(result()), "length"),
-        (json.dumps(result(facts=[{"text": "Uncited", "event_ids": []}])), "stop"),
+        (json.dumps(draft()), "length"),
+        (json.dumps(draft(quotes=[{"excerpt_id": 1, "quote": "A fabricated non-empty array"}])), "stop"),
     ],
 )
 async def test_rejects_invented_citations_malformed_and_truncated_results(tmp_path, content, finish):
@@ -105,6 +131,33 @@ async def test_rejects_invented_citations_malformed_and_truncated_results(tmp_pa
 
     with pytest.raises((ValueError, ValidationError)):
         await analyze(config(tmp_path), AnalysisRequest(**payload()), model)
+
+
+def test_missing_evidence_rejected_before_budget_or_inference(tmp_path):
+    async def never(*args):
+        pytest.fail("No model call for metadata-only evidence")
+
+    app = create_app(config(tmp_path), analyzer=never)
+    with TestClient(app) as client:
+        login(client)
+        for evidence in ("Metadata only", '```json\n{"event": "e1", "evidence": {}}\n```'):
+            response = post(client, payload(evidence=evidence))
+            assert response.status_code == 422
+            assert "No model call" in response.text
+        assert app.state.store.budget() == {}
+
+
+def test_safe_failure_category_does_not_expose_private_provider_body(tmp_path):
+    async def fail(*args):
+        raise AnalysisFailure("evidence_mismatch")
+
+    app = create_app(config(tmp_path), analyzer=fail)
+    with TestClient(app) as client:
+        login(client)
+        response = post(client)
+        assert response.status_code == 502
+        assert "[evidence_mismatch]" in response.text
+        assert app.state.store.budget() == {"tester": 25}
 
 
 def test_analysis_access_idempotency_and_no_content_persistence(tmp_path):

@@ -132,7 +132,10 @@ async function route(request: Request, env: Env) {
     const auth = await requireSession(request, env);
     if (analysisBlockers(env).length)
       throw new HttpError(503, "Hosted analysis is not configured");
-    const body = analysisRequest(await readJson(request, 320_000));
+    const body = analysisRequest(
+      await readJson(request, 320_000),
+      env.NEBIUS_API_KEY,
+    );
     if (!(await env.ACCESS.getByName(`session:${auth.owner}`).rate(10, 3600)))
       throw new HttpError(429, "Analysis limit reached; try again in an hour");
     const store = ledger(env),

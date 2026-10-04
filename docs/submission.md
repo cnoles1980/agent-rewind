@@ -20,7 +20,7 @@ Nemotron evidence analysis is now part of the debugger itself: select a bounded 
 - [ ] Corey confirms registration and personal eligibility.
 - [ ] By October 5: Nebius access, execution/cancellation/network isolation, image and actual prices verified; fallback decision documented if needed.
 - [ ] Real stale and corrected runs are inspectable; results are not forced to fit the script.
-- [ ] Three testers attempt the task without coaching; at least two identify the bad policy and downstream consequence within two minutes.
+- [ ] Three testers complete the [prepared exercise](usability-check.md) without coaching; at least two identify the bad policy and downstream consequence within two minutes.
 - [ ] Corey reviews one personal recording and one clip before either becomes public.
 - [ ] Clean checkout setup and actual hosted judge access pass; no private recordings or keys in public source.
 - [ ] October 23 feature freeze; October 24–28 bug fixes, licensing/asset review, screenshots and narrated video.
