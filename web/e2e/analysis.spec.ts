@@ -168,6 +168,9 @@ test("reviewed Nemotron excerpt, safe cited findings, handoff, and event navigat
   expect(await page.evaluate(() => navigator.clipboard.readText())).toContain(
     "not proven causes",
   );
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toContain(
+    "Do not weaken tests",
+  );
   const download = page.waitForEvent("download");
   await page
     .getByRole("button", { name: "Download analysis", exact: true })

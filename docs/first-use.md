@@ -37,6 +37,8 @@ Claude Code, n8n, Factory, and custom instructions are in the same settings pane
 
 ## 5. Create a handoff for your coding agent
 
+For hosted access, open **Settings & sources → Manage invitation access**, enter the private code supplied by the host, and choose **Unlock invited features**. This enables analysis and sharing; it does not enable sandbox runs while the execution gate is closed.
+
 Select the consequential event and choose **Debug report**. Describe what happened and what you expected. Review the exact evidence preview, add extra redaction phrases if needed, and check the review box. Copy or download the Markdown, then paste it into your existing agent chat yourself.
 
 This evidence-only report works without an API key. For **optional Nemotron analysis**, invited users enter their invitation code, review the excerpt, and explicitly consent to sending it. Choose **Analyze selected evidence**, inspect the cited findings, review the output, and copy the handoff. Suggestions may be wrong; verify them before applying a fix.

@@ -1,6 +1,6 @@
 # Verification record — October 3, 2026
 
-Status: **local implementation verified; live sandbox and hosting blocked on external configuration**. This is not yet a submission-ready hosted demo.
+Status: **local implementation and hosted Cloudflare analysis/access verified; live sandbox coding execution remains blocked**. See the [actual hosted checks](cloudflare-deployment-check-2026-10-03.md). This is not yet a complete hackathon submission.
 
 ## Passed locally
 
@@ -51,14 +51,14 @@ A reported 22.4 MB log exceeded the original arbitrary 20 MB ceiling. Local brow
 
 A **single synthetic inference request** to `nvidia/Nemotron-3_5-Lightning` through Nebius returned `read_policy`, `reasoning` and `reasoning_content` fields, and reported usage of **298 prompt + 35 completion = 333 tokens**, including 11 reasoning tokens. The local probe tape is ignored by Git. The probe did not execute a tool or generated code, and is not counted as a successful coding-agent run.
 
-The sandbox read-only probe returned HTTP 400 for a missing project header. A Sandbox-enabled project/image and cancellation/isolation/billing checks are still needed. No provider-wide capability conclusion is drawn from this error.
+The initial sandbox read-only probe returned HTTP 400 for a missing project header. After the project was configured, the image-list probe returned HTTP 403 for insufficient permissions. The owner submitted the beta access request. Access, image selection, and cancellation/isolation/billing checks remain pending.
 
 ## Unverified / remaining gates
 
 - Real Nebius sandbox execution, image/isolated-network behavior, cancellation, timeout, cleanup and restart recovery against the actual service.
 - Full fresh Nemotron coding runs and independently executed acceptance tests for both variants.
 - Verified supplier pricing and the per-run worst-case reservation; actual hosting checkout cost and budget reconciliation.
-- Render deployment, GitHub Actions execution, external HTTPS/session behavior and judge access from a clean remote browser.
+- The optional Render deployment has not been provisioned. Cloudflare HTTPS/session behavior, judge access, real analysis, and clip persistence now pass; see the [hosted check](cloudflare-deployment-check-2026-10-03.md). GitHub Actions has also passed for published changes.
 - Public source/video/Devpost publication after Corey's review; registration/eligibility confirmation.
 - Review of a real personal recording and clip before publication; three-user comprehension study; narrated video.
 - Continued operation, backups and budget through December 15.

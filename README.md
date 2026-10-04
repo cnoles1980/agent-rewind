@@ -4,7 +4,9 @@
 
 A personal debugger for recorded agent runs: a Python recorder, local Codex importer, browser-local timeline player, paired comparison, annotations, and reviewed clips. Built for the Nebius × NVIDIA hackathon's Coding and Agentic Engineering track.
 
-This is a controlled-use hackathon prototype. The offline examples are **illustrative fixtures**, clearly labeled in the UI. They are not evidence of live model execution. A real Nebius Nemotron tool-call probe has passed; a full coding run in a real sandbox and the Render deployment remain release gates. See [verification status](docs/verification.md).
+**Try the hosted app:** [Agent Rewind on Cloudflare](https://agent-rewind.cnoles1980.workers.dev/). Start the tutorial without an account. Judges and invited testers can unlock reviewed Nemotron analysis and clip publication using their private invitation; no provider key is needed.
+
+This is a controlled-use hackathon prototype. The offline examples are **illustrative fixtures**, clearly labeled in the UI. Real hosted Nemotron analysis is verified; fresh coding execution remains disabled pending Nebius sandbox approval and runner verification. See the [hosted deployment check](docs/cloudflare-deployment-check-2026-10-03.md) and [Cloudflare setup](cloudflare/README.md).
 
 ## Run locally
 

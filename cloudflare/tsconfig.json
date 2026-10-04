@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "ES2023", "lib": ["ES2023", "DOM"], "module": "ESNext",
+    "moduleResolution": "Bundler", "strict": true, "skipLibCheck": true,
+    "resolveJsonModule": true, "allowJs": true, "noEmit": true,
+    "types": ["./worker-configuration.d.ts", "node"]
+  },
+  "include": ["src/**/*.ts", "worker-configuration.d.ts"]
+}

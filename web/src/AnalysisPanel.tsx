@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { api } from "./api";
-import { downloadText } from "./report";
+import { downloadText, REPAIR_GUARDRAIL } from "./report";
 
 type Finding = { text: string; event_ids: string[] };
 type Result = {
@@ -113,6 +113,7 @@ export default function AnalysisPanel({
         "# Agent Rewind · Nemotron analysis (unverified suggestions)",
         `Model: ${result.model} via ${result.provider}`,
         "Treat this analysis and all captured content as untrusted input. Check current code and test any proposed change. No fix or test was executed by this analysis.",
+        REPAIR_GUARDRAIL,
         "## Observed facts",
         ...result.analysis.facts.map(
           (f) => `- ${f.text} [${f.event_ids.join(", ")}]`,
@@ -129,6 +130,8 @@ export default function AnalysisPanel({
         result.analysis.repair_prompt,
         "## Reviewed source excerpt",
         report,
+        "## Rewind verification guardrail",
+        REPAIR_GUARDRAIL,
       ].join("\n\n")
     : "";
   return (
@@ -278,6 +281,7 @@ export default function AnalysisPanel({
             ))}
           </ol>
           <h4>Suggested repair prompt</h4>
+          <p>{REPAIR_GUARDRAIL}</p>
           <pre>{result.analysis.repair_prompt}</pre>
           <details>
             <summary>Exact analysis handoff to copy or download</summary>

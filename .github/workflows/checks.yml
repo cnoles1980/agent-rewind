@@ -22,6 +22,14 @@ jobs:
       - run: npm --prefix web ci
       - run: npm --prefix web test
       - run: npm --prefix web run build
+      - run: uv run python scripts/generate_cloudflare_contract.py
+      - run: node scripts/generate-analysis-validator.mjs
+        working-directory: web
+      - run: npm ci
+        working-directory: cloudflare
+      - run: npm run check && npm run build && npm test
+        working-directory: cloudflare
+      - run: git diff --exit-code -- cloudflare/src/analysis-contract.json cloudflare/src/analysis.validator.js cloudflare/src/request.generated.ts cloudflare/src/result.generated.ts
       - run: npx --prefix web playwright install --with-deps chromium
       - run: npm --prefix web run test:e2e
       - uses: actions/upload-artifact@v4

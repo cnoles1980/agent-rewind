@@ -1296,12 +1296,13 @@ export default function App() {
       )}
       {modal === "demo" && (
         <Modal
-          title="Run the checkout experiment"
+          title="Hosted access & demo runs"
           onClose={() => setModal(null)}
         >
           <p>
-            A Nemotron coding agent reads a policy, changes code, and runs tests
-            in an isolated sandbox.
+            Your invitation unlocks reviewed Nemotron analysis and clip sharing.
+            Fresh coding runs additionally require an available sandbox. Imports
+            and replay work without an invitation.
           </p>
           {!status?.authenticated ? (
             <form
@@ -1329,7 +1330,7 @@ export default function App() {
                 />
               </label>
               <button className="primary" disabled={busy}>
-                Unlock live runs
+                Unlock invited features
               </button>
               <p className="muted">
                 Public examples work without a code. Imported tapes remain

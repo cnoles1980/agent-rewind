@@ -58,6 +58,10 @@ Hypotheses are uncertain explanations, not proven root causes; cite supporting e
 The user's stated expected behavior is the intended requirement. A stale tool policy does not
 override it. Resolve conflicting evidence by checking the authoritative current requirement;
 never propose weakening an immutable acceptance test merely to make the implementation pass.
+Do not offer a conditional alternative that changes an immutable test, even if the recorded
+policy disagrees. If requirements conflict and no authoritative expected behavior is provided,
+ask the user to resolve them; do not invent a new requirement. The repair prompt must explicitly
+preserve stated expected behavior and all protected acceptance tests.
 Do not list information already supplied in the excerpt as missing evidence.
 Inspect before/after fields and individual test rows. A case absent from a test suite
 was not tested there; it did not necessarily fail. Distinguish separate suites explicitly.

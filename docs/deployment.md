@@ -2,13 +2,13 @@
 
 ## Current external blockers
 
-Latest result: [October 3 deployment preflight](deployment-check-2026-10-03.md). Blueprint and local judge-session checks pass; a hosted URL and sandbox project/image are still needed for live acceptance. The local dedicated inference key is already configured.
+Latest result: [Cloudflare hosted deployment check](cloudflare-deployment-check-2026-10-03.md). The player, invited Nemotron analysis, sessions, and reviewed clips are hosted at https://agent-rewind.cnoles1980.workers.dev/. Follow [Cloudflare setup and recovery](../cloudflare/README.md) for the active deployment. No custom domain or Render account is required.
 
 Evidence analysis can be enabled independently of live coding execution. It needs the dedicated Nebius key, verified inference pricing/reservation, and separate analysis enable flags; no sandbox is required. Follow [analysis configuration](analysis.md). Both kinds of paid calls share the same role budgets and total ceiling.
 
-The implementation is ready for configuration, but hosted/live acceptance is **not verified**. Corey needs to provide a dedicated Nebius key, a Sandbox-enabled project, a verified Python image, confirmed prices, and Render access/billing. Do not paste keys into chat. Put them in local `.env` or the Render secret settings.
+**Live sandbox acceptance remains unverified.** The project ID and dedicated key are configured, and Corey submitted the Nebius beta request. After approval, the remaining work is image selection, execution/cancellation/isolation verification, and integrating the runner into the Cloudflare deployment. The owner does not need to guess a sandbox image or write integration code.
 
-The one selected adapter candidate is Nebius Sandboxes. The read-only sandbox check returned **HTTP 400: missing Project header**; it did not establish whether this account has beta access. A synthetic inference request succeeded with Nemotron 3.5 Lightning, tool calling, reasoning fields and usage reporting. No generated code was executed by that probe.
+The selected adapter candidate is Nebius Sandboxes. After adding the verified project ID, the latest read-only image-list check returned **HTTP 403: insufficient permissions**. The beta request submission was confirmed. Real hosted inference works independently; no generated code has been executed by that probe.
 
 ## 1. Verify Nebius execution by October 5
 
@@ -35,7 +35,9 @@ Each admitted job retains its full worst-case reservation, even if cancelled or 
 
 Before checkout, compare Render's final price, tax, and disk charges with the $30 allocation. [Render pricing](https://render.com/pricing) is a reference, not a quote for this account. Preserve the contingency and judge reserve; do not automatically increase settings to admit more jobs.
 
-## 3. Deploy one service
+## 3. Optional alternative: deploy the original Python service on Render
+
+The active Cloudflare deployment is documented above. These instructions retain the original Python/SQLite hosting option for self-hosters; Render has not been provisioned or validated for this project.
 
 1. Review the source and publish the repository under MIT. The local repository is not automatically made public by this implementation.
 2. Connect that repository to Render using `render.yaml`. It requests a paid Starter service and a 1 GB persistent disk at `/var/data`. Approve billing yourself within the agreed ceiling.

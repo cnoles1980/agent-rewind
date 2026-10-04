@@ -17,7 +17,7 @@ test("production CSP, invitation, clip publication, anonymous reading and UI rev
   await page
     .getByLabel("Invitation code")
     .fill("synthetic-browser-test-credential");
-  await page.getByRole("button", { name: "Unlock live runs" }).click();
+  await page.getByRole("button", { name: "Unlock invited features" }).click();
   await expect(
     page.getByRole("button", { name: "Launch fresh run" }),
   ).toBeDisabled();

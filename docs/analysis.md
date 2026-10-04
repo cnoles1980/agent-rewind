@@ -18,6 +18,8 @@ After reviewing the generated response and its source excerpt, copy or download 
 
 ## Configure analysis without a sandbox
 
+These settings below apply to the Python/local API. The active Cloudflare deployment has a [separate setup guide](../cloudflare/README.md), including its Worker secrets and enable flags. Use only one active paid ledger for the same budget.
+
 1. Put a dedicated `NEBIUS_API_KEY` in the ignored root `.env` or hosting secret settings. Keep `NEBIUS_MODEL=nvidia/Nemotron-3_5-Lightning`. Never use a `VITE_` variable or put a key in chat, source, or browser Settings.
 2. Confirm public-endpoint pricing for that model. On October 3, 2026, [Nebius's Nemotron catalog](https://nebius.com/services/token-factory/models/nvidia-nemotron-models-inference) lists $0.06 per million input tokens and $0.24 per million output tokens. Account-specific billing, taxes, minimums, or future prices still need verification before hosted launch.
 3. Set `REWIND_ANALYSIS_RESERVATION_CENTS` to a verified conservative per-request allowance. The default **25 cents** is a reservation, not a displayed charge estimate. It covers a wide margin over the published token rates for this bounded request. Include system/schema messages, JSON encoding overhead, and reasoning/output usage. Reservations share the existing $20 tester and $30 judge allocations with coding runs, and the $100 total ceiling. Never increase the ceiling automatically.

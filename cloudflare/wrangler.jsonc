@@ -1,0 +1,30 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "agent-rewind",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-03",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": false,
+  "secrets": {"required": ["NEBIUS_API_KEY", "TESTER_CODE_HASH", "JUDGE_CODE_HASH", "INITIAL_TESTER_CENTS", "INITIAL_JUDGE_CENTS"]},
+  "assets": {
+    "directory": "../web/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": true
+  },
+  "durable_objects": {"bindings": [
+    {"name": "LEDGER", "class_name": "BudgetLedger"},
+    {"name": "ACCESS", "class_name": "AccessState"},
+    {"name": "CLIPS", "class_name": "ClipStore"}
+  ]},
+  "migrations": [{"tag": "v1", "new_sqlite_classes": ["BudgetLedger", "AccessState", "ClipStore"]}],
+  "vars": {
+    "ORIGIN": "https://agent-rewind.cnoles1980.workers.dev",
+    "MODEL": "nvidia/Nemotron-3_5-Lightning",
+    "ANALYSIS_ENABLED": "false",
+    "ANALYSIS_PRICES_VERIFIED": "false"
+  },
+  "observability": {"enabled": true, "head_sampling_rate": 1, "logs": {"enabled": true, "invocation_logs": false}},
+  "limits": {"cpu_ms": 50}
+}
