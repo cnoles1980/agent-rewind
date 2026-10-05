@@ -1586,11 +1586,33 @@ label.checkbox {
   font-size: var(--text-body);
   margin-bottom: 12px;
 }
-.paired-evidence > div {
+.paired-times,
+.full-evidence,
+.changed-field > div {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
+.paired-evidence .changed-fields {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0;
+}
+.changed-field h4 {
+  font-size: var(--text-body);
+  overflow-wrap: anywhere;
+  margin: 0 0 10px;
+}
+.paired-times p {
+  color: var(--muted);
+  margin: 6px 0 0;
+  overflow-wrap: anywhere;
+}
+.paired-evidence details > summary {
+  cursor: pointer;
+  padding: 10px 0;
+}
+.changed-field > div > div { min-width: 0; }
 .paired-evidence section {
   min-width: 0;
   background: #f6f9fc;
@@ -1621,7 +1643,9 @@ label.checkbox {
   max-height: 158px;
 }
 @media (max-width: 600px) {
-  .paired-evidence > div {
+  .paired-times,
+.full-evidence,
+.changed-field > div {
     grid-template-columns: 1fr;
   }
   .ar-mark {

@@ -99,6 +99,28 @@ function options() {
       });
     },
   });
+  // Build oversized requests inside workerd so early rejection cannot race a
+  // Node-to-Miniflare HTTP upload. Both paths still invoke the actual app route.
+  converted.workers.push(
+    ...convertV4MiniflareOptions({
+      name: "body-limit-client",
+      modules: true,
+      compatibilityDate: "2026-10-03",
+      serviceBindings: { APP: "agent-rewind-test" },
+      script: `export default { async fetch(request, env) {
+      const { cookie, streamed } = await request.json();
+      const payload = JSON.stringify({huge: "x".repeat(2 * 1024 * 1024)});
+      const body = streamed ? new ReadableStream({start(controller) {
+        controller.enqueue(new TextEncoder().encode(payload)); controller.close();
+      }}) : payload;
+      const response = await env.APP.fetch("${origin}/api/clips", {
+        method: "POST", headers: {Origin: "${origin}", Cookie: cookie,
+          "Content-Type": "application/json"}, body
+      });
+      return new Response(await response.text(), {status: response.status});
+    }};`,
+    }).workers,
+  );
   return {
     ...converted,
     resourcePersistencePath: persistence,
@@ -335,11 +357,16 @@ test("bounded malformed input and login throttling", async () => {
     ).status,
     422,
   );
-  assert.equal(
-    (await api("/clips", "POST", { huge: "x".repeat(2 * 1024 * 1024) }, cookie))
-      .status,
-    413,
-  );
+  const client = await mf.getWorker("body-limit-client");
+  for (const streamed of [false, true]) {
+    const oversized = await client.fetch(origin, {
+      method: "POST",
+      body: JSON.stringify({ cookie, streamed }),
+    });
+    const rejection = await oversized.text();
+    assert.equal(oversized.status, 413, rejection);
+    assert.match(rejection, /Content exceeds the size limit/);
+  }
   for (let i = 0; i < 10; i++)
     await api("/session", "POST", { code: "invalid-invitation" }, undefined, {
       "CF-Connecting-IP": "192.0.2.2",

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { changedFields, previewValue } from "./changedFields";
 import { CaretRight, GitBranch } from "@phosphor-icons/react";
 import {
   clock,
@@ -9,6 +10,120 @@ import {
   type Tape,
   type Difference,
 } from "./engine";
+
+function recordedEvidence(
+  t: Tape,
+  e: Difference["a"],
+): Record<string, unknown> | undefined {
+  if (!e) return undefined;
+  const context = contextForEvent(t, e);
+  return {
+    name: e.name,
+    status: e.status,
+    ...(e.kind === "context" ? { context: e.data } : evidence(t, e)),
+    ...(context ? { model_context: context.data } : {}),
+  };
+}
+
+function PairedEvidence({
+  a,
+  b,
+  difference,
+}: {
+  a: Tape;
+  b: Tape;
+  difference: Difference;
+}) {
+  const [showFull, setShowFull] = useState(false);
+  const records = useMemo(
+    () => [
+      recordedEvidence(a, difference.a),
+      recordedEvidence(b, difference.b),
+    ],
+    [a, b, difference],
+  );
+  const summary = useMemo(() => {
+    const focused = records.map((record) => {
+      if (!record) return undefined;
+      const { name, status, input, output, error, context, model_context } =
+        record;
+      return difference.type === "behavior"
+        ? { name, status, output, error }
+        : { input, context, model_context };
+    });
+    return changedFields(focused[0], focused[1]);
+  }, [records, difference.type]);
+  return (
+    <div className="paired-evidence">
+      <h3>{difference.message}</h3>
+      <div className="changed-fields">
+        {summary.fields.map((field) => (
+          <section key={field.path} className="changed-field">
+            <h4>{field.path}</h4>
+            <div>
+              {[field.a, field.b].map((value, i) => (
+                <div key={i}>
+                  <b>Run {i ? "B" : "A"}</b>
+                  <pre>{previewValue(value)}</pre>
+                </div>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+      {summary.limited && (
+        <p>Showing a limited preview. Expand full evidence for all fields.</p>
+      )}
+      <div className="paired-times">
+        {[difference.a, difference.b].map((event, i) => (
+          <section key={i}>
+            <b>Run {i ? "B" : "A"}</b>
+            <p>
+              {event ? (
+                <>
+                  {event.elapsed_ms === null
+                    ? "Time unknown"
+                    : clock(event.elapsed_ms, true)}
+                  <br />
+                  {event.timestamp ?? "Timestamp not captured"}
+                </>
+              ) : (
+                "No paired event"
+              )}
+            </p>
+          </section>
+        ))}
+      </div>
+      <details onToggle={(e) => setShowFull(e.currentTarget.open)}>
+        <summary>Full recorded evidence</summary>
+        {showFull && (
+          <div className="full-evidence">
+            {records.map((value, i) => (
+              <section key={i}>
+                <b>Run {i ? "B" : "A"}</b>
+                <pre>
+                  {JSON.stringify(
+                    value
+                      ? {
+                          ...value,
+                          elapsed_ms: (i ? difference.b : difference.a)
+                            ?.elapsed_ms,
+                          timestamp: (i ? difference.b : difference.a)
+                            ?.timestamp,
+                        }
+                      : { capture: "No paired event" },
+                    null,
+                    2,
+                  )}
+                </pre>
+              </section>
+            ))}
+          </div>
+        )}
+      </details>
+    </div>
+  );
+}
 
 function Track({
   tape,
@@ -90,19 +205,6 @@ export default function Comparison({
       onJump(d);
     }
   };
-  const detail = (t: Tape, e: Difference["a"]) =>
-    e
-      ? {
-          name: e.name,
-          time: e.elapsed_ms === null ? "unknown" : clock(e.elapsed_ms, true),
-          timestamp: e.timestamp,
-          status: e.status,
-          ...(e.kind === "context" ? { context: e.data } : evidence(t, e)),
-          ...(contextForEvent(t, e)
-            ? { model_context: contextForEvent(t, e)!.data }
-            : {}),
-        }
-      : { capture: "No paired event" };
   return (
     <section className="comparison" aria-label="Observed differences">
       {expanded && (
@@ -147,19 +249,7 @@ export default function Comparison({
             </div>
           )}
           {selected && b && (
-            <div className="paired-evidence">
-              <h3>{selected.message}</h3>
-              <div>
-                {[detail(a, selected.a), detail(b, selected.b)].map(
-                  (value, i) => (
-                    <section key={i}>
-                      <b>Run {i ? "B" : "A"}</b>
-                      <pre>{JSON.stringify(value, null, 2)}</pre>
-                    </section>
-                  ),
-                )}
-              </div>
-            </div>
+            <PairedEvidence key={index} a={a} b={b} difference={selected} />
           )}
         </div>
       )}

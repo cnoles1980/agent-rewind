@@ -63,6 +63,13 @@ test("observed differences precede the timeline and expand paired evidence on de
     .click();
   await expect(panel.locator(".paired-evidence")).toContainText("archived-v1");
   await expect(panel.locator(".paired-evidence")).toContainText("current-v2");
+  await expect(panel.locator(".changed-fields")).toContainText(
+    "/output/policy",
+  );
+  await expect(panel.locator(".full-evidence")).toHaveCount(0);
+  await expect(panel.locator(".paired-times")).toContainText("00:22");
+  await panel.getByText("Full recorded evidence", { exact: true }).click();
+  await expect(panel.locator(".full-evidence")).toContainText('"input"');
   await panel.getByRole("button", { name: "Hide comparison" }).click();
   await expect(page.locator(".comparison-main")).toHaveCount(0);
 });
