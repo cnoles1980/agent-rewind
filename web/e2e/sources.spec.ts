@@ -15,9 +15,7 @@ test("settings imports Codex locally and prepares a reviewed, redacted debugging
     page.getByRole("region", { name: "Codex import instructions" }),
   ).toContainText("no CLI conversion is required");
   await page.getByLabel("Default playback speed").selectOption("2");
-  await page
-    .getByLabel("Preceding events in debugging reports")
-    .selectOption("2");
+  await page.getByLabel("Earlier events in reports").selectOption("2");
   const writes: string[] = [];
   page.on("request", (r) => {
     if (r.method() !== "GET") writes.push(r.url());
@@ -38,7 +36,7 @@ test("settings imports Codex locally and prepares a reviewed, redacted debugging
   await page
     .getByLabel("What happened, and what did you expect?")
     .fill("private-customer: shipping should be free.");
-  await page.getByLabel("Additional text to redact").fill("private-customer");
+  await page.getByLabel("Text to hide").fill("private-customer");
   await expect(page.getByLabel("Debugging report preview")).not.toHaveValue(
     /private-customer/,
   );

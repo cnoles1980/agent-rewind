@@ -46,9 +46,9 @@ export default function DebugReport({
   return (
     <div className="report-panel">
       <p>
-        Review the selected event and up to {preceding} preceding events. Then
-        analyze the evidence with Nemotron below, or copy a local report to your
-        agent chat. Nothing is sent automatically.
+        Review this event and up to {preceding} earlier events. Copy the report
+        to your agent’s chat, or request Nemotron analysis. Nothing is sent
+        automatically.
       </p>
       <div className="callout">
         <strong>
@@ -58,9 +58,8 @@ export default function DebugReport({
             : clock(event.elapsed_ms, true)}
         </strong>
         <p>
-          Later events are excluded. To include a later failure, close this
-          report and select that failure first. Adjust preceding events in
-          Settings & sources if earlier evidence is missing.
+          Later events are excluded. To include a failure, select it first. Need
+          more earlier events? Adjust the report settings in Settings & sources.
         </p>
         <button
           onClick={() => {
@@ -68,7 +67,7 @@ export default function DebugReport({
             analysisSection.current?.focus({ preventScroll: true });
           }}
         >
-          Go to Nemotron analysis options
+          View analysis options
         </button>
       </div>
       <label>
@@ -93,16 +92,16 @@ export default function DebugReport({
             setIncludeContext(e.target.checked);
           }}
         />
-        Include the selected event’s linked context snapshot
+        Include this event’s recorded context
       </label>
       {includeContext && (
         <p className="callout">
-          A context snapshot can contain earlier messages and private data.
-          Review everything below before copying.
+          Context may include earlier messages and private data. Review it
+          before sharing.
         </p>
       )}
       <label>
-        Additional text to redact (one phrase per line)
+        Text to hide (one phrase per line)
         <textarea
           rows={2}
           value={phrases}

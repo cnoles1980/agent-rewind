@@ -64,23 +64,20 @@ export default function StudyPanel({
         <p>
           {status.role ? (
             <>
-              You are signed in for hosted features. Private study feedback
-              requires an individual tester invitation; enter that code below to
-              switch access.
+              You’re signed in. To leave study feedback, switch to your
+              individual tester code below.
             </>
           ) : (
             <>
-              <strong>Have an invitation?</strong> Enter it once to unlock
-              hosted AI analysis and private tester feedback. The guided example
-              works without a code, installation or API key.
+              <strong>Have an invitation?</strong> Enter it for AI analysis and
+              private feedback. Examples need no code or setup.
             </>
           )}
         </p>
       )}
       <p>
-        Feedback goes privately to the project owner in this app. Only the
-        rating, message and your tester label are saved. No recording, report,
-        screenshot or browser history is attached; no model call is made.
+        Only your rating, message and tester label go to the project owner. No
+        recordings or other attachments are sent. Feedback makes no model call.
       </p>
       {notice && <p role="status">{notice}</p>}
       {status?.role && (

@@ -29,7 +29,7 @@ Use search, previous/next event, or the playhead to navigate. Space plays/pauses
 
 ## 3. Compare the corrected evidence
 
-The **Observed Differences** panel is above the player. Choose **Jump to first behavior difference** and inspect the two policy responses. The corrected example includes the $50 boundary. Expand A/B playback to navigate the paired runs.
+The **Observed Differences** panel is above the player. Choose **First behavior difference** and inspect the two policy responses. The corrected example includes the $50 boundary. Expand A/B playback to navigate the paired runs.
 
 Differences identify changed evidence and behavior. They do not automatically prove the cause of a failure.
 
@@ -47,7 +47,7 @@ For hosted access, use **Enter invitation code** under Help & access or in the w
 
 Select the consequential event and choose **Debug report**. Describe what happened and what you expected. Review the exact evidence preview, add extra redaction phrases if needed, and check the review box. Copy or download the Markdown, then paste it into your existing agent chat yourself.
 
-The report ends at the selected event. Later code changes or test failures are excluded. Select the failure first if you want its result included; increase **Preceding events in debugging reports** under Settings & sources if earlier policy or code evidence is missing. **Go to Nemotron analysis options** jumps to the analysis controls without sending data or bypassing review.
+The report ends at the selected event. Later code changes or test failures are excluded. Select the failure first if you want its result included; increase **Earlier events in reports** under Settings & sources if earlier policy or code evidence is missing. **View analysis options** jumps to the analysis controls without sending data or bypassing review.
 
 This evidence-only report works without an API key. For **optional Nemotron analysis**, invited users enter their invitation code, review the excerpt, and explicitly consent to sending it. Choose **Analyze selected evidence**. Read the **Recorded excerpts** and follow their citations, then review the **Investigation questions** and suggested checks before copying the handoff. Rewind checks that quoted text exists in the selected evidence, but the questions may still be wrong. The handoff asks your agent to inspect the project and confirm the cause before changing anything.
 

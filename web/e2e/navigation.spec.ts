@@ -53,16 +53,16 @@ test("observed differences precede the timeline and expand paired evidence on de
   await expect(
     panel.getByRole("heading", { name: "Observed Differences" }),
   ).toBeVisible();
-  await expect(panel).toContainText("5 evidence differences");
+  await expect(panel).toContainText("5 differences");
   expect((await panel.boundingBox())!.y).toBeLessThan(
     (await page.locator(".studio").boundingBox())!.y,
   );
   await expect(page.locator(".comparison-main")).toHaveCount(0);
   await panel
-    .getByRole("button", { name: "Jump to first behavior difference" })
+    .getByRole("button", { name: "First behavior difference" })
     .click();
   await expect(panel.locator(".paired-evidence")).toContainText("archived-v1");
   await expect(panel.locator(".paired-evidence")).toContainText("current-v2");
-  await panel.getByRole("button", { name: "Hide A/B evidence" }).click();
+  await panel.getByRole("button", { name: "Hide comparison" }).click();
   await expect(page.locator(".comparison-main")).toHaveCount(0);
 });

@@ -128,8 +128,8 @@ export default function Settings({
     <div className="settings-panel">
       <button onClick={onTutorial}>First-use tutorial</button>
       <p className="settings-intro">
-        Bring a recording from your agent. Files are read and stored in this
-        browser; no account connection is needed.
+        Open an agent log. It stays in this browser; no account connection
+        needed.
       </p>
       <h3>Recording sources</h3>
       <div className="source-picker" aria-label="Recording sources">
@@ -213,7 +213,7 @@ export default function Settings({
             </select>
           </label>
           <label>
-            Preceding events in debugging reports
+            Earlier events in reports
             <select
               value={preferences.reportPreceding}
               onChange={(e) =>
@@ -232,17 +232,16 @@ export default function Settings({
           </label>
         </div>
         <p className="muted">
-          Preferences are saved on this device. Evidence reports are generated
-          locally. Optional Nemotron analysis sends only your reviewed excerpt
-          to Nebius.
+          Settings are saved here. Reports are built locally; requested Nemotron
+          analysis sends your reviewed excerpt to Nebius.
         </p>
       </section>
       <section className="settings-section">
         <h3>Privacy & storage</h3>
         <p>
-          100 MB / 10,000 events per local import. Shared clips are limited to 2
-          MB. Export important tapes before clearing browser data. Redaction
-          reduces risk but cannot identify every private detail.
+          Import limit: 100 MB / 10,000 events. Shared clip limit: 2 MB. Export
+          recordings before clearing browser data. Redaction can miss private
+          details.
         </p>
         <button onClick={onLibrary}>Manage local recordings</button>
       </section>
@@ -250,18 +249,17 @@ export default function Settings({
         <h3>Hosted demo access</h3>
         <p>
           {status?.analysis_available
-            ? "Nemotron evidence analysis is configured."
-            : "Nemotron evidence analysis is unavailable."}
+            ? "Nemotron analysis is available."
+            : "Nemotron analysis is unavailable."}
           {status?.analysis_blockers?.length
             ? " " + status.analysis_blockers.join("; ") + "."
             : ""}{" "}
-          Open Debug report on a selected event to review evidence and request
-          analysis.
+          Select an event, then open Debug report to request analysis.
         </p>
         <p>
           {status?.authenticated
-            ? "Invitation session is active."
-            : "No invitation session is active."}{" "}
+            ? "You’re signed in."
+            : "You’re not signed in."}{" "}
           {status?.live_available
             ? "Live execution is configured."
             : "Live execution is unavailable."}
@@ -273,10 +271,7 @@ export default function Settings({
             ))}
           </ul>
         ) : null}
-        <p className="muted">
-          Inference and sandbox secrets are configured on the server. Personal
-          agent imports need no API key.
-        </p>
+        <p className="muted">The host manages API keys. Imports need no key.</p>
         <button onClick={onDemo}>Manage invitation access</button>
       </section>
     </div>

@@ -98,7 +98,7 @@ test("redacted event references never leave in analysis metadata", async ({
     .inputValue();
   const ids = [...preview.matchAll(/"event": "([^"]+)"/g)].map((m) => m[1]);
   expect(ids.length).toBeGreaterThan(0);
-  await page.getByLabel("Additional text to redact").fill(ids.join("\n"));
+  await page.getByLabel("Text to hide").fill(ids.join("\n"));
   await page.getByRole("checkbox", { name: "I reviewed this report" }).check();
   await page
     .getByRole("checkbox", { name: "Send this reviewed excerpt" })
@@ -154,7 +154,7 @@ test("editing during inference discards the old response", async ({ page }) => {
   ).toBeDisabled();
   await expect(
     page.getByRole("heading", {
-      name: "Recorded excerpts — matched to reviewed source",
+      name: "Recorded excerpts",
       exact: true,
     }),
   ).toHaveCount(0);
@@ -216,7 +216,7 @@ test("reviewed Nemotron excerpt, safe cited findings, handoff, and event navigat
   await page
     .getByLabel("What happened, and what did you expect?")
     .fill("customer-private expected free shipping");
-  await page.getByLabel("Additional text to redact").fill("customer-private");
+  await page.getByLabel("Text to hide").fill("customer-private");
   const analyze = page.getByRole("button", {
     name: "Analyze selected evidence",
     exact: true,
@@ -234,7 +234,7 @@ test("reviewed Nemotron excerpt, safe cited findings, handoff, and event navigat
   await analyze.click();
   await expect(
     page.getByRole("heading", {
-      name: "Recorded excerpts — matched to reviewed source",
+      name: "Recorded excerpts",
       exact: true,
     }),
   ).toBeVisible();
@@ -308,7 +308,7 @@ test("editing evidence clears consent and earlier analysis; failed calls do not 
     .click();
   await expect(
     page.getByRole("heading", {
-      name: "Recorded excerpts — matched to reviewed source",
+      name: "Recorded excerpts",
       exact: true,
     }),
   ).toBeVisible();
@@ -317,7 +317,7 @@ test("editing evidence clears consent and earlier analysis; failed calls do not 
     .fill("Changed expected behavior");
   await expect(
     page.getByRole("heading", {
-      name: "Recorded excerpts — matched to reviewed source",
+      name: "Recorded excerpts",
       exact: true,
     }),
   ).toHaveCount(0);

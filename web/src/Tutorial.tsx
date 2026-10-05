@@ -5,35 +5,35 @@ export const tutorialSteps = [
     title: "What did the agent read?",
     tool: "read_policy",
     tab: "Event",
-    text: "The task says shipping is free at $50 or more. Look at Output in the event details: the policy the agent received says strictly above $50. That outdated policy was deliberately injected into this example.",
+    text: "Shipping should be free at $50 or more. Output shows the agent received an outdated rule: strictly above $50. This example deliberately injects that stale policy.",
     next: "See the code change",
   },
   {
     title: "What did it change?",
     tool: "apply_patch",
     tab: "Diff",
-    text: "The Diff tab shows the recorded code change. The new rule uses > 50 (greater than $50), which leaves an order of exactly $50 paying shipping. You can trace the change back to the policy response.",
+    text: "Diff shows the code changed to > 50. An order of exactly $50 still pays shipping, matching the stale policy.",
     next: "See the failed check",
   },
   {
     title: "What actually went wrong?",
     tool: "acceptance_tests",
     tab: "Event",
-    text: "Look at Output: for a $50 order, the expected shipping fee is 0, but the actual fee is 5. The tool finished successfully; the test inside its result failed. Rewind lets you inspect that distinction.",
+    text: "Output shows the failure: a $50 order should have a $0 shipping fee, but it has a $5 fee. The test ran and failed.",
     next: "Compare the corrected run",
   },
   {
     title: "What changed in the corrected run?",
     tool: "read_policy",
     tab: "Event",
-    text: "The paired evidence compares the two policy responses: archived-v1 and current-v2. The corrected policy includes the $50 boundary. These are observed differences; a comparison alone does not prove a root cause.",
+    text: "Compare the two policy responses. The current rule includes exactly $50. Differences show what changed; they alone do not prove the cause.",
     next: "Prepare a debugging report",
   },
   {
     title: "Take the evidence back to your agent",
     tool: "acceptance_tests",
     tab: "Event",
-    text: "Open a report with the failed check, describe the expected behavior, and review the excerpt. Copy it into your coding agent’s chat to help investigate. Optional Nemotron analysis can suggest checks after you review and consent; it needs invited access. Rewind never sends a message or fixes code automatically.",
+    text: "Review a report of the failed check, then copy it to your agent’s chat. Invited users can also request Nemotron suggestions. Rewind never sends messages or fixes code automatically.",
     next: "",
   },
 ] as const;
@@ -76,11 +76,11 @@ export function TutorialPrompt({
       <p className="welcome-eyebrow">A debugger for recorded AI agent runs</p>
       <h2>Understand what went wrong. Bring evidence back to your agent.</h2>
       <p>
-        Open a recording, inspect what the agent saw and did, then prepare a
-        debugging report to paste into its chat.
+        Inspect what your agent saw and did. Copy the evidence into its chat to
+        help investigate.
       </p>
       <p className="muted">
-        Try an example with no setup, account or key. Nothing runs or gets sent
+        No setup or key needed for examples. Nothing runs or is sent
         automatically.
       </p>
       <div className="welcome-actions">
@@ -99,9 +99,7 @@ export function TutorialPrompt({
           </button>
         )}
       </div>
-      <p className="muted">
-        Reopen this introduction anytime with Quick start.
-      </p>
+      <p className="muted">Reopen anytime with Quick start.</p>
     </section>
   );
 }
@@ -133,8 +131,8 @@ export default function Tutorial({
     <section className="tutorial-guide" aria-label="Guided investigation">
       <div aria-live="polite" aria-atomic="true">
         <p className="muted">
-          Guided example · Step {index + 1} of {tutorialSteps.length} ·
-          Illustrative recording, no live execution
+          Guided example · Step {index + 1} of {tutorialSteps.length} · Example,
+          no live execution
         </p>
         <h2 ref={heading} tabIndex={-1}>
           {step.title}

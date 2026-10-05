@@ -158,11 +158,10 @@ export default function AnalysisPanel({
     <section className="analysis-panel" aria-label="Nemotron evidence analysis">
       <h3>Analyze with Nemotron</h3>
       <p>
-        Send the exact report preview above and its event references to this
-        server and Nebius Token Factory. The original recording stays in your
-        browser. Rewind does not save the excerpt or analysis on the server;
-        provider data handling applies. Only request status, cost reservation,
-        and token counts are retained.
+        Send this reviewed report and its event references to the server and
+        Nebius Token Factory. The server keeps only request status, cost
+        reservations and token counts; it does not save the report or response.
+        Nebius data policies apply.
       </p>
       <p className="muted">
         {status?.model ?? "NVIDIA Nemotron"} · One model call · No tools or
@@ -266,21 +265,17 @@ export default function AnalysisPanel({
       {result && (
         <div className="analysis-results">
           <p className="callout">
-            Excerpts come directly from the reviewed source text. Captured text
-            can still be wrong or incomplete. Nemotron's questions and checks
-            are unverified suggestions; matching a quote does not prove its
-            explanation.
+            Excerpts match your reviewed source, which may be wrong or
+            incomplete. Nemotron’s questions and checks are unverified; accurate
+            quotes do not prove a cause.
             {result.usage.total_tokens !== undefined &&
               ` Reported usage: ${result.usage.total_tokens} tokens.`}
           </p>
           {(
             [
+              ["Recorded excerpts", result.analysis.facts],
               [
-                "Recorded excerpts — matched to reviewed source",
-                result.analysis.facts,
-              ],
-              [
-                "Investigation questions — not proven causes",
+                "Investigation questions — unverified",
                 result.analysis.hypotheses,
               ],
             ] as const
@@ -318,7 +313,7 @@ export default function AnalysisPanel({
             ))}
           </ol>
           <h4>Investigation handoff</h4>
-          <p>{REPAIR_GUARDRAIL}</p>
+          <p>Check suggested causes against your project before editing.</p>
           <pre>{result.analysis.repair_prompt}</pre>
           <details>
             <summary>Exact analysis handoff to copy or download</summary>

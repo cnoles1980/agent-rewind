@@ -11,9 +11,7 @@ test("report navigation keeps evidence review and restores keyboard focus", asyn
   });
   await opener.click();
   await expect(page.getByText(/Evidence ends at read_policy/)).toBeVisible();
-  await page
-    .getByRole("button", { name: "Go to Nemotron analysis options" })
-    .click();
+  await page.getByRole("button", { name: "View analysis options" }).click();
   await expect(
     page.getByRole("heading", { name: "Analyze with Nemotron" }),
   ).toBeInViewport();
@@ -75,9 +73,7 @@ test("investigates policy evidence, paired differences, notes, and a reviewed cl
     page.getByRole("heading", { name: "read_policy()", exact: true }),
   ).toBeVisible();
   await expect(page.locator(".inspector")).toContainText("strictly above");
-  await page
-    .getByRole("button", { name: "Jump to first behavior difference" })
-    .click();
+  await page.getByRole("button", { name: "First behavior difference" }).click();
   await expect(page.locator(".paired-evidence")).toContainText("archived-v1");
   await expect(page.locator(".paired-evidence")).toContainText("current-v2");
   await page.getByRole("button", { name: "Add a note", exact: true }).click();

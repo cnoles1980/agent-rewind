@@ -1435,9 +1435,8 @@ export default function App() {
       {modal === "demo" && (
         <Modal title="Hosted access & demo runs" onClose={() => setModal(null)}>
           <p>
-            Your invitation unlocks reviewed Nemotron analysis and clip sharing.
-            Fresh coding runs additionally require an available sandbox. Imports
-            and replay work without an invitation.
+            An invitation enables Nemotron analysis and clip sharing. Fresh runs
+            also need a sandbox. Import and replay need no invitation.
           </p>
           {!status?.authenticated ? (
             <form
@@ -1617,8 +1616,8 @@ export default function App() {
       {modal === "clip" && tape && (
         <Modal title="Clip the evidence" onClose={() => setModal(null)}>
           <p>
-            Only the selected events are included. Review everything below
-            before sharing.
+            Only selected events are included. Review the preview before
+            sharing.
           </p>
           <div className="range-fields">
             <label>
@@ -1668,7 +1667,7 @@ export default function App() {
             </div>
           )}
           <label>
-            Extra text to redact (one phrase per line)
+            Text to hide (one phrase per line)
             <textarea
               rows={2}
               value={redactions}

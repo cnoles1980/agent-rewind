@@ -109,9 +109,10 @@ export default function Comparison({
         <div className="comparison-main" id="comparison-evidence">
           <div className="section-bar">
             <div>
-              <h2>A / B sync playback</h2>
+              <h2>Side-by-side playback</h2>
               <p>
-                Shared elapsed time. Paired jumps show each event’s actual time.
+                Playback shares a clock. Paired events show their recorded
+                times.
               </p>
             </div>
             <select
@@ -173,7 +174,7 @@ export default function Comparison({
           <>
             <h3>
               {differences.length
-                ? `${differences.length} evidence differences`
+                ? `${differences.length} ${differences.length === 1 ? "difference" : "differences"}`
                 : "No observed differences"}
             </h3>
             <p>
@@ -183,7 +184,7 @@ export default function Comparison({
                   ? `${b.run.name} · ${String(b.run.configuration.variant ?? b.run.source)}`
                   : "no second run selected"}
               </b>
-              . Observed differences do not establish a root cause.
+              . Differences alone do not prove the cause.
             </p>
             <button
               onClick={() =>
@@ -191,7 +192,7 @@ export default function Comparison({
               }
               disabled={!differences.some((d) => d.type === "behavior")}
             >
-              Jump to first behavior difference <CaretRight />
+              First behavior difference <CaretRight />
             </button>
             <button
               className="text-button"
@@ -206,7 +207,7 @@ export default function Comparison({
               onChange={(e) => jump(differences[Number(e.target.value)])}
             >
               <option value="" disabled>
-                Inspect another difference…
+                Choose a difference…
               </option>
               {differences.map((d, i) => (
                 <option key={i} value={i}>
@@ -222,7 +223,7 @@ export default function Comparison({
           aria-controls="comparison-evidence"
           onClick={() => setExpanded(!expanded)}
         >
-          {expanded ? "Hide A/B evidence" : "Show A/B evidence & choose run"}
+          {expanded ? "Hide comparison" : "Show comparison"}
         </button>
       </div>
     </section>
