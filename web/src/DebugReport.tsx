@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Copy, DownloadSimple } from "@phosphor-icons/react";
 import { debuggingReport, downloadText, reportEvents } from "./report";
 import AnalysisPanel from "./AnalysisPanel";
-import type { Event, Tape } from "./engine";
+import { clock, type Event, type Tape } from "./engine";
 
 export default function DebugReport({
   tape,
@@ -17,6 +17,7 @@ export default function DebugReport({
   onSelect: (id: string) => void;
   onAccessChange: () => void;
 }) {
+  const analysisSection = useRef<HTMLDivElement>(null);
   const [observation, setObservation] = useState(""),
     [phrases, setPhrases] = useState("");
   const [includeContext, setIncludeContext] = useState(false),
@@ -49,6 +50,27 @@ export default function DebugReport({
         analyze the evidence with Nemotron below, or copy a local report to your
         agent chat. Nothing is sent automatically.
       </p>
+      <div className="callout">
+        <strong>
+          Evidence ends at {event.name} ·{" "}
+          {event.elapsed_ms === null
+            ? "time unknown"
+            : clock(event.elapsed_ms, true)}
+        </strong>
+        <p>
+          Later events are excluded. To include a later failure, close this
+          report and select that failure first. Adjust preceding events in
+          Settings & sources if earlier evidence is missing.
+        </p>
+        <button
+          onClick={() => {
+            analysisSection.current?.scrollIntoView({ block: "start" });
+            analysisSection.current?.focus({ preventScroll: true });
+          }}
+        >
+          Go to Nemotron analysis options
+        </button>
+      </div>
       <label>
         What happened, and what did you expect?
         <textarea
@@ -140,15 +162,17 @@ export default function DebugReport({
         </button>
       </div>
       {message && <p role="status">{message}</p>}
-      <AnalysisPanel
-        report={report}
-        eventIds={reportEvents(tape, event, preceding)
-          .map((e) => e.id)
-          .filter((id) => report.includes(JSON.stringify(id)))}
-        reviewed={reviewed}
-        onSelect={onSelect}
-        onAccessChange={onAccessChange}
-      />
+      <div ref={analysisSection} tabIndex={-1} aria-label="Analysis options">
+        <AnalysisPanel
+          report={report}
+          eventIds={reportEvents(tape, event, preceding)
+            .map((e) => e.id)
+            .filter((id) => report.includes(JSON.stringify(id)))}
+          reviewed={reviewed}
+          onSelect={onSelect}
+          onAccessChange={onAccessChange}
+        />
+      </div>
     </div>
   );
 }

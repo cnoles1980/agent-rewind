@@ -101,7 +101,13 @@ function Modal({
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
-    ref.current?.showModal();
+    const dialog = ref.current;
+    const opener = document.activeElement;
+    dialog?.showModal();
+    return () => {
+      dialog?.close();
+      if (opener instanceof HTMLElement && opener.isConnected) opener.focus();
+    };
   }, []);
   return (
     <dialog
@@ -605,7 +611,7 @@ export default function App() {
           </button>
           <button onClick={() => openFile()}>
             <FolderOpen />
-            Open tape
+            Open recording
           </button>
           <button
             className={status?.live_available ? "primary" : ""}
@@ -615,7 +621,7 @@ export default function App() {
             }}
           >
             <Plus />
-            New demo run
+            {status?.live_available ? "New demo run" : "Demo access & status"}
           </button>
         </div>
       </header>

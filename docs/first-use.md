@@ -45,6 +45,8 @@ For hosted access, use **Enter invitation code** on the toolbar or welcome. Ente
 
 Select the consequential event and choose **Debug report**. Describe what happened and what you expected. Review the exact evidence preview, add extra redaction phrases if needed, and check the review box. Copy or download the Markdown, then paste it into your existing agent chat yourself.
 
+The report ends at the selected event. Later code changes or test failures are excluded. Select the failure first if you want its result included; increase **Preceding events in debugging reports** under Settings & sources if earlier policy or code evidence is missing. **Go to Nemotron analysis options** jumps to the analysis controls without sending data or bypassing review.
+
 This evidence-only report works without an API key. For **optional Nemotron analysis**, invited users enter their invitation code, review the excerpt, and explicitly consent to sending it. Choose **Analyze selected evidence**. Read the **Recorded excerpts** and follow their citations, then review the **Investigation questions** and suggested checks before copying the handoff. Rewind checks that quoted text exists in the selected evidence, but the questions may still be wrong. The handoff asks your agent to inspect the project and confirm the cause before changing anything.
 
 If the report only contains event metadata, choose an event with captured input/output or an error. Rewind will explain that more evidence is needed without making a paid call. Keep JSON blocks intact when editing the preview. Each admitted hosted analysis sets aside 25 cents of the host's internal allowance; this is a spending safeguard, not the supplier's actual charge.
@@ -59,7 +61,7 @@ Choose **Clip & share**, set the range, and read the full preview. Supporting co
 
 ## Try a fresh coding run only when enabled
 
-**New demo run** is a separate action from replay. Enter your invitation, select the stale or corrected policy, and choose **Launch fresh run**. The server calls Nemotron and executes only the allowlisted checkout fixture in a remote sandbox. Outcomes follow actual acceptance tests; success is never forced.
+The toolbar shows **Demo access & status** while fresh execution is unavailable, and **New demo run** when enabled. This is a separate action from replay. Enter your invitation, select the stale or corrected policy, and choose **Launch fresh run** only when available. The configured runner calls Nemotron and executes only the allowlisted checkout fixture in a remote sandbox. Outcomes follow actual acceptance tests; success is never forced.
 
 If the launch button is disabled, read the listed configuration blockers. Analysis can work while sandbox execution remains unavailable. Do not supply judges with your Nebius key to bypass this gate.
 

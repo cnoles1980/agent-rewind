@@ -1,6 +1,30 @@
 import { test, expect } from "@playwright/test";
 import { readFileSync } from "node:fs";
 
+test("report navigation keeps evidence review and restores keyboard focus", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const opener = page.getByRole("button", {
+    name: "Debug report",
+    exact: true,
+  });
+  await opener.click();
+  await expect(page.getByText(/Evidence ends at read_policy/)).toBeVisible();
+  await page
+    .getByRole("button", { name: "Go to Nemotron analysis options" })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Analyze with Nemotron" }),
+  ).toBeInViewport();
+  await expect(
+    page.getByRole("button", { name: "Analyze selected evidence" }),
+  ).toBeDisabled();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(opener).toBeFocused();
+});
+
 test("new live evidence invalidates clip review before export or sharing", async ({
   page,
 }) => {
@@ -180,7 +204,7 @@ test("mobile viewport keeps controls within the page", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await expect(
-    page.getByRole("button", { name: "Open tape", exact: true }),
+    page.getByRole("button", { name: "Open recording", exact: true }),
   ).toBeVisible();
   expect(
     await page.evaluate(

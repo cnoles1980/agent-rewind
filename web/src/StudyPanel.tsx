@@ -62,9 +62,19 @@ export default function StudyPanel({
     <div className="study-panel">
       {status && !status.study && status.role !== "owner" && (
         <p>
-          <strong>Have an invitation?</strong> Enter it once to unlock hosted AI
-          analysis and private tester feedback. The guided example works without
-          a code, installation or API key.
+          {status.role ? (
+            <>
+              You are signed in for hosted features. Private study feedback
+              requires an individual tester invitation; enter that code below to
+              switch access.
+            </>
+          ) : (
+            <>
+              <strong>Have an invitation?</strong> Enter it once to unlock
+              hosted AI analysis and private tester feedback. The guided example
+              works without a code, installation or API key.
+            </>
+          )}
         </p>
       )}
       <p>

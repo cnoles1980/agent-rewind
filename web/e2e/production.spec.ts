@@ -13,7 +13,7 @@ test("production CSP, invitation, clip publication, anonymous reading and UI rev
   await expect(
     page.getByRole("heading", { name: "read_policy()", exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "New demo run" }).click();
+  await page.getByRole("button", { name: "Demo access & status" }).click();
   await page
     .getByLabel("Invitation code")
     .fill("synthetic-browser-test-credential");

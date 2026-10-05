@@ -6,6 +6,8 @@ Goal: at least two of three people identify the bad policy response and its down
 
 Use the [hosted app](https://agent-rewind.cnoles1980.workers.dev/) in a fresh browser profile. Use the bundled examples, which are labeled illustrative recordings. No invitation, personal logs or paid calls are needed for the timed task. Do not demonstrate the answer first. Record notes with each person's agreement; names and recordings need not be published.
 
+Before timing, ask the participant to describe what they think the product does after reading the welcome. Record their own words. For the unassisted task below, choose **Skip for now**: the guided example explicitly reveals the policy and failure, so completing that guide cannot count as an unassisted discovery. Afterward, invite them to try the guide and record its usefulness separately. If they already saw the answer, mark that trial assisted rather than claiming a timed pass.
+
 ## Read this task aloud, then start the timer
 
 > “An agent changed a checkout function, and a test failed. The requirement is free shipping when the subtotal is $50 or more. Use Agent Rewind to find the recorded information that might explain the failure. Show me the relevant evidence and what happened afterward.”

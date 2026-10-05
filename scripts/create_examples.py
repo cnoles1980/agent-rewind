@@ -28,7 +28,7 @@ def generate(variant):
         },
         configuration={"variant": variant, "scenario": "shipping-boundary", "fault_injection": failed},
         warnings=[
-            "Illustrative example, not a live model recording. Run the invited demo for a genuine Nebius recording."
+            "Illustrative example, not a live model recording. Check Demo access & status for fresh-run availability."
         ],
     )
     events = []
