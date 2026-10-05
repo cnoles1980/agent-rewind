@@ -4,6 +4,16 @@ export default defineConfig({
   use: {
     baseURL: "http://127.0.0.1:5173",
     viewport: { width: 1448, height: 1086 },
+    // Other workflows start as returning visitors; tutorial.spec tests fresh visits.
+    storageState: {
+      cookies: [],
+      origins: ["http://127.0.0.1:5173", "http://127.0.0.1:8766"].map(
+        (origin) => ({
+          origin,
+          localStorage: [{ name: "rewind.welcome.seen.v1", value: "true" }],
+        }),
+      ),
+    },
   },
   workers: 1,
   webServer: [

@@ -12,7 +12,7 @@ This is a controlled-use hackathon prototype. The offline examples are **illustr
 
 ## Run locally
 
-**First visit?** Choose **Try the guided example · 3 min**. It selects the recorded policy, code change, failed test, and corrected comparison for you, then opens a debugging report you can review and paste into your agent's chat. No setup or key is needed. Reopen it with **Quick start**; see the [written walkthrough](docs/first-use.md) for imports, optional analysis, and sharing. Invited testers can use **Enter invitation code** directly from the welcome or toolbar.
+**First visit?** A short, skippable introduction appears once per browser. Choose **Try the guided example · 3 min**, or **Skip for now** for a clear workspace. The optional guide selects recorded evidence and opens a debugging report you can review and paste into your agent's chat. No setup or key is needed. Reopen the introduction with **Quick start**; see the [written walkthrough](docs/first-use.md) for imports, optional analysis, and sharing. Invited testers can use **Enter invitation code** directly from the popup or toolbar.
 
 Requires Python 3.12, [uv](https://docs.astral.sh/uv/getting-started/installation/), and Node.js 24 LTS. The source is a separate project and has no dependency on Agent Bridge.
 

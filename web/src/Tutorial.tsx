@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export const tutorialSteps = [
   {
@@ -38,62 +38,70 @@ export const tutorialSteps = [
   },
 ] as const;
 
+const welcomeKey = "rewind.welcome.seen.v1";
+
+export function shouldShowWelcome() {
+  // Shared links open directly on the evidence their sender chose.
+  if (new URLSearchParams(location.search).has("clip")) return false;
+  try {
+    return localStorage.getItem(welcomeKey) !== "true";
+  } catch {
+    return true;
+  }
+}
+
+export function rememberWelcome() {
+  try {
+    localStorage.setItem(welcomeKey, "true");
+  } catch {
+    /* The popup can still be skipped when browser storage is blocked. */
+  }
+}
+
 export function TutorialPrompt({
   onOpen,
   onImport,
   onAccess,
+  onSkip,
   ready,
 }: {
   onOpen: () => void;
   onImport: () => void;
   onAccess?: () => void;
+  onSkip: () => void;
   ready: boolean;
 }) {
-  const [dismissed, setDismissed] = useState(() => {
-    try {
-      return localStorage.getItem("rewind.tutorial.dismissed.v2") === "true";
-    } catch {
-      return false;
-    }
-  });
-  if (dismissed) return null;
   return (
     <section className="tutorial-welcome" aria-label="First-use welcome">
-      <div>
-        <p className="welcome-eyebrow">A debugger for recorded AI agent runs</p>
-        <h2>Understand what went wrong. Bring evidence back to your agent.</h2>
-        <p>
-          Open a recording, inspect what the agent saw and did, then prepare a
-          debugging report to paste into its chat.
-        </p>
-        <div className="welcome-actions">
-          <button className="primary" disabled={!ready} onClick={onOpen}>
-            Try the guided example · 3 min
-          </button>
-          <button onClick={onImport}>Open my own agent log</button>
-          {onAccess && (
-            <button onClick={onAccess}>Enter invitation code</button>
-          )}
-        </div>
-        <p className="muted">
-          No setup, account or key needed for the example. Your own log opens
-          locally in this browser. Invitations unlock hosted analysis and tester
-          feedback.
-        </p>
+      <p className="welcome-eyebrow">A debugger for recorded AI agent runs</p>
+      <h2>Understand what went wrong. Bring evidence back to your agent.</h2>
+      <p>
+        Open a recording, inspect what the agent saw and did, then prepare a
+        debugging report to paste into its chat.
+      </p>
+      <p className="muted">
+        Try an example with no setup, account or key. Nothing runs or gets sent
+        automatically.
+      </p>
+      <div className="welcome-actions">
+        <button className="primary" disabled={!ready} onClick={onOpen}>
+          Try the guided example · 3 min
+        </button>
+        <button onClick={onSkip}>Skip for now</button>
       </div>
-      <button
-        className="text-button"
-        onClick={() => {
-          setDismissed(true);
-          try {
-            localStorage.setItem("rewind.tutorial.dismissed.v2", "true");
-          } catch {
-            /* Still dismiss for this visit. */
-          }
-        }}
-      >
-        Dismiss welcome
-      </button>
+      <div className="welcome-actions welcome-alternatives">
+        <button className="text-button" onClick={onImport}>
+          Open my own agent log
+        </button>
+        {onAccess && (
+          <button className="text-button" onClick={onAccess}>
+            Enter invitation code
+          </button>
+        )}
+      </div>
+      <p className="muted">
+        Reopen this introduction anytime with Quick start.
+      </p>
     </section>
   );
 }

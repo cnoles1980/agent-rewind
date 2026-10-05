@@ -2,11 +2,11 @@
 
 Agent Rewind helps you understand a recorded AI agent mistake and bring evidence back to the agent's chat. Open a recording, inspect what the agent saw and did, then review and copy a debugging report. Optional AI analysis suggests investigation questions; it does not automatically repair code.
 
-Start with **Try the guided example · 3 min**. No installation, invitation, API key, or personal log is needed. The five-step guide stays beside the workspace and selects the policy, code change, failed test, and corrected comparison as you advance. **Show evidence** jumps to the relevant details. The last step opens an example debugging report. Use **Quick start** to reopen the guide anytime.
+A short introduction opens once per browser. Choose **Try the guided example · 3 min**, or **Skip for now** to go straight to the workspace. Closing it or pressing Escape also skips it. Shared clips open directly without the introduction. No installation, invitation, API key, or personal log is needed. The optional five-step guide selects the policy, code change, failed test, and corrected comparison as you advance. **Show evidence** jumps to the relevant details. The last step opens an example debugging report. Use **Quick start** to reopen the introduction anytime. Clearing browser storage makes it appear again.
 
 Invited testers: choose **Enter invitation code**, paste your private code, and select **Unlock invited access**. Then choose **Start guided example**. You only need to enter the code once per session; it enables optional hosted analysis and private feedback. When finished, choose **Feedback**, add a rating and message, review, and submit. No recording is automatically attached.
 
-![First tutorial step in the app](screenshots/first-use-tutorial.png)
+![Skippable first-use introduction](screenshots/welcome-popup.png)
 
 ## 1. Find the bad policy
 

@@ -39,7 +39,12 @@ import Comparison from "./Comparison";
 import Settings, { readPreferences, type Preferences } from "./Settings";
 import DebugReport from "./DebugReport";
 import StudyPanel from "./StudyPanel";
-import Tutorial, { TutorialPrompt, tutorialSteps } from "./Tutorial";
+import Tutorial, {
+  TutorialPrompt,
+  tutorialSteps,
+  shouldShowWelcome,
+  rememberWelcome,
+} from "./Tutorial";
 import type { ImportSource } from "./imports";
 import { importLocalFile, type ImportProgress } from "./importFile";
 import {
@@ -101,6 +106,7 @@ function Modal({
   return (
     <dialog
       ref={ref}
+      aria-label={title}
       onCancel={(e) => {
         e.preventDefault();
         onClose();
@@ -157,11 +163,15 @@ export default function App() {
       | "report"
       | "import"
       | "feedback"
+      | "welcome"
       | null
-    >(null),
+    >(() => (shouldShowWelcome() ? "welcome" : null)),
     [notice, setNotice] = useState(""),
     [error, setError] = useState(""),
     [status, setStatus] = useState<any>(null);
+  useEffect(() => {
+    if (modal === "welcome") rememberWelcome();
+  }, [modal]);
   const [code, setCode] = useState(""),
     [note, setNote] = useState(""),
     [variant, setVariant] = useState("stale"),
@@ -553,7 +563,12 @@ export default function App() {
           <span /> Personal workspace
         </div>
         <div className="top-actions">
-          <button disabled={!tutorialReady} onClick={() => guide(0)}>
+          <button
+            onClick={() => {
+              setPlaying(false);
+              setModal("welcome");
+            }}
+          >
             Quick start
           </button>
           {status?.study_supported && !status?.authenticated && (
@@ -727,24 +742,7 @@ export default function App() {
             </button>
           </div>
         )}
-        {tutorialStep === null ? (
-          <TutorialPrompt
-            ready={tutorialReady}
-            onOpen={() => guide(0)}
-            onImport={() => {
-              setPlaying(false);
-              setModal("settings");
-            }}
-            onAccess={
-              status?.study_supported && !status?.authenticated
-                ? () => {
-                    setPlaying(false);
-                    setModal("feedback");
-                  }
-                : undefined
-            }
-          />
-        ) : (
+        {tutorialStep !== null && (
           <Tutorial
             index={tutorialStep}
             onStep={guide}
@@ -1303,6 +1301,21 @@ export default function App() {
           </>
         )}
       </main>
+      {modal === "welcome" && (
+        <Modal title="Meet Agent Rewind" onClose={() => setModal(null)}>
+          <TutorialPrompt
+            ready={tutorialReady}
+            onOpen={() => guide(0)}
+            onSkip={() => setModal(null)}
+            onImport={() => setModal("settings")}
+            onAccess={
+              status?.study_supported && !status?.authenticated
+                ? () => setModal("feedback")
+                : undefined
+            }
+          />
+        </Modal>
+      )}
       {modal === "feedback" && (
         <Modal title="Feedback & tester access" onClose={() => setModal(null)}>
           <StudyPanel

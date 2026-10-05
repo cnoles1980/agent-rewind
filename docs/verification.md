@@ -12,7 +12,7 @@ Status: **local implementation and hosted Cloudflare analysis/access verified; l
 |---|---|
 | Python recorder, import, API, isolated runner and analysis contracts | 70 pytest tests passing |
 | Context/time integrity, reuse of deduplicated snapshots, partial clips, redaction, tool alignment | 52 Vitest tests passing |
-| Browser investigation and security flows | 25 Playwright end-to-end tests passing |
+| Browser investigation and security flows | 27 Playwright end-to-end tests passing |
 | Cloudflare runtime, access, accounting and persistence | 10 integration tests passing with an explicit provider double |
 | 1,000-event scrubbing | Latest measured paint intervals: 31.7, 33.5, 33.3 ms on this Windows development machine; threshold 100 ms |
 | Personal tape privacy | Browser test observed no non-GET requests while importing, searching, selecting and playing a synthetic personal tape |
@@ -33,7 +33,7 @@ Pytest reports one upstream Starlette deprecation warning about its httpx-backed
 
 The requested quality and simplification pass resolved privacy, clip-consent, recording-error, and temporal-evidence edge cases. Shared inference and accounting paths were simplified separately from fixes. Full findings, checks, and remaining boundaries: [code review record](code-review-2026-10-03.md).
 
-First-use onboarding now explains the purpose, offers direct invitation access, and includes a five-step guided investigation beside the workspace plus a [written walkthrough](first-use.md). The guide selects recorded policy, code, test, and paired comparison evidence, then opens a reviewed report. Browser coverage verifies actual evidence navigation, reopening, dismiss persistence, returning visitors, unavailable examples, readable mobile controls, and no mutation requests. Tester comprehension of this revision still needs human validation. The [deployment preflight](deployment-check-2026-10-03.md) records the published Render-schema validation, HTTPS judge-session regression, and missing hosted/sandbox configuration. These are local checks, not real hosted or sandbox acceptance.
+First-use onboarding explains the purpose in a short, one-time, skippable popup, offers direct invitation access, and includes an optional five-step guided investigation plus a [written walkthrough](first-use.md). The guide selects recorded policy, code, test, and paired comparison evidence, then opens a reviewed report. Browser coverage verifies evidence navigation, popup skip/close/Escape and reopening, shared-link bypass, returning visitors, unavailable examples, readable mobile controls, and no mutation requests. Tester comprehension of this revision still needs human validation. The [deployment preflight](deployment-check-2026-10-03.md) records the published Render-schema validation, HTTPS judge-session regression, and missing hosted/sandbox configuration. These are local checks, not real hosted or sandbox acceptance.
 
 ## Settings, source importers, and reports
 
