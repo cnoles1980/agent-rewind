@@ -19,8 +19,10 @@ type Overview = {
 
 export default function StudyPanel({
   onAccessChange,
+  onStart,
 }: {
   onAccessChange: () => void;
+  onStart?: () => void;
 }) {
   const [status, setStatus] = useState<Status | null>(null);
   const [overview, setOverview] = useState<Overview | null>(null);
@@ -58,6 +60,13 @@ export default function StudyPanel({
   }
   return (
     <div className="study-panel">
+      {status && !status.study && status.role !== "owner" && (
+        <p>
+          <strong>Have an invitation?</strong> Enter it once to unlock hosted AI
+          analysis and private tester feedback. The guided example works without
+          a code, installation or API key.
+        </p>
+      )}
       <p>
         Feedback goes privately to the project owner in this app. Only the
         rating, message and your tester label are saved. No recording, report,
@@ -105,13 +114,24 @@ export default function StudyPanel({
             />
           </label>
           <button disabled={busy || code.length < 12}>
-            Unlock feedback access
+            Unlock invited access
           </button>
           <p>
             Use the individual code the project owner sent you. Examples and
             local reports work without a code.
           </p>
         </form>
+      )}
+      {status?.study && onStart && (
+        <div className="callout">
+          <p>
+            Access is ready. Start with the example, then return to Feedback to
+            tell us how it went.
+          </p>
+          <button className="primary" onClick={onStart}>
+            Start guided example
+          </button>
+        </div>
       )}
       {status?.study && (
         <form

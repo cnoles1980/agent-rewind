@@ -207,6 +207,7 @@ button.primary:hover {
 .top-actions {
   margin-left: auto;
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
 }
 .sidebar {
@@ -1919,8 +1920,18 @@ label.checkbox {
 .study-entry button { margin-left: 8px; }
 .study-message { white-space: pre-wrap; }
 .analysis-results { margin-top: 18px; }
-.tutorial-welcome { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 14px 18px; margin-bottom: 16px; border: 1px solid #bcdff0; border-radius: 10px; background: #f2faff; }
+.tutorial-welcome { display: flex; flex-wrap: wrap; align-items: start; gap: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid #bcdff0; border-radius: 10px; background: #f2faff; }
 .tutorial-welcome > div { flex: 1 1 250px; }
-.tutorial-welcome p { margin: 4px 0 0; font-size: 12px; }
-.tutorial-guide p { line-height: 1.7; overflow-wrap: anywhere; }
-.tutorial-guide h3 { color: #086eae; }
+.tutorial-welcome h2 { font-size: clamp(18px, 2vw, 24px); max-width: 760px; line-height: 1.3; margin: 6px 0 8px; }
+.tutorial-welcome p { max-width: 780px; font-size: 13px; line-height: 1.65; }
+.tutorial-welcome .welcome-eyebrow { color: #086eae; font-size: 11px; font-weight: 650; }
+.welcome-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.tutorial-guide { padding: 16px 20px; margin-bottom: 16px; border: 1px solid #bcdff0; border-left: 4px solid var(--blue); border-radius: 10px; background: #f2faff; }
+.tutorial-guide p { line-height: 1.7; overflow-wrap: anywhere; font-size: 13px; max-width: 900px; }
+.tutorial-guide h2 { color: #086eae; margin: 6px 0; }
+@media (max-width: 900px) {
+  .app { grid-template-rows: auto 1fr; }
+  .topbar { flex-wrap: wrap; gap: 12px; padding: 12px; }
+  .top-actions { margin-left: 0; }
+  .top-actions button { font-size: 12px; gap: 6px; }
+}

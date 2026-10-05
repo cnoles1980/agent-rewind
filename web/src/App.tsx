@@ -39,7 +39,7 @@ import Comparison from "./Comparison";
 import Settings, { readPreferences, type Preferences } from "./Settings";
 import DebugReport from "./DebugReport";
 import StudyPanel from "./StudyPanel";
-import Tutorial, { TutorialPrompt } from "./Tutorial";
+import Tutorial, { TutorialPrompt, tutorialSteps } from "./Tutorial";
 import type { ImportSource } from "./imports";
 import { importLocalFile, type ImportProgress } from "./importFile";
 import {
@@ -125,6 +125,8 @@ function Modal({
 }
 export default function App() {
   const [preferences, setPreferences] = useState(readPreferences);
+  const [tutorialStep, setTutorialStep] = useState<number | null>(null);
+  const [tutorialVisit, setTutorialVisit] = useState(0);
   const importSource = useRef<ImportSource>("auto");
   const importAbort = useRef<AbortController | null>(null);
   const importSaving = useRef(false);
@@ -154,7 +156,6 @@ export default function App() {
       | "settings"
       | "report"
       | "import"
-      | "tutorial"
       | "feedback"
       | null
     >(null),
@@ -351,6 +352,7 @@ export default function App() {
     setMatched(null);
   }, []);
   const choose = (id: string) => {
+    setTutorialStep(null);
     if (id === other) setOther(current);
     setMatched(null);
     setCurrent(id);
@@ -474,6 +476,7 @@ export default function App() {
     else setModal(null);
   };
   const openFile = (source: ImportSource = "auto") => {
+    setTutorialStep(null);
     importSource.current = source;
     input.current?.click();
   };
@@ -491,6 +494,31 @@ export default function App() {
     if (d.a) select(d.a);
     setMatched(d.b?.elapsed_ms ?? 0);
     setTab("Event");
+  };
+  const tutorialTape = tapes.find((t) => t.run.id === "example-stale");
+  const tutorialReady =
+    !!tutorialTape && tapes.some((t) => t.run.id === "example-corrected");
+  const guide = (index: number) => {
+    const step = tutorialSteps[index];
+    const target = tutorialTape?.events.find(
+      (e) => e.kind === "tool.end" && e.name === step.tool,
+    );
+    if (!target) {
+      setError(
+        "The guided example is unavailable. You can still open your own recording.",
+      );
+      return;
+    }
+    setModal(null);
+    setCurrent("example-stale");
+    setOther("example-corrected");
+    setQuery("");
+    setZoom(1);
+    select(target);
+    setTab(step.tab);
+    setComparing(index === 3);
+    setTutorialStep(index);
+    setTutorialVisit((visit) => visit + 1);
   };
   const values = event && tape ? evidence(tape, event, time) : null,
     context = tape ? atTime(tape, time) : undefined;
@@ -518,13 +546,26 @@ export default function App() {
             height={55}
           />
           <span>
-            Agent Rewind<small>RECORD / REPLAY / UNDERSTAND</small>
+            Agent Rewind<small>UNDERSTAND YOUR AGENT’S MISTAKES</small>
           </span>
         </a>
         <div className="workspace-tag">
           <span /> Personal workspace
         </div>
         <div className="top-actions">
+          <button disabled={!tutorialReady} onClick={() => guide(0)}>
+            Quick start
+          </button>
+          {status?.study_supported && !status?.authenticated && (
+            <button
+              onClick={() => {
+                setPlaying(false);
+                setModal("feedback");
+              }}
+            >
+              Enter invitation code
+            </button>
+          )}
           {status?.study_supported && (
             <button
               onClick={() => {
@@ -552,7 +593,7 @@ export default function App() {
             Open tape
           </button>
           <button
-            className="primary"
+            className={status?.live_available ? "primary" : ""}
             onClick={() => {
               refresh();
               setModal("demo");
@@ -686,12 +727,54 @@ export default function App() {
             </button>
           </div>
         )}
-        <TutorialPrompt
-          onOpen={() => {
-            setPlaying(false);
-            setModal("tutorial");
-          }}
-        />
+        {tutorialStep === null ? (
+          <TutorialPrompt
+            ready={tutorialReady}
+            onOpen={() => guide(0)}
+            onImport={() => {
+              setPlaying(false);
+              setModal("settings");
+            }}
+            onAccess={
+              status?.study_supported && !status?.authenticated
+                ? () => {
+                    setPlaying(false);
+                    setModal("feedback");
+                  }
+                : undefined
+            }
+          />
+        ) : (
+          <Tutorial
+            index={tutorialStep}
+            onStep={guide}
+            onEvidence={() => {
+              guide(tutorialStep);
+              requestAnimationFrame(() => {
+                document
+                  .querySelector(
+                    tutorialStep === 3 ? ".paired-evidence" : ".inspector",
+                  )
+                  ?.scrollIntoView({ block: "start" });
+              });
+            }}
+            onClose={() => {
+              setTutorialStep(null);
+              setComparing(true);
+            }}
+            onReport={() => {
+              guide(tutorialSteps.length - 1);
+              setModal("report");
+            }}
+            onImport={() => {
+              setTutorialStep(null);
+              setModal("settings");
+            }}
+            onFeedback={
+              status?.study_supported ? () => setModal("feedback") : undefined
+            }
+          />
+        )}
         {!tape ? (
           <div className="empty">
             <Rewind size={44} />
@@ -783,7 +866,19 @@ export default function App() {
             )}
             {comparing && (
               <Comparison
-                key={current + other}
+                key={
+                  current +
+                  other +
+                  (tutorialStep === 3 ? `guided-${tutorialVisit}` : "")
+                }
+                initialDifference={
+                  tutorialStep === 3
+                    ? differences.find(
+                        (d) =>
+                          d.a?.name === "read_policy" && d.type === "behavior",
+                      )
+                    : undefined
+                }
                 a={tape}
                 b={otherTape}
                 tapes={tapes}
@@ -1210,7 +1305,10 @@ export default function App() {
       </main>
       {modal === "feedback" && (
         <Modal title="Feedback & tester access" onClose={() => setModal(null)}>
-          <StudyPanel onAccessChange={refresh} />
+          <StudyPanel
+            onAccessChange={refresh}
+            onStart={tutorialReady ? () => guide(0) : undefined}
+          />
         </Modal>
       )}
       {modal === "import" && (
@@ -1264,11 +1362,6 @@ export default function App() {
           )}
         </Modal>
       )}
-      {modal === "tutorial" && (
-        <Modal title="First-use tutorial" onClose={() => setModal(null)}>
-          <Tutorial />
-        </Modal>
-      )}
       {modal === "settings" && (
         <Modal title="Settings & sources" onClose={() => setModal(null)}>
           {error && (
@@ -1281,7 +1374,7 @@ export default function App() {
             onPreferences={changePreferences}
             onOpen={openFile}
             onLibrary={() => setModal("library")}
-            onTutorial={() => setModal("tutorial")}
+            onTutorial={() => guide(0)}
             status={status}
             onDemo={() => {
               refresh();

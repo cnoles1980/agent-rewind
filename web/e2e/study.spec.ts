@@ -29,11 +29,14 @@ test("tester invitation, explicit feedback, retry identity, no automatic attachm
       : route.fulfill({ status: 201, json: { saved: true } });
   });
   await page.goto("http://127.0.0.1:8766/");
-  await page.getByRole("button", { name: "Feedback", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Enter invitation code", exact: true })
+    .first()
+    .click();
   await page
     .getByLabel("Private tester or owner invitation")
     .fill("synthetic-tester-invitation");
-  await page.getByRole("button", { name: "Unlock feedback access" }).click();
+  await page.getByRole("button", { name: "Unlock invited access" }).click();
   await expect(
     page.getByText("0 analysis attempts remain", { exact: false }),
   ).toBeVisible();

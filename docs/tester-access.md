@@ -6,14 +6,14 @@ The first study has a **shared $5 reservation cap**, equivalent to at most **20 
 
 The private invitation kit is saved locally in `.local/tester-kit/`, which is ignored by Git. Send `Tester-A.txt`, `Tester-B.txt` and `Tester-C.txt` separately to the corresponding people. Each message contains only that person's code. Never send `OWNER-READ-ME.md` or the credentials JSON to testers or publish them. This repository contains no usable codes.
 
-Open the hosted app, click **Feedback**, enter your separate owner invitation from the private instructions, and choose **Unlock feedback access**. The **Owner inbox** shows feedback, each tester's use and a **Revoke** button. Revocation immediately blocks new authenticated requests from that invitation, including already signed-in sessions. A provider call already admitted can finish and keeps its reservation. Revoke the codes when testing is over. Signing out ends only the current browser session; it does not revoke the invitation.
+Open the hosted app, click **Feedback**, enter your separate owner invitation from the private instructions, and choose **Unlock invited access**. The **Owner inbox** shows feedback, each tester's use and a **Revoke** button. Revocation immediately blocks new authenticated requests from that invitation, including already signed-in sessions. A provider call already admitted can finish and keeps its reservation. Revoke the codes when testing is over. Signing out ends only the current browser session; it does not revoke the invitation.
 
 Click **Refresh feedback** to check new messages. There are no email notifications or automatic chat messages. Codex can read the inbox when you ask it to check feedback. Feedback can be deleted from this private inbox; it is not published as GitHub issues. Keep a private copy only if needed, and remove feedback when the study no longer needs it.
 
 ## For testers
 
 1. Open [Agent Rewind](https://agent-rewind.cnoles1980.workers.dev/) on a laptop or desktop. No installation, API key or provider account is required.
-2. Click **Feedback**, enter your private invitation, then **Unlock feedback access**. Close the dialog to explore. You can also sign in through Settings & sources → Manage invitation access.
+2. Click **Enter invitation code**, enter your private invitation, then **Unlock invited access**. Choose **Start guided example** to begin, or close the dialog to explore. You can also sign in through Settings & sources → Manage invitation access.
 3. Use the bundled examples first. Personal logs are optional and stay in your browser until you explicitly request analysis or publish a clip.
 4. To try Nemotron, select an event, open **Debug report**, describe expected behavior, review the excerpt, and consent to sending it. Try one analysis initially so everyone gets a turn. Remaining attempts are shared across the group and shown in the analysis panel.
 5. Click **Feedback** to rate the experience and explain what you tried, expected and observed. Review the text and choose **Send feedback**. Wait for **Feedback saved**. Feedback still works when the analysis allowance is used.

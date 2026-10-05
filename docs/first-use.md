@@ -1,6 +1,10 @@
 # Your first investigation in Agent Rewind
 
-Allow about five minutes. Start with the examples; no invitation, API key, or personal log is needed. Open the app and choose **Start tutorial**. You can reopen the six-step guide under **Settings & sources → First-use tutorial**.
+Agent Rewind helps you understand a recorded AI agent mistake and bring evidence back to the agent's chat. Open a recording, inspect what the agent saw and did, then review and copy a debugging report. Optional AI analysis suggests investigation questions; it does not automatically repair code.
+
+Start with **Try the guided example · 3 min**. No installation, invitation, API key, or personal log is needed. The five-step guide stays beside the workspace and selects the policy, code change, failed test, and corrected comparison as you advance. **Show evidence** jumps to the relevant details. The last step opens an example debugging report. Use **Quick start** to reopen the guide anytime.
+
+Invited testers: choose **Enter invitation code**, paste your private code, and select **Unlock invited access**. Then choose **Start guided example**. You only need to enter the code once per session; it enables optional hosted analysis and private feedback. When finished, choose **Feedback**, add a rating and message, review, and submit. No recording is automatically attached.
 
 ![First tutorial step in the app](screenshots/first-use-tutorial.png)
 
@@ -37,7 +41,7 @@ Claude Code, n8n, Factory, and custom instructions are in the same settings pane
 
 ## 5. Create a handoff for your coding agent
 
-For hosted access, open **Settings & sources → Manage invitation access**, enter the private code supplied by the host, and choose **Unlock invited features**. This enables analysis and sharing; it does not enable sandbox runs while the execution gate is closed.
+For hosted access, use **Enter invitation code** on the toolbar or welcome. Enter the private code supplied by the host and choose **Unlock invited access**. This enables invited features; it does not enable sandbox runs while the execution gate is closed. Self-hosted Python deployments also offer **Settings & sources → Manage invitation access**.
 
 Select the consequential event and choose **Debug report**. Describe what happened and what you expected. Review the exact evidence preview, add extra redaction phrases if needed, and check the review box. Copy or download the Markdown, then paste it into your existing agent chat yourself.
 

@@ -1,60 +1,57 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const steps = [
+export const tutorialSteps = [
   {
-    title: "Start with the example",
-    text: "The checkout example is an illustrative recording. Shipping should be free at $50 or more, but an injected stale policy says strictly above $50. You can explore it without an API key.",
-    action:
-      "Close this guide and select checkout-flow with Example · stale in Recent runs. Select read_policy() in the Tools lane.",
-    expected:
-      "The inspector shows the archived policy. Replaying a recording never runs code or calls a model.",
+    title: "What did the agent read?",
+    tool: "read_policy",
+    tab: "Event",
+    text: "The task says shipping is free at $50 or more. Look at Output in the event details: the policy the agent received says strictly above $50. That outdated policy was deliberately injected into this example.",
+    next: "See the code change",
   },
   {
-    title: "Follow the evidence",
-    text: "Select a tool event to inspect its input and output. Move to the code change, then the acceptance test. Use search, previous/next event, or the timeline. Zoom reaches 6,400% for long recordings.",
-    action:
-      "Find the test for a subtotal of 50. Open State for captured context, Raw for sanitized data, or Diff for a captured code change.",
-    expected:
-      "The recorded boundary test fails. Missing context or timing stays unknown; the player does not invent it.",
+    title: "What did it change?",
+    tool: "apply_patch",
+    tab: "Diff",
+    text: "The Diff tab shows the recorded code change. The new rule uses > 50 (greater than $50), which leaves an order of exactly $50 paying shipping. You can trace the change back to the policy response.",
+    next: "See the failed check",
   },
   {
-    title: "Compare the corrected run",
-    text: "Observed Differences sits above the timeline. Compare matches recorded calls and shows changed inputs, outputs, errors, and context.",
-    action:
-      "Choose Jump to first behavior difference, then read both sides of the policy result. Expand A/B playback to inspect the paired recordings.",
-    expected:
-      "The current policy includes $50. A difference is observed evidence, not automatic proof of root cause.",
+    title: "What actually went wrong?",
+    tool: "acceptance_tests",
+    tab: "Event",
+    text: "Look at Output: for a $50 order, the expected shipping fee is 0, but the actual fee is 5. The tool finished successfully; the test inside its result failed. Rewind lets you inspect that distinction.",
+    next: "Compare the corrected run",
   },
   {
-    title: "Open your own recording",
-    text: "Choose Settings & sources for source-specific instructions, then Open Codex log or another supported source. These are file imports, not live account connections.",
-    action:
-      "For Codex, select one session JSONL from ~/.codex/sessions (Windows: %USERPROFILE%\\.codex\\sessions). Review Capture details after import.",
-    expected:
-      "Up to 100 MB / 10,000 events is read in this browser without an upload. Export important recordings before clearing browser storage.",
+    title: "What changed in the corrected run?",
+    tool: "read_policy",
+    tab: "Event",
+    text: "The paired evidence compares the two policy responses: archived-v1 and current-v2. The corrected policy includes the $50 boundary. These are observed differences; a comparison alone does not prove a root cause.",
+    next: "Prepare a debugging report",
   },
   {
-    title: "Prepare a debugging handoff",
-    text: "Select the consequential event and choose Debug report. Describe what happened and what you expected. Review the exact excerpt and redact additional private text before copying it into your agent’s chat.",
-    action:
-      "For optional Nemotron analysis, enter your invitation code, review the excerpt, and explicitly consent to send it. Review the returned suggestions before copying the handoff.",
-    expected:
-      "Evidence-only reports need no key. Analysis sends only the reviewed excerpt to Nebius and uses the server’s key/budget. Self-hosters supply their own key. No repair or chat message is sent automatically.",
+    title: "Take the evidence back to your agent",
+    tool: "acceptance_tests",
+    tab: "Event",
+    text: "Open a report with the failed check, describe the expected behavior, and review the excerpt. Copy it into your coding agent’s chat to help investigate. Optional Nemotron analysis can suggest checks after you review and consent; it needs invited access. Rewind never sends a message or fixes code automatically.",
+    next: "",
   },
-  {
-    title: "Share only reviewed evidence",
-    text: "Choose Clip & share, select a time range, and inspect the full preview. Supporting context can contain earlier messages, so it is excluded by default.",
-    action:
-      "Redact private information and check the review box. Export a local clip, or publish with invited access. Use Shared clips to revoke a published link.",
-    expected:
-      "Anyone with an unlisted link can read it. A fresh coding demo is a separate action under New demo run, and is unavailable until sandbox checks pass. Judges use their private invitation; they do not need an API key.",
-  },
-];
+] as const;
 
-export function TutorialPrompt({ onOpen }: { onOpen: () => void }) {
+export function TutorialPrompt({
+  onOpen,
+  onImport,
+  onAccess,
+  ready,
+}: {
+  onOpen: () => void;
+  onImport: () => void;
+  onAccess?: () => void;
+  ready: boolean;
+}) {
   const [dismissed, setDismissed] = useState(() => {
     try {
-      return localStorage.getItem("rewind.tutorial.dismissed.v1") === "true";
+      return localStorage.getItem("rewind.tutorial.dismissed.v2") === "true";
     } catch {
       return false;
     }
@@ -63,19 +60,33 @@ export function TutorialPrompt({ onOpen }: { onOpen: () => void }) {
   return (
     <section className="tutorial-welcome" aria-label="First-use welcome">
       <div>
-        <strong>New to Agent Rewind?</strong>
+        <p className="welcome-eyebrow">A debugger for recorded AI agent runs</p>
+        <h2>Understand what went wrong. Bring evidence back to your agent.</h2>
         <p>
-          Follow a recorded failure from policy to code to test. No key needed.
+          Open a recording, inspect what the agent saw and did, then prepare a
+          debugging report to paste into its chat.
+        </p>
+        <div className="welcome-actions">
+          <button className="primary" disabled={!ready} onClick={onOpen}>
+            Try the guided example · 3 min
+          </button>
+          <button onClick={onImport}>Open my own agent log</button>
+          {onAccess && (
+            <button onClick={onAccess}>Enter invitation code</button>
+          )}
+        </div>
+        <p className="muted">
+          No setup, account or key needed for the example. Your own log opens
+          locally in this browser. Invitations unlock hosted analysis and tester
+          feedback.
         </p>
       </div>
-      <button className="primary" onClick={onOpen}>
-        Start tutorial
-      </button>
       <button
+        className="text-button"
         onClick={() => {
           setDismissed(true);
           try {
-            localStorage.setItem("rewind.tutorial.dismissed.v1", "true");
+            localStorage.setItem("rewind.tutorial.dismissed.v2", "true");
           } catch {
             /* Still dismiss for this visit. */
           }
@@ -87,41 +98,63 @@ export function TutorialPrompt({ onOpen }: { onOpen: () => void }) {
   );
 }
 
-export default function Tutorial() {
-  const [index, setIndex] = useState(0);
-  const step = steps[index];
+export default function Tutorial({
+  index,
+  onStep,
+  onEvidence,
+  onClose,
+  onReport,
+  onImport,
+  onFeedback,
+}: {
+  index: number;
+  onStep: (index: number) => void;
+  onEvidence: () => void;
+  onClose: () => void;
+  onReport: () => void;
+  onImport: () => void;
+  onFeedback?: () => void;
+}) {
+  const step = tutorialSteps[index];
+  const heading = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    heading.current?.focus({ preventScroll: true });
+    heading.current?.closest("section")?.scrollIntoView({ block: "nearest" });
+  }, [index]);
   return (
-    <div className="tutorial-guide">
-      <p className="muted">
-        Step {index + 1} of {steps.length} · Reopen anytime from Settings &
-        sources.
-      </p>
+    <section className="tutorial-guide" aria-label="Guided investigation">
       <div aria-live="polite" aria-atomic="true">
-        <h3>{step.title}</h3>
+        <p className="muted">
+          Guided example · Step {index + 1} of {tutorialSteps.length} ·
+          Illustrative recording, no live execution
+        </p>
+        <h2 ref={heading} tabIndex={-1}>
+          {step.title}
+        </h2>
         <p>{step.text}</p>
-        <h4>Try it</h4>
-        <p>{step.action}</p>
-        <h4>What to expect</h4>
-        <p>{step.expected}</p>
       </div>
-      <div className="modal-actions">
-        <button disabled={index === 0} onClick={() => setIndex(index - 1)}>
+      <div className="welcome-actions">
+        <button disabled={index === 0} onClick={() => onStep(index - 1)}>
           Previous step
         </button>
-        <button
-          className="primary"
-          disabled={index === steps.length - 1}
-          onClick={() => setIndex(index + 1)}
-        >
-          Next step
+        <button onClick={onEvidence}>Show evidence</button>
+        {index < tutorialSteps.length - 1 ? (
+          <button className="primary" onClick={() => onStep(index + 1)}>
+            {step.next}
+          </button>
+        ) : (
+          <>
+            <button className="primary" onClick={onReport}>
+              Open example report
+            </button>
+            <button onClick={onImport}>Open my own agent log</button>
+            {onFeedback && <button onClick={onFeedback}>Give feedback</button>}
+          </>
+        )}
+        <button className="text-button" onClick={onClose}>
+          Finish guide & explore
         </button>
       </div>
-      {index === steps.length - 1 && (
-        <p>
-          Close this guide to explore. Importing, replaying, and reading this
-          tutorial never launch paid execution.
-        </p>
-      )}
-    </div>
+    </section>
   );
 }

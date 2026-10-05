@@ -63,6 +63,7 @@ export default function Comparison({
   onSeek,
   onSeekB,
   onJump,
+  initialDifference,
 }: {
   a: Tape;
   b?: Tape;
@@ -75,9 +76,12 @@ export default function Comparison({
   onSeek: (time: number) => void;
   onSeekB: (time: number) => void;
   onJump: (d: Difference) => void;
+  initialDifference?: Difference;
 }) {
-  const [index, setIndex] = useState<number | null>(null);
-  const [expanded, setExpanded] = useState(false);
+  const [index, setIndex] = useState<number | null>(
+    initialDifference ? differences.indexOf(initialDifference) : null,
+  );
+  const [expanded, setExpanded] = useState(!!initialDifference);
   const selected = index === null ? undefined : differences[index];
   const jump = (d: Difference | undefined) => {
     if (d) {
