@@ -60,7 +60,7 @@ test("guided investigation selects actual evidence and opens a reviewed report w
   ).toBe(true);
   await expect(
     page.getByRole("button", { name: "Quick start", exact: true }),
-  ).toHaveCSS("font-size", "12px");
+  ).toHaveCSS("font-size", "15px");
   expect(writes).toEqual([]);
 });
 

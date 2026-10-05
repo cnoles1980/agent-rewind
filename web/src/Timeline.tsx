@@ -27,29 +27,35 @@ const Tracks = memo(function Tracks({
   tape,
   onSelect,
   onSeek,
-  zoom,
   width,
 }: {
   tape: Tape;
   onSelect: (e: Event) => void;
   onSeek: (t: number) => void;
-  zoom: number;
   width: number;
 }) {
   const total = duration(tape),
     label = 126,
     chart = width - label - 12,
+    tickCount = Math.max(1, Math.floor(chart / 110)),
     events = visibleEvents(tape),
     x = (ms: number) => label + (ms / total) * chart;
   return (
     <>
-      {Array.from({ length: Math.ceil(6 * zoom) + 1 }, (_, i) => {
-        const at = (total * i) / Math.ceil(6 * zoom);
+      {Array.from({ length: tickCount + 1 }, (_, i) => {
+        const at = (total * i) / tickCount;
         return (
           <g key={i}>
             <line x1={x(at)} x2={x(at)} y1={39} y2={340} stroke="#e3eaf0" />
-            <text x={x(at)} y={23} textAnchor="middle" className="ruler">
-              {clock(at, total / (6 * zoom) < 1000)}
+            <text
+              x={x(at)}
+              y={23}
+              textAnchor={
+                i === 0 ? "start" : i === tickCount ? "end" : "middle"
+              }
+              className="ruler"
+            >
+              {clock(at, total / tickCount < 1000)}
             </text>
           </g>
         );
@@ -251,7 +257,6 @@ export default function Timeline({
         >
           <Tracks
             tape={tape}
-            zoom={zoom}
             width={width}
             onSelect={onSelect}
             onSeek={onSeek}

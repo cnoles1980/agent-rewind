@@ -5,7 +5,10 @@
   font-synthesis: none;
   --blue: #008ece;
   --line: #e1e8ef;
-  --muted: #718096;
+  --muted: #53657a;
+  --text-small: 0.8125rem;
+  --text-body: 0.9375rem;
+  --text-code: 0.875rem;
   --ink: #0c1722;
   --model: #009fe2;
   --tools: #00b58d;
@@ -45,7 +48,7 @@ button {
   border-radius: 6px;
   background: white;
   color: inherit;
-  font-size: 12px;
+  font-size: var(--text-body);
   font-weight: 500;
   transition:
     background 0.15s,
@@ -90,7 +93,7 @@ select {
   padding: 9px 11px;
 }
 select {
-  font-size: 12px;
+  font-size: var(--text-body);
   cursor: pointer;
 }
 input[type="checkbox"] {
@@ -104,7 +107,7 @@ p {
 }
 pre {
   font:
-    11px/1.8 "IBM Plex Mono",
+    var(--text-code)/1.8 "IBM Plex Mono",
     monospace;
   white-space: pre-wrap;
   word-break: break-word;
@@ -115,7 +118,7 @@ h2 {
   font-size: 16px;
 }
 h3 {
-  font-size: 12px;
+  font-size: var(--text-body);
 }
 button.primary {
   background: #101e28;
@@ -137,7 +140,7 @@ button.primary:hover {
   min-height: 25px;
   background: transparent;
   color: var(--blue);
-  font-size: 11px;
+  font-size: var(--text-body);
 }
 .selected-button {
   background: #eaf7ff !important;
@@ -146,21 +149,22 @@ button.primary:hover {
 }
 .muted {
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--text-body);
   line-height: 1.7;
 }
 .app {
   display: grid;
-  grid-template-columns: 214px minmax(0, 1fr);
-  grid-template-rows: 78px 1fr;
+  grid-template-columns: 238px minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
   min-height: 100vh;
 }
 .topbar {
   grid-column: 1/-1;
   display: flex;
   align-items: center;
-  gap: 36px;
-  padding: 0 30px;
+  gap: 24px;
+  min-height: 78px;
+  padding: 12px 30px;
   border-bottom: 1px solid var(--line);
   background: #fff;
 }
@@ -183,7 +187,7 @@ button.primary:hover {
 .brand small {
   display: block;
   font-family: "IBM Plex Mono", monospace;
-  font-size: 8px;
+  font-size: var(--text-small);
   letter-spacing: 2.05px;
   font-weight: 400;
   color: #728092;
@@ -193,7 +197,7 @@ button.primary:hover {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 11px;
+  font-size: var(--text-body);
   color: #7b8797;
   border-left: 1px solid var(--line);
   padding-left: 28px;
@@ -224,9 +228,9 @@ button.primary:hover {
   align-items: center;
   justify-content: space-between;
   font-family: "IBM Plex Mono", monospace;
-  font-size: 9px;
+  font-size: var(--text-small);
   letter-spacing: 1.8px;
-  color: #7a899a;
+  color: var(--muted);
   padding: 0 12px;
   margin: 0 0 12px;
 }
@@ -246,7 +250,7 @@ button.primary:hover {
   width: 100%;
   padding: 10px 12px;
   color: #57677b;
-  font-size: 12px;
+  font-size: var(--text-body);
   min-height: 38px;
 }
 .nav svg {
@@ -262,7 +266,7 @@ button.primary:hover {
 .count {
   margin-left: auto;
   font:
-    10px "IBM Plex Mono",
+    var(--text-small) "IBM Plex Mono",
     monospace;
 }
 .side-divider {
@@ -297,14 +301,14 @@ button.primary:hover {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  font-size: 10px;
+  font-size: var(--text-small);
   font-weight: 600;
 }
 .recent small {
   display: block;
-  font-size: 8.5px;
+  font-size: var(--text-small);
   margin-top: 6px;
-  color: #76869a;
+  color: var(--muted);
 }
 .recent > svg {
   width: 11px;
@@ -341,19 +345,19 @@ button.primary:hover {
   color: #8da6b5;
 }
 .private-card > b {
-  font-size: 11px;
+  font-size: var(--text-body);
   display: block;
   color: #526578;
   margin: 10px 0 7px;
 }
 .private-card p {
-  font-size: 10px;
+  font-size: var(--text-small);
   line-height: 1.8;
 }
 .private-card button {
   border: 0;
   background: transparent;
-  font-size: 10px;
+  font-size: var(--text-small);
   padding: 12px 0 0;
   color: #277c9f;
 }
@@ -364,13 +368,13 @@ button.primary:hover {
   margin-top: auto;
   padding: 16px 4px;
   border-top: 1px solid var(--line);
-  font-size: 9px;
+  font-size: var(--text-small);
   color: #728399;
 }
 .sidebar-foot > span:last-child {
   margin-left: auto;
   font:
-    9px "IBM Plex Mono",
+    var(--text-small) "IBM Plex Mono",
     monospace;
 }
 .main {
@@ -381,7 +385,7 @@ button.primary:hover {
   display: flex;
   align-items: center;
   gap: 9px;
-  font-size: 10px;
+  font-size: var(--text-small);
   color: #677a90;
   margin-bottom: 22px;
 }
@@ -390,11 +394,11 @@ button.primary:hover {
 }
 .local-label {
   margin-left: auto;
-  font-size: 9px;
+  font-size: var(--text-small);
   display: flex;
   gap: 5px;
   align-items: center;
-  color: #8a96a5;
+  color: var(--muted);
 }
 .local-label svg {
   width: 12px;
@@ -422,7 +426,7 @@ button.primary:hover {
   border: 1px solid #e5edf3;
   border-radius: 20px;
   padding: 5px 8px;
-  font-size: 9px;
+  font-size: var(--text-small);
   font-weight: 400;
   letter-spacing: 0;
   color: #64788d;
@@ -437,8 +441,8 @@ button.primary:hover {
   align-items: center;
   gap: 17px;
   margin-top: 13px;
-  font-size: 10px;
-  color: #8190a3;
+  font-size: var(--text-small);
+  color: var(--muted);
 }
 .run-meta > span:not(:last-child) {
   font-family: "IBM Plex Mono", monospace;
@@ -451,7 +455,7 @@ button.primary:hover {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 9px;
+  font-size: var(--text-small);
   text-transform: capitalize;
   letter-spacing: 0;
   color: #6f8094;
@@ -473,8 +477,8 @@ button.primary:hover {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 9px;
-  color: #7b8a99;
+  font-size: var(--text-small);
+  color: var(--muted);
   margin: 0 0 15px;
   line-height: 1.5;
 }
@@ -485,7 +489,7 @@ button.primary:hover {
   color: #8a9caa;
 }
 .capture-note button {
-  font-size: 9px;
+  font-size: var(--text-small);
   padding: 0;
   min-height: 20px;
   border: 0;
@@ -496,7 +500,7 @@ button.primary:hover {
 }
 .studio {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 312px;
+  grid-template-columns: minmax(0, 1fr) 360px;
   border: 1px solid var(--line);
   border-radius: 9px;
   background: white;
@@ -507,8 +511,9 @@ button.primary:hover {
   min-width: 0;
 }
 .transport {
-  height: 61px;
+  min-height: 61px;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   padding: 12px 14px;
   gap: 10px;
@@ -539,20 +544,20 @@ button.primary:hover {
   border: 0;
   background: transparent;
   color: #63758b;
-  font-size: 9px;
+  font-size: var(--text-small);
   padding: 5px;
   max-width: 65px;
 }
 .transport .timecode {
   margin: auto;
   font:
-    11px "IBM Plex Mono",
+    var(--text-code) "IBM Plex Mono",
     monospace;
   letter-spacing: -0.25px;
 }
 .timecode span {
-  color: #8795a6;
-  font-size: 9px;
+  color: var(--muted);
+  font-size: var(--text-small);
 }
 .seek {
   height: 20px;
@@ -582,9 +587,9 @@ button.primary:hover {
 }
 .ruler {
   font:
-    9px "IBM Plex Mono",
+    var(--text-small) "IBM Plex Mono",
     monospace;
-  fill: #8493a6;
+  fill: var(--muted);
 }
 .lane-fill {
   fill: currentColor;
@@ -592,15 +597,15 @@ button.primary:hover {
 }
 .lane-label {
   font:
-    500 10px Inter,
+    500 var(--text-small) Inter,
     sans-serif;
   fill: #304459;
 }
 .lane-count {
   font:
-    8px Inter,
+    12px Inter,
     sans-serif;
-  fill: #94a1ae;
+  fill: var(--muted);
 }
 .lane-model {
   color: var(--model);
@@ -644,8 +649,8 @@ button.primary:hover {
   align-items: center;
   justify-content: space-between;
   padding: 8px 16px;
-  color: #8a99a8;
-  font-size: 9px;
+  color: var(--muted);
+  font-size: var(--text-small);
   gap: 6px;
 }
 .timeline-footer > span {
@@ -657,7 +662,7 @@ button.primary:hover {
   padding: 4px 7px;
   min-height: 27px;
   border: 0;
-  font-size: 10px;
+  font-size: var(--text-small);
   color: #5b7a8c;
 }
 .timeline-footer button svg {
@@ -681,16 +686,16 @@ button.primary:hover {
   padding: 14px 16px;
 }
 .section-bar h2 {
-  font-size: 11px;
+  font-size: var(--text-body);
   font-weight: 600;
   color: #52677c;
 }
 .section-bar h2 > span {
   font:
-    9px "IBM Plex Mono",
+    var(--text-small) "IBM Plex Mono",
     monospace;
   margin-left: 6px;
-  color: #9ca9b7;
+  color: var(--muted);
 }
 .search {
   display: flex;
@@ -710,7 +715,7 @@ button.primary:hover {
   border: 0;
   background: transparent;
   padding: 7px 0;
-  font-size: 10px;
+  font-size: var(--text-small);
   min-width: 0;
   width: 160px;
   outline: none;
@@ -763,21 +768,21 @@ button.primary:hover {
 .event-name {
   text-align: left;
   display: block;
-  font-size: 10px;
+  font-size: var(--text-small);
   flex: 1;
 }
 .event-name small {
   display: block;
-  font-size: 8px;
-  color: #9aa8b8;
+  font-size: var(--text-small);
+  color: var(--muted);
   margin-top: 4px;
   font-weight: 400;
 }
 .event-time {
   font:
-    9px "IBM Plex Mono",
+    var(--text-small) "IBM Plex Mono",
     monospace;
-  color: #8597ac;
+  color: var(--muted);
 }
 .event-row > svg {
   width: 10px;
@@ -806,8 +811,8 @@ button.primary:hover {
   border-radius: 0;
   background: transparent;
   flex: 1;
-  font-size: 10px;
-  color: #8794a8;
+  font-size: var(--text-small);
+  color: var(--muted);
 }
 .inspector-tabs button[aria-selected="true"] {
   color: #213748;
@@ -821,13 +826,13 @@ button.primary:hover {
   display: flex;
   align-items: center;
   gap: 7px;
-  color: #7d8fa3;
-  font-size: 10px;
+  color: var(--muted);
+  font-size: var(--text-small);
 }
 .eyebrow > span:last-child {
   margin-left: auto;
   font:
-    8px "IBM Plex Mono",
+    var(--text-small) "IBM Plex Mono",
     monospace;
 }
 .inspector h2 {
@@ -840,8 +845,8 @@ button.primary:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 8px;
-  color: #94a3b4;
+  font-size: var(--text-small);
+  color: var(--muted);
 }
 .inspector-status .badge {
   padding: 4px 7px;
@@ -855,9 +860,9 @@ button.primary:hover {
   background: #fff0f0;
 }
 .event-summary {
-  font-size: 10px;
+  font-size: var(--text-small);
   line-height: 1.8;
-  color: #78889c;
+  color: var(--muted);
   margin: 17px 0;
 }
 .data-card {
@@ -873,7 +878,7 @@ button.primary:hover {
   align-items: center;
   padding: 9px 11px;
   border-bottom: 1px solid #e7edf2;
-  font-size: 10px;
+  font-size: var(--text-small);
   font-weight: 500;
   color: #4f667d;
 }
@@ -891,7 +896,7 @@ button.primary:hover {
   padding: 12px;
   max-height: 245px;
   overflow: auto;
-  font-size: 9px;
+  font-size: var(--text-code);
   line-height: 1.85;
 }
 .inspector-body > pre {
@@ -901,15 +906,15 @@ button.primary:hover {
   border-radius: 6px;
   max-height: 550px;
   overflow: auto;
-  font-size: 9px;
+  font-size: var(--text-code);
 }
 .inspector dl {
-  font-size: 9px;
+  font-size: var(--text-small);
   display: grid;
   grid-template-columns: 85px minmax(0, 1fr);
   row-gap: 13px;
   margin: 20px 0;
-  color: #768ca1;
+  color: var(--muted);
 }
 .inspector dt {
   font-weight: 400;
@@ -917,13 +922,13 @@ button.primary:hover {
 .inspector dd {
   margin: 0;
   font-family: "IBM Plex Mono", monospace;
-  font-size: 8px;
+  font-size: var(--text-small);
   line-height: 1.65;
 }
 .inspector dd .text-button {
   font-family: Inter, sans-serif;
   min-height: 14px;
-  font-size: 9px;
+  font-size: var(--text-small);
 }
 .usage {
   display: flex;
@@ -931,13 +936,13 @@ button.primary:hover {
   padding-top: 15px;
   gap: 30px;
   font:
-    13px "IBM Plex Mono",
+    var(--text-code) "IBM Plex Mono",
     monospace;
 }
 .usage small {
   display: block;
-  color: #8e9eb0;
-  font-size: 7px;
+  color: var(--muted);
+  font-size: var(--text-small);
   letter-spacing: 0.7px;
   margin-top: 7px;
 }
@@ -947,22 +952,22 @@ button.primary:hover {
   margin-top: 20px;
 }
 .notes-at-event h3 {
-  font-size: 10px;
+  font-size: var(--text-small);
   color: #6f8497;
   margin-bottom: 13px;
 }
 .notes-at-event > button {
-  font-size: 9px;
+  font-size: var(--text-small);
   border-style: dashed;
   width: 100%;
-  color: #8b9cad;
+  color: var(--muted);
   background: transparent;
 }
 .inline-note {
   display: flex;
   align-items: flex-start;
   gap: 7px;
-  font-size: 9px;
+  font-size: var(--text-small);
   line-height: 1.8;
   color: #6d8396;
   padding: 10px;
@@ -998,17 +1003,17 @@ button.primary:hover {
 }
 .diff-before h3,
 .diff-after h3 {
-  font-size: 9px;
+  font-size: var(--text-small);
   margin-bottom: 10px;
   color: #7c8a9b;
 }
 .diff-before pre,
 .diff-after pre {
-  font-size: 9px;
+  font-size: var(--text-code);
 }
 .comparison {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 312px;
+  grid-template-columns: minmax(0, 1fr) 360px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fff;
@@ -1017,19 +1022,19 @@ button.primary:hover {
 }
 .comparison .section-bar h2 {
   font:
-    10px "IBM Plex Mono",
+    var(--text-small) "IBM Plex Mono",
     monospace;
   text-transform: uppercase;
   letter-spacing: 2px;
   color: #263e54;
 }
 .comparison .section-bar p {
-  font-size: 10px;
-  color: #94a2b1;
+  font-size: var(--text-small);
+  color: var(--muted);
   margin-top: 7px;
 }
 .comparison .section-bar select {
-  font-size: 9px;
+  font-size: var(--text-small);
   max-width: 240px;
   padding: 7px;
 }
@@ -1041,21 +1046,21 @@ button.primary:hover {
   border-top: 1px solid #f2f5f7;
 }
 .comparison-row > b {
-  font-size: 10px;
+  font-size: var(--text-small);
   min-width: 45px;
 }
 .comparison-row small {
   display: block;
-  font-size: 8px;
+  font-size: var(--text-small);
   margin-top: 5px;
   font-weight: 400;
-  color: #8a9aaa;
+  color: var(--muted);
 }
 .comparison-row > span {
   font:
-    9px "IBM Plex Mono",
+    var(--text-small) "IBM Plex Mono",
     monospace;
-  color: #8b9aac;
+  color: var(--muted);
 }
 .mini-tape {
   height: 31px;
@@ -1088,7 +1093,7 @@ button.primary:hover {
   background: #fcfdff;
 }
 .divergence .eyebrow {
-  font-size: 8px;
+  font-size: var(--text-small);
   letter-spacing: 0.5px;
   color: #be6169;
 }
@@ -1096,18 +1101,18 @@ button.primary:hover {
   width: 17px;
 }
 .divergence h3 {
-  font-size: 11px;
+  font-size: var(--text-body);
   margin: 10px 0 8px;
   color: #53667a;
 }
 .divergence p {
-  font-size: 9px;
+  font-size: var(--text-small);
   line-height: 1.7;
-  color: #8c9bad;
+  color: var(--muted);
   margin-bottom: 10px;
 }
 .divergence button {
-  font-size: 9px;
+  font-size: var(--text-small);
   padding: 6px 9px;
   min-height: 27px;
 }
@@ -1121,15 +1126,15 @@ button.primary:hover {
   align-items: center;
   justify-content: space-between;
   padding: 22px 3px;
-  color: #9aa8b6;
-  font-size: 8px;
+  color: var(--muted);
+  font-size: var(--text-small);
   gap: 10px;
 }
 .workspace-footer > span:first-child {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 9px;
+  font-size: var(--text-small);
   color: #71869a;
 }
 .workspace-footer svg {
@@ -1144,7 +1149,7 @@ button.primary:hover {
   background: #edf9f4;
   border-radius: 6px;
   margin-bottom: 15px;
-  font-size: 12px;
+  font-size: var(--text-body);
   line-height: 1.5;
 }
 .toast.error {
@@ -1177,7 +1182,7 @@ button.primary:hover {
   margin: 15px 0;
 }
 .empty-inspector p {
-  font-size: 11px;
+  font-size: var(--text-body);
   line-height: 1.8;
 }
 dialog {
@@ -1206,7 +1211,7 @@ dialog > header h2 {
 }
 dialog > p,
 dialog form > p {
-  font-size: 12px;
+  font-size: var(--text-body);
   line-height: 1.8;
   color: #7b8ba0;
   margin: 13px 0;
@@ -1214,7 +1219,7 @@ dialog form > p {
 dialog label {
   display: flex;
   flex-direction: column;
-  font-size: 11px;
+  font-size: var(--text-body);
   gap: 9px;
   margin: 16px 0;
   color: #65798f;
@@ -1225,7 +1230,7 @@ dialog textarea {
 }
 dialog input,
 dialog textarea {
-  font-size: 12px;
+  font-size: var(--text-body);
 }
 .choice-grid {
   display: grid;
@@ -1242,7 +1247,7 @@ dialog textarea {
   gap: 10px;
 }
 .choice small {
-  font-size: 10px;
+  font-size: var(--text-small);
   line-height: 1.7;
   color: #8292a4;
   font-weight: 400;
@@ -1252,21 +1257,21 @@ dialog textarea {
   border: 1px solid #e2eaf1;
   padding: 15px;
   border-radius: 7px;
-  font-size: 11px;
+  font-size: var(--text-body);
   line-height: 1.8;
   color: #6d8297;
   margin: 17px 0;
 }
 .callout b {
   color: #496278;
-  font-size: 12px;
+  font-size: var(--text-body);
 }
 .callout p {
-  font-size: 11px;
+  font-size: var(--text-body);
   margin-top: 8px;
 }
 .callout pre {
-  font-size: 9px;
+  font-size: var(--text-small);
   margin-top: 9px;
 }
 .callout ul {
@@ -1286,7 +1291,7 @@ label.checkbox {
   flex-direction: row;
   align-items: center;
   gap: 9px;
-  font-size: 11px;
+  font-size: var(--text-body);
 }
 .checkbox input {
   width: 15px;
@@ -1299,13 +1304,13 @@ label.checkbox {
   padding: 12px;
 }
 .clip-preview summary {
-  font-size: 10px;
+  font-size: var(--text-small);
   cursor: pointer;
 }
 .clip-preview pre {
   max-height: 225px;
   overflow: auto;
-  font-size: 9px;
+  font-size: var(--text-small);
   margin-top: 12px;
 }
 .modal-actions {
@@ -1319,7 +1324,7 @@ label.checkbox {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: var(--text-body);
   border-radius: 5px;
 }
 .share-result a {
@@ -1335,7 +1340,7 @@ label.checkbox {
   gap: 7px;
   padding: 14px 0;
   border-bottom: 1px solid var(--line);
-  font-size: 11px;
+  font-size: var(--text-body);
 }
 .library-row > span {
   flex: 1;
@@ -1344,7 +1349,7 @@ label.checkbox {
 .library-row a {
   display: block;
   margin-top: 7px;
-  font-size: 10px;
+  font-size: var(--text-small);
   color: #7f92a5;
 }
 .form-error {
@@ -1352,7 +1357,7 @@ label.checkbox {
   color: #b4485b;
   padding: 10px;
   border-radius: 5px;
-  font-size: 11px;
+  font-size: var(--text-body);
   line-height: 1.7;
 }
 @media (min-width: 1600px) {
@@ -1362,7 +1367,7 @@ label.checkbox {
   }
   .studio,
   .comparison {
-    grid-template-columns: minmax(0, 1fr) 350px;
+    grid-template-columns: minmax(0, 1fr) 400px;
   }
   .timeline {
     max-height: none;
@@ -1376,7 +1381,7 @@ label.checkbox {
 }
 @media (max-width: 1150px) {
   .app {
-    grid-template-columns: 174px minmax(0, 1fr);
+    grid-template-columns: 210px minmax(0, 1fr);
   }
   .main {
     padding: 20px 15px 0;
@@ -1387,11 +1392,11 @@ label.checkbox {
   }
   .studio,
   .comparison {
-    grid-template-columns: minmax(0, 1fr) 275px;
+    grid-template-columns: minmax(0, 1fr) 320px;
   }
   .model-tag {
     max-width: 160px;
-    font-size: 8px;
+    font-size: var(--text-small);
   }
   .run-header h1 {
     font-size: 21px;
@@ -1402,10 +1407,10 @@ label.checkbox {
     padding: 10px 9px;
   }
   .transport .timecode {
-    font-size: 9px;
+    font-size: var(--text-small);
   }
   .timecode span {
-    font-size: 8px;
+    font-size: var(--text-small);
   }
   .workspace-tag {
     display: none;
@@ -1414,13 +1419,13 @@ label.checkbox {
     min-width: 640px;
   }
   .run-actions button {
-    font-size: 10px;
+    font-size: var(--text-small);
     padding: 6px 8px;
   }
 }
 @media (max-width: 900px) {
   .app {
-    grid-template-columns: 150px minmax(0, 1fr);
+    grid-template-columns: 190px minmax(0, 1fr);
   }
   .topbar {
     padding: 0 18px;
@@ -1479,7 +1484,7 @@ label.checkbox {
     min-width: 670px;
   }
   .transport .timecode {
-    font-size: 11px;
+    font-size: var(--text-body);
   }
   .inspector-tabs {
     justify-content: flex-start;
@@ -1488,10 +1493,10 @@ label.checkbox {
     flex: 0 0 80px;
   }
   .capture-note > span {
-    font-size: 8px;
+    font-size: var(--text-small);
   }
   .capture-note button {
-    font-size: 8px;
+    font-size: var(--text-small);
   }
 }
 @media (max-width: 600px) {
@@ -1514,7 +1519,7 @@ label.checkbox {
     width: 26px;
   }
   .brand small {
-    font-size: 6px;
+    font-size: var(--text-small);
     letter-spacing: 1.2px;
   }
   .top-actions {
@@ -1548,20 +1553,20 @@ label.checkbox {
     width: 34px;
   }
   .transport .timecode {
-    font-size: 9px;
+    font-size: var(--text-small);
   }
   .transport select {
-    font-size: 8px;
+    font-size: var(--text-small);
   }
   .timecode span {
-    font-size: 8px;
+    font-size: var(--text-small);
   }
   .timeline-footer {
     padding: 8px;
-    font-size: 8px;
+    font-size: var(--text-small);
   }
   .timeline-footer button {
-    font-size: 8px;
+    font-size: var(--text-small);
   }
   .search {
     max-width: 190px;
@@ -1577,7 +1582,7 @@ label.checkbox {
     flex-direction: column;
   }
   .local-label {
-    font-size: 8px;
+    font-size: var(--text-small);
   }
   .modal-actions {
     flex-wrap: wrap;
@@ -1599,7 +1604,7 @@ label.checkbox {
   padding: 16px;
 }
 .paired-evidence h3 {
-  font-size: 12px;
+  font-size: var(--text-body);
   margin-bottom: 12px;
 }
 .paired-evidence > div {
@@ -1613,17 +1618,17 @@ label.checkbox {
   border: 1px solid var(--line);
   border-radius: 6px;
   padding: 12px;
-  font-size: 11px;
+  font-size: var(--text-body);
 }
 .paired-evidence pre {
-  font-size: 10px;
+  font-size: var(--text-code);
   max-height: 260px;
   overflow: auto;
   margin-top: 12px;
 }
 .divergence select {
   width: 100%;
-  font-size: 10px;
+  font-size: var(--text-small);
   margin-top: 14px;
   padding: 7px;
 }
@@ -1656,14 +1661,15 @@ label.checkbox {
 
 .log-pagination {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   padding: 8px 12px;
-  font-size: 10px;
+  font-size: var(--text-small);
   border-top: 1px solid var(--line);
 }
 .log-pagination button {
-  font-size: 10px;
+  font-size: var(--text-small);
   min-height: 26px;
   padding: 4px 8px;
 }
@@ -1682,16 +1688,16 @@ label.checkbox {
   padding: 0 12px;
 }
 .lane-label {
-  font-size: 11px;
+  font-size: var(--text-body);
 }
 .ruler {
-  font-size: 9px;
+  font-size: var(--text-small);
 }
 .data-card pre {
-  font-size: 10px;
+  font-size: var(--text-code);
 }
 .paired-evidence pre {
-  font-size: 11px;
+  font-size: var(--text-code);
 }
 @media (max-width: 900px) {
   .studio > .inspector {
@@ -1735,7 +1741,7 @@ label.checkbox {
 }
 .source-picker small,
 .source-support {
-  font-size: 11px;
+  font-size: var(--text-body);
   color: #657187;
   font-weight: 400;
 }
@@ -1762,14 +1768,14 @@ label.checkbox {
   overflow-wrap: anywhere;
 }
 .source-guide a {
-  font-size: 12px;
+  font-size: var(--text-body);
 }
 .source-guide details {
   margin: 18px 0;
 }
 .source-guide summary {
   cursor: pointer;
-  font-size: 12px;
+  font-size: var(--text-body);
   font-weight: 600;
 }
 .settings-section {
@@ -1788,7 +1794,7 @@ label.checkbox {
 }
 .report-preview {
   font:
-    11px/1.65 "IBM Plex Mono",
+    var(--text-code)/1.65 "IBM Plex Mono",
     monospace;
   min-height: 290px;
   resize: vertical;
@@ -1832,7 +1838,7 @@ label.checkbox {
 }
 .transport select[aria-label="Timeline zoom"] {
   max-width: 78px;
-  font-size: 11px;
+  font-size: var(--text-body);
 }
 .comparison {
   display: flex;
@@ -1860,16 +1866,16 @@ label.checkbox {
   color: #193c54;
 }
 .comparison .divergence h3 {
-  font-size: 12px;
+  font-size: var(--text-body);
   color: #117aa7;
   margin: 0;
 }
 .comparison .divergence p {
   margin: 0;
-  font-size: 10px;
+  font-size: var(--text-small);
 }
 .comparison .divergence button {
-  font-size: 11px;
+  font-size: var(--text-body);
   min-height: 32px;
 }
 .comparison .divergence .text-button {
@@ -1880,7 +1886,7 @@ label.checkbox {
   width: auto;
   max-width: 280px;
   margin: 0;
-  font-size: 11px;
+  font-size: var(--text-body);
 }
 .comparison .comparison-toggle {
   margin-left: auto;
@@ -1911,7 +1917,7 @@ label.checkbox {
 .analysis-panel pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 .analysis-finding { border-left: 3px solid #7fc5ed; padding: 0 12px 10px; margin: 12px 0; }
 .analysis-citations { display: flex; gap: 6px; flex-wrap: wrap; }
-.analysis-citations button { font-size: 11px; overflow-wrap: anywhere; max-width: 100%; }
+.analysis-citations button { font-size: var(--text-body); overflow-wrap: anywhere; max-width: 100%; }
 .analysis-access { display: flex; align-items: end; gap: 10px; flex-wrap: wrap; }
 .study-panel { display: grid; gap: 12px; }
 .study-panel form { display: grid; gap: 12px; }
@@ -1923,16 +1929,16 @@ label.checkbox {
 dialog:has(.tutorial-welcome) { width: min(560px, calc(100vw - 32px)); }
 .tutorial-welcome { display: grid; gap: 12px; }
 .tutorial-welcome h2 { font-size: clamp(18px, 2vw, 24px); max-width: 760px; line-height: 1.3; margin: 6px 0 8px; }
-.tutorial-welcome p { max-width: 780px; font-size: 13px; line-height: 1.65; }
-.tutorial-welcome .welcome-eyebrow { color: #086eae; font-size: 11px; font-weight: 650; }
+.tutorial-welcome p { max-width: 780px; font-size: var(--text-body); line-height: 1.65; }
+.tutorial-welcome .welcome-eyebrow { color: #086eae; font-size: var(--text-body); font-weight: 650; }
 .welcome-alternatives { column-gap: 20px; }
 .welcome-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
 .tutorial-guide { padding: 16px 20px; margin-bottom: 16px; border: 1px solid #bcdff0; border-left: 4px solid var(--blue); border-radius: 10px; background: #f2faff; }
-.tutorial-guide p { line-height: 1.7; overflow-wrap: anywhere; font-size: 13px; max-width: 900px; }
+.tutorial-guide p { line-height: 1.7; overflow-wrap: anywhere; font-size: var(--text-body); max-width: 900px; }
 .tutorial-guide h2 { color: #086eae; margin: 6px 0; }
 @media (max-width: 900px) {
   .app { grid-template-rows: auto 1fr; }
   .topbar { flex-wrap: wrap; gap: 12px; padding: 12px; }
   .top-actions { margin-left: 0; }
-  .top-actions button { font-size: 12px; gap: 6px; }
+  .top-actions button { font-size: var(--text-body); gap: 6px; }
 }
