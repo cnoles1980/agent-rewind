@@ -74,6 +74,7 @@ test("Factory requires source selection, new imports survive reload, and setting
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
+  await page.getByRole("button", { name: "Workspace", exact: true }).click();
   await page
     .getByRole("button", { name: "Settings & sources", exact: true })
     .first()
@@ -107,6 +108,7 @@ test("Factory requires source selection, new imports survive reload, and setting
   // An API outage must not hide recordings already saved in this browser.
   await page.route("**/api/examples", (route) => route.abort());
   await page.reload();
+  await page.getByRole("button", { name: "Workspace", exact: true }).click();
   await page
     .getByRole("button", { name: "Settings & sources", exact: true })
     .first()

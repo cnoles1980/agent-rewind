@@ -216,11 +216,16 @@ button.primary:hover {
 }
 .sidebar {
   border-right: 1px solid var(--line);
-  padding: 27px 15px 0;
+  padding: 20px 15px 16px;
   display: flex;
   flex-direction: column;
   gap: 5px;
-  min-height: calc(100vh - 78px);
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: calc(100dvh - 78px);
+  min-height: 0;
+  overflow-y: auto;
   background: #f8fafc;
 }
 .side-heading {
@@ -272,7 +277,7 @@ button.primary:hover {
 .side-divider {
   height: 1px;
   background: var(--line);
-  margin: 20px 10px 19px;
+  margin: 12px 10px;
 }
 .recent-runs {
   display: flex;
@@ -280,8 +285,11 @@ button.primary:hover {
   gap: 5px;
   max-height: 40vh;
   overflow: auto;
+  flex-shrink: 1;
+  min-height: 72px;
 }
 .recent {
+  flex-shrink: 0;
   width: 100%;
   border: 0;
   background: transparent;
@@ -333,50 +341,25 @@ button.primary:hover {
 .status-dot.running {
   background: #008ece;
 }
-.private-card {
-  border: 1px solid #e3eaf0;
-  border-radius: 8px;
-  padding: 17px 13px;
-  margin: 50px 2px 20px;
-  color: #688096;
-  background: #fff;
-}
-.private-card svg {
-  color: #8da6b5;
-}
-.private-card > b {
-  font-size: var(--text-body);
-  display: block;
-  color: #526578;
-  margin: 10px 0 7px;
-}
-.private-card p {
-  font-size: var(--text-small);
-  line-height: 1.8;
-}
-.private-card button {
-  border: 0;
-  background: transparent;
-  font-size: var(--text-small);
-  padding: 12px 0 0;
-  color: #277c9f;
-}
-.sidebar-foot {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.workspace-toggle { display: none; }
+.sidebar-utilities {
   margin-top: auto;
-  padding: 16px 4px;
+  padding-top: 20px;
+  flex-shrink: 0;
+}
+.sidebar-utilities .side-heading { margin-bottom: 6px; }
+.sidebar-utilities .nav { min-height: 38px; padding: 8px 12px; }
+.privacy-note {
   border-top: 1px solid var(--line);
+  margin: 12px 10px 0;
+  padding-top: 12px;
+  color: var(--muted);
   font-size: var(--text-small);
-  color: #728399;
 }
-.sidebar-foot > span:last-child {
-  margin-left: auto;
-  font:
-    var(--text-small) "IBM Plex Mono",
-    monospace;
-}
+.privacy-note summary { cursor: pointer; line-height: 1.5; }
+.privacy-note summary svg { width: 15px; vertical-align: middle; }
+.privacy-note p { line-height: 1.65; margin: 10px 0 0; }
+.sidebar > .nav, .sidebar > .side-heading, .sidebar > .side-divider { flex-shrink: 0; }
 .main {
   padding: 22px 25px 0;
   min-width: 0;
@@ -1433,10 +1416,6 @@ label.checkbox {
   .sidebar {
     padding: 22px 7px 0;
   }
-  .private-card {
-    margin-top: 25px;
-    padding: 12px 9px;
-  }
   .studio {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -1941,4 +1920,23 @@ dialog:has(.tutorial-welcome) { width: min(560px, calc(100vw - 32px)); }
   .topbar { flex-wrap: wrap; gap: 12px; padding: 12px; }
   .top-actions { margin-left: 0; }
   .top-actions button { font-size: var(--text-body); gap: 6px; }
+}
+@media (max-width: 600px) {
+  .app { grid-template-rows: auto auto 1fr; }
+  .workspace-toggle { display: inline-flex; }
+  .top-actions { width: 100%; justify-content: space-between; }
+  .sidebar.is-open {
+    display: flex;
+    grid-column: 1 / -1;
+    position: static;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    padding: 18px 12px 0;
+  }
+  .sidebar-utilities { padding-top: 20px; }
+  .recent-runs { max-height: 220px; }
+  .run-header { flex-direction: column; gap: 16px; }
+  .run-actions { flex-direction: row; width: 100%; gap: 6px; }
+  .run-actions button { flex: 1; justify-content: center; }
 }

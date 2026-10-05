@@ -53,6 +53,7 @@ test("guided investigation selects actual evidence and opens a reviewed report w
   await page.getByRole("button", { name: "Try the guided example" }).click();
   await expect(guide).toContainText("Step 1 of 5");
   await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole("button", { name: "Workspace", exact: true }).click();
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
@@ -114,6 +115,7 @@ test("welcome is skippable, shown once, and can be reopened or escaped", async (
   await expect(page.locator(".main .tutorial-welcome")).toHaveCount(0);
   await page.reload();
   await expect(welcome).toHaveCount(0);
+  await page.getByRole("button", { name: "Workspace", exact: true }).click();
   await page.getByRole("button", { name: "Quick start", exact: true }).click();
   await expect(welcome).toBeVisible();
   await page.keyboard.press("Escape");

@@ -2,6 +2,8 @@
 
 Agent Rewind helps you understand a recorded AI agent mistake and bring evidence back to the agent's chat. Open a recording, inspect what the agent saw and did, then review and copy a debugging report. Optional AI analysis suggests investigation questions; it does not automatically repair code.
 
+**Where to find things:** Open recording is at the top right. Debug report, Compare and Clip & share belong to the selected run. Quick start, Feedback, Settings & sources, and Demo access & status are grouped under **Help & access** at the bottom of the left sidebar. On a phone, open **Workspace** to reach these controls, recent runs and Shared clips. The local-storage explanation can be expanded below the utility buttons.
+
 A short introduction opens once per browser. Choose **Try the guided example · 3 min**, or **Skip for now** to go straight to the workspace. Closing it or pressing Escape also skips it. Shared clips open directly without the introduction. No installation, invitation, API key, or personal log is needed. The optional five-step guide selects the policy, code change, failed test, and corrected comparison as you advance. **Show evidence** jumps to the relevant details. The last step opens an example debugging report. Use **Quick start** to reopen the introduction anytime. Clearing browser storage makes it appear again.
 
 Invited testers: choose **Enter invitation code**, paste your private code, and select **Unlock invited access**. Then choose **Start guided example**. You only need to enter the code once per session; it enables optional hosted analysis and private feedback. When finished, choose **Feedback**, add a rating and message, review, and submit. No recording is automatically attached.
@@ -41,7 +43,7 @@ Claude Code, n8n, Factory, and custom instructions are in the same settings pane
 
 ## 5. Create a handoff for your coding agent
 
-For hosted access, use **Enter invitation code** on the toolbar or welcome. Enter the private code supplied by the host and choose **Unlock invited access**. This enables invited features; it does not enable sandbox runs while the execution gate is closed. Self-hosted Python deployments also offer **Settings & sources → Manage invitation access**.
+For hosted access, use **Enter invitation code** under Help & access or in the welcome. Enter the private code supplied by the host and choose **Unlock invited access**. This enables invited features; it does not enable sandbox runs while the execution gate is closed. Self-hosted Python deployments also offer **Settings & sources → Manage invitation access**.
 
 Select the consequential event and choose **Debug report**. Describe what happened and what you expected. Review the exact evidence preview, add extra redaction phrases if needed, and check the review box. Copy or download the Markdown, then paste it into your existing agent chat yourself.
 
@@ -61,7 +63,7 @@ Choose **Clip & share**, set the range, and read the full preview. Supporting co
 
 ## Try a fresh coding run only when enabled
 
-The toolbar shows **Demo access & status** while fresh execution is unavailable, and **New demo run** when enabled. This is a separate action from replay. Enter your invitation, select the stale or corrected policy, and choose **Launch fresh run** only when available. The configured runner calls Nemotron and executes only the allowlisted checkout fixture in a remote sandbox. Outcomes follow actual acceptance tests; success is never forced.
+Help & access shows **Demo access & status** while fresh execution is unavailable, and **New demo run** when enabled. This is a separate action from replay. Enter your invitation, select the stale or corrected policy, and choose **Launch fresh run** only when available. The configured runner calls Nemotron and executes only the allowlisted checkout fixture in a remote sandbox. Outcomes follow actual acceptance tests; success is never forced.
 
 If the launch button is disabled, read the listed configuration blockers. Analysis can work while sandbox execution remains unavailable. Do not supply judges with your Nebius key to bypass this gate.
 

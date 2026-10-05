@@ -15,6 +15,8 @@ import {
   GearSix,
   Bug,
   ListBullets,
+  Question,
+  ChatCircleText,
   LockSimple,
   MagnifyingGlass,
   NotePencil,
@@ -27,7 +29,6 @@ import {
   SkipBack,
   SkipForward,
   Trash,
-  UploadSimple,
   Warning,
   X,
   XCircle,
@@ -136,6 +137,8 @@ function Modal({
   );
 }
 export default function App() {
+  const [workspaceOpen, setWorkspaceOpen] = useState(false);
+  const workspaceToggle = useRef<HTMLButtonElement>(null);
   const [preferences, setPreferences] = useState(readPreferences);
   const [tutorialStep, setTutorialStep] = useState<number | null>(null);
   const [tutorialVisit, setTutorialVisit] = useState(0);
@@ -570,58 +573,17 @@ export default function App() {
         </div>
         <div className="top-actions">
           <button
-            onClick={() => {
-              setPlaying(false);
-              setModal("welcome");
-            }}
+            ref={workspaceToggle}
+            className="workspace-toggle"
+            aria-expanded={workspaceOpen}
+            aria-controls="workspace-navigation"
+            onClick={() => setWorkspaceOpen(!workspaceOpen)}
           >
-            Quick start
+            <ListBullets /> Workspace
           </button>
-          {status?.study_supported && !status?.authenticated && (
-            <button
-              onClick={() => {
-                setPlaying(false);
-                setModal("feedback");
-              }}
-            >
-              Enter invitation code
-            </button>
-          )}
-          {status?.study_supported && (
-            <button
-              onClick={() => {
-                setPlaying(false);
-                setModal("feedback");
-              }}
-            >
-              Feedback
-            </button>
-          )}
-          <button
-            className="icon-button"
-            aria-label="Settings & sources"
-            title="Settings & sources"
-            onClick={() => {
-              setPlaying(false);
-              refresh();
-              setModal("settings");
-            }}
-          >
-            <GearSix />
-          </button>
-          <button onClick={() => openFile()}>
+          <button className="primary" onClick={() => openFile()}>
             <FolderOpen />
             Open recording
-          </button>
-          <button
-            className={status?.live_available ? "primary" : ""}
-            onClick={() => {
-              refresh();
-              setModal("demo");
-            }}
-          >
-            <Plus />
-            {status?.live_available ? "New demo run" : "Demo access & status"}
           </button>
         </div>
       </header>
@@ -636,21 +598,27 @@ export default function App() {
           e.target.value = "";
         }}
       />
-      <aside className="sidebar">
+      <aside
+        id="workspace-navigation"
+        aria-label="Workspace navigation"
+        className={"sidebar" + (workspaceOpen ? " is-open" : "")}
+        onKeyDown={(e) => {
+          if (e.key === "Escape" && workspaceOpen) {
+            setWorkspaceOpen(false);
+            workspaceToggle.current?.focus();
+          }
+        }}
+      >
         <div className="side-heading">WORKSPACE</div>
         <button
           className={!comparing ? "nav active" : "nav"}
-          onClick={() => setComparing(false)}
+          onClick={() => {
+            setComparing(false);
+            setWorkspaceOpen(false);
+          }}
         >
           <ListBullets />
           Runs<span className="count">{tapes.length}</span>
-        </button>
-        <button
-          className={comparing ? "nav active" : "nav"}
-          onClick={() => setComparing(true)}
-        >
-          <GitBranch />
-          Compare
         </button>
         <button
           className="nav"
@@ -665,17 +633,6 @@ export default function App() {
           Shared clips
         </button>
         <div className="side-divider" />
-        <button
-          className="nav"
-          onClick={() => {
-            setPlaying(false);
-            refresh();
-            setModal("settings");
-          }}
-        >
-          <GearSix />
-          Settings & sources
-        </button>
         <div className="side-heading">
           RECENT RUNS
           <button
@@ -690,7 +647,10 @@ export default function App() {
             <button
               key={t.run.id}
               className={"recent " + (t.run.id === current ? "chosen" : "")}
-              onClick={() => choose(t.run.id)}
+              onClick={() => {
+                choose(t.run.id);
+                setWorkspaceOpen(false);
+              }}
             >
               <span className={"status-dot " + t.run.status} />
               <span>
@@ -708,20 +668,69 @@ export default function App() {
             </button>
           ))}
         </div>
-        <div className="private-card">
-          <ShieldCheck size={24} />
-          <b>Your tapes stay yours.</b>
-          <p>
-            Imported recordings stay in this browser. Only reviewed excerpts
-            leave when you request analysis or publish a clip.
-          </p>
-          <button onClick={() => openFile()}>
-            Open a recording <UploadSimple />
+        <div className="sidebar-utilities">
+          <div className="side-heading">HELP & ACCESS</div>
+          <button
+            className="nav"
+            onClick={() => {
+              setPlaying(false);
+              setModal("welcome");
+            }}
+          >
+            <Question /> Quick start
           </button>
-        </div>
-        <div className="sidebar-foot">
-          <span className="status-dot success" />
-          Local library<span>v0.1.0</span>
+          {status?.study_supported && !status?.authenticated && (
+            <button
+              className="nav"
+              onClick={() => {
+                setPlaying(false);
+                setModal("feedback");
+              }}
+            >
+              <LockSimple /> Enter invitation code
+            </button>
+          )}
+          {status?.study_supported && (
+            <button
+              className="nav"
+              onClick={() => {
+                setPlaying(false);
+                setModal("feedback");
+              }}
+            >
+              <ChatCircleText /> Feedback
+            </button>
+          )}
+          <button
+            className="nav"
+            onClick={() => {
+              setPlaying(false);
+              refresh();
+              setModal("settings");
+            }}
+          >
+            <GearSix /> Settings & sources
+          </button>
+          <button
+            className="nav"
+            onClick={() => {
+              setPlaying(false);
+              refresh();
+              setModal("demo");
+            }}
+          >
+            <Plus />{" "}
+            {status?.live_available ? "New demo run" : "Demo access & status"}
+          </button>
+          <details className="privacy-note">
+            <summary>
+              <ShieldCheck /> Your recordings stay local
+            </summary>
+            <p>
+              Imported recordings stay in this browser. Only reviewed excerpts
+              leave when you request analysis or publish a clip.
+            </p>
+          </details>
         </div>
       </aside>
       <main className="main">

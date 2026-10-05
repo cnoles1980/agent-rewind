@@ -206,6 +206,27 @@ test("mobile viewport keeps controls within the page", async ({ page }) => {
   await expect(
     page.getByRole("button", { name: "Open recording", exact: true }),
   ).toBeVisible();
+  const workspace = page.getByRole("button", {
+    name: "Workspace",
+    exact: true,
+  });
+  await workspace.click();
+  await expect(
+    page.getByRole("button", { name: "Settings & sources", exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", {
+      name: "checkout-flow Example · corrected",
+      exact: true,
+    })
+    .click();
+  await expect(workspace).toHaveAttribute("aria-expanded", "false");
+  await expect(page.locator(".run-meta")).toContainText("success");
+  await workspace.click();
+  await page.getByRole("button", { name: "Quick start", exact: true }).focus();
+  await page.keyboard.press("Escape");
+  await expect(workspace).toHaveAttribute("aria-expanded", "false");
+  await expect(workspace).toBeFocused();
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= window.innerWidth,
