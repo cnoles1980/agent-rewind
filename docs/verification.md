@@ -2,6 +2,8 @@
 
 Status: **local implementation and hosted Cloudflare analysis/access verified; live sandbox coding execution remains blocked**. See the [actual hosted checks](cloudflare-deployment-check-2026-10-03.md). This is not yet a complete hackathon submission.
 
+**October 5 update:** Nebius sandbox beta access is now confirmed through the configured API key/project. Image listing and inspection of the recommended Python image succeeded. Execution pricing remains unconfirmed; no sandbox execution was launched. See the [access check and remaining gates](sandbox-access-2026-10-05.md). This supersedes the earlier access-denied results below.
+
 **October 4 update:** [Real-recording report evaluation](report-quality-2026-10-04.md) found material diagnostic errors. Hosted/API success does not establish correct diagnoses; the report-quality gate remains open. The evaluation kept original recordings and exact results private.
 
 **October 4 follow-up:** reports now use server-owned excerpts selected by Nemotron, clearly unverified questions, and a fixed investigation handoff. Seven final live reports returned successfully; the missing-evidence control stopped before inference. Harder interpretation errors remain documented in the evaluation. Read-only sandbox image listing still returns `ForbiddenError`; no new execution or access approval is established. A [three-person tester exercise](usability-check.md) is ready but has not been conducted.

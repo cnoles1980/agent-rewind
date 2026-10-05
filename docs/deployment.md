@@ -6,9 +6,9 @@ Latest result: [Cloudflare hosted deployment check](cloudflare-deployment-check-
 
 Evidence analysis can be enabled independently of live coding execution. It needs the dedicated Nebius key, verified inference pricing/reservation, and separate analysis enable flags; no sandbox is required. Follow [analysis configuration](analysis.md). Both kinds of paid calls share the same role budgets and total ceiling.
 
-**Live sandbox acceptance remains unverified.** The project ID and dedicated key are configured, and Corey submitted the Nebius beta request. After approval, the remaining work is image selection, execution/cancellation/isolation verification, and integrating the runner into the Cloudflare deployment. The owner does not need to guess a sandbox image or write integration code.
+**Sandbox access is active; live execution acceptance remains unverified.** On October 5 the configured project/key successfully listed images and inspected the recommended Python image. Execution pricing, execution/cancellation/isolation verification, and integration into the Cloudflare deployment remain required. The owner does not need to guess a sandbox image or write integration code.
 
-The selected adapter candidate is Nebius Sandboxes. After adding the verified project ID, the latest read-only image-list check returned **HTTP 403: insufficient permissions**. The beta request submission was confirmed. Real hosted inference works independently; no generated code has been executed by that probe.
+The selected provider is Nebius Sandboxes. The earlier HTTP 403 is resolved. The [October 5 access check](sandbox-access-2026-10-05.md) records the pinned image candidate and remaining gates. Re-run the read-only check with `uv run python scripts/probe_sandbox.py`; it does not spawn a sandbox, import an image, or invoke a model.
 
 ## 1. Verify Nebius execution by October 5
 

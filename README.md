@@ -8,7 +8,7 @@ A personal debugger for recorded agent runs: a Python recorder, local Codex impo
 
 Individual usability testers share a capped analysis allowance and can submit private, text-only feedback through **Feedback**. The separate owner inbox supports reading feedback and revoking invitations. See [tester access and feedback](docs/tester-access.md); private invitation codes are never published here.
 
-This is a controlled-use hackathon prototype. The offline examples are **illustrative fixtures**, clearly labeled in the UI. Real hosted Nemotron analysis is verified; fresh coding execution remains disabled pending Nebius sandbox approval and runner verification. See the [hosted deployment check](docs/cloudflare-deployment-check-2026-10-03.md) and [Cloudflare setup](cloudflare/README.md).
+This is a controlled-use hackathon prototype. The offline examples are **illustrative fixtures**, clearly labeled in the UI. Real hosted Nemotron analysis is verified. Nebius sandbox access was confirmed October 5; fresh coding execution remains disabled pending execution pricing, safety checks, and hosted runner integration. See the [sandbox access check](docs/sandbox-access-2026-10-05.md), [hosted deployment check](docs/cloudflare-deployment-check-2026-10-03.md), and [Cloudflare setup](cloudflare/README.md).
 
 ## Run locally
 

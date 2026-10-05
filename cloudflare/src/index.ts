@@ -16,7 +16,7 @@ import { studyRoute } from "./study";
 export { AccessState, BudgetLedger, ClipStore } from "./storage";
 
 const LIVE_BLOCKERS = [
-  "Nebius sandbox beta approval is pending",
+  "Sandbox execution pricing and isolation/cleanup checks are pending",
   "Hosted sandbox runner integration and real execution verification are still required",
 ];
 const COOKIE = "rewind_session";

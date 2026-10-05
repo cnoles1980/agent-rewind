@@ -2,7 +2,7 @@
 
 Serves the Vite player, invitation sessions, reviewed Nemotron analysis, and unlisted clips on a `workers.dev` address. No custom domain, Render account, container, or sandbox is needed for these features.
 
-**Live coding execution is deliberately unavailable here.** Nebius beta approval, runner integration, cancellation/recovery checks, and a real end-to-end coding run remain required. The Python runner is retained in `src/agent_rewind`; it has not been silently replaced by example playback.
+**Live coding execution is deliberately unavailable here.** Nebius beta access was confirmed October 5. Execution pricing, runner integration, cancellation/recovery checks, and a real end-to-end coding run remain required. The Python runner is retained in `src/agent_rewind`; it has not been silently replaced by example playback. See the [access check](../docs/sandbox-access-2026-10-05.md).
 
 ## Build and verify
 
