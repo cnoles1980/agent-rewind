@@ -8,7 +8,7 @@ A short introduction opens once per browser. Choose **Try the guided example · 
 
 Invited testers: skip or finish the example, then choose **Enter invitation code** under Help & access, paste your private code, and select **Unlock invited access**. Then choose **Start guided example**. You only need to enter the code once per session; it enables optional hosted analysis and private feedback. When finished, choose **Feedback**, add a rating and message, review, and submit. No recording is automatically attached.
 
-![Skippable first-use introduction](screenshots/welcome-popup.png)
+![Skippable first-use introduction](screenshots/welcome-plain.jpg)
 
 ## 1. Find the bad policy
 
