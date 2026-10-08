@@ -843,6 +843,7 @@ export default function App() {
               </div>
               <div className="run-actions">
                 <button
+                  className="primary"
                   disabled={!event}
                   onClick={() => {
                     setPlaying(false);
@@ -850,7 +851,7 @@ export default function App() {
                   }}
                 >
                   <Bug />
-                  Debug report
+                  Analyze with Nemotron
                 </button>
                 <button
                   onClick={() => setComparing(!comparing)}
@@ -1408,7 +1409,7 @@ export default function App() {
       )}
       {modal === "report" && tape && event && (
         <Modal
-          title="Debug report & Nemotron analysis"
+          title="Analyze with Nemotron"
           onClose={() => setModal(null)}
         >
           <DebugReport

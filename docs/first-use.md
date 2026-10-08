@@ -2,7 +2,7 @@
 
 Agent Rewind helps you understand a recorded AI agent mistake and bring evidence back to the agent's chat. Open a recording, inspect what the agent saw and did, then review and copy a debugging report. Optional AI analysis explains the selected evidence and suggests what to try next; it does not automatically repair code.
 
-**Where to find things:** Open recording is at the top right. Debug report, Compare and Clip & share belong to the selected run. Quick start, Feedback, Settings & sources, and Demo access & status are grouped under **Help & access** at the bottom of the left sidebar. On a phone, open **Workspace** to reach these controls, recent runs and Shared clips. The local-storage explanation can be expanded below the utility buttons.
+**Where to find things:** Open recording is at the top right. Analyze with Nemotron, Compare and Clip & share belong to the selected run. Quick start, Feedback, Settings & sources, and Demo access & status are grouped under **Help & access** at the bottom of the left sidebar. On a phone, open **Workspace** to reach these controls, recent runs and Shared clips. The local-storage explanation can be expanded below the utility buttons.
 
 A short introduction opens once per browser. Choose **Try an example**, or **Skip for now** to go straight to the workspace. Closing it or pressing Escape also skips it. Shared clips open directly without the introduction. No installation, invitation, API key, or personal log is needed. The optional five-step guide selects the policy, code change, failed test, and corrected comparison as you advance. **Show evidence** jumps to the relevant details. The last step opens an example debugging report. Use **Quick start** to reopen the introduction anytime. Clearing browser storage makes it appear again.
 
@@ -45,7 +45,7 @@ Claude Code, n8n, Factory, and custom instructions are in the same settings pane
 
 For hosted access, use **Enter invitation code** under Help & access. Enter the private code supplied by the host and choose **Unlock invited access**. This enables invited features; it does not enable sandbox runs while the execution gate is closed. Self-hosted Python deployments also offer **Settings & sources → Manage invitation access**.
 
-Select the consequential event and choose **Debug report**. Describe what happened and what you expected. Review the exact evidence preview, add extra redaction phrases if needed, and check the review box. Copy or download the Markdown, then paste it into your existing agent chat yourself.
+Select the consequential event and choose the prominent **Analyze with Nemotron** button above the timeline. Describe what happened and what you expected. Review the exact evidence preview, add extra redaction phrases if needed, and check the review box. Choose **Continue to analysis** for AI help, or copy/download the report for free and paste it into your agent's chat. Opening this dialog or continuing to the analysis controls does not send evidence or spend an allowance.
 
 The report ends at the selected event. Later code changes or test failures are excluded. Select the failure first if you want its result included; increase **Earlier events in reports** under Settings & sources if earlier policy or code evidence is missing. **View analysis options** jumps to the analysis controls without sending data or bypassing review.
 

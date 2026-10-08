@@ -1,6 +1,6 @@
 # Nemotron in the debugging workflow
 
-Select an event → **Debug report** → describe expected behavior → review/redact the exact excerpt → check the privacy review and the separate Nebius-send consent → **Analyze selected evidence**.
+Select an event → **Analyze with Nemotron** → describe expected behavior → review/redact the exact excerpt → check the privacy review and the separate Nebius-send consent → **Analyze selected evidence**.
 
 The hosted server calls NVIDIA Nemotron through Nebius Token Factory. The result leads with **What happened** and **What to try next**: a plain-English interpretation and a conditional suggestion, each linked to supplied evidence. Missing evidence stays visible. Exact quotations, follow-up questions and verification checks are expandable; the copied handoff includes all of them. Nemotron selects numbered, bounded excerpts; the server inserts their captured text and event citations directly. The model cannot rewrite the displayed evidence. Click a citation to return to its event. A matching quote establishes what was recorded, not that the recording or model interpretation is correct.
 

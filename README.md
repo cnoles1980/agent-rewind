@@ -121,13 +121,13 @@ Then choose **Open tape** in the browser. The importer reads only your selected 
 
 ## Hand evidence back to your agent
 
-Select an event, then choose **Debug report**. Describe the observed problem and expected behavior, optionally include the event's explicitly linked context, redact extra phrases, and review the exact preview. After checking the review box, copy the Markdown into the agent's existing chat or download it. The report includes recorded evidence and capture limitations; it does not infer a root cause, send messages, invoke a model, or apply a repair. The number of preceding events is configurable in Settings. Context is excluded by default because it can include earlier private messages. Changed evidence or form fields invalidate the review.
+Select an event, then choose **Analyze with Nemotron**. Describe the observed problem and expected behavior, optionally include the event's explicitly linked context, redact extra phrases, and review the exact preview. After checking the review box, copy the Markdown into the agent's existing chat or download it. The report includes recorded evidence and capture limitations; it does not infer a root cause, send messages, invoke a model, or apply a repair. The number of preceding events is configurable in Settings. Context is excluded by default because it can include earlier private messages. Changed evidence or form fields invalidate the review.
 
 ## Live invited demo
 
 ### Optional Nemotron evidence analysis
 
-In **Debug report**, review the evidence preview and explicitly consent to **Analyze selected evidence**. Nemotron returns cited facts, uncertain explanations, missing evidence, verification steps, and a repair prompt. Review the output, then copy it with the source excerpt to your coding agent. It never executes a fix. Editing evidence clears consent and the prior analysis.
+In **Analyze with Nemotron**, review the evidence preview and explicitly consent to **Analyze selected evidence**. Nemotron returns cited facts, uncertain explanations, missing evidence, verification steps, and a repair prompt. Review the output, then copy it with the source excerpt to your coding agent. It never executes a fix. Editing evidence clears consent and the prior analysis.
 
 This feature makes a real runtime call to Nebius, requires invited access and a server-side key, and works independently of sandbox execution. Analysis is disabled until its separate pricing/configuration gate is complete. See [analysis setup, privacy, limits, and verification](docs/analysis.md). Local evidence-only reports still require no key.
 

@@ -5,19 +5,41 @@ test("report navigation keeps evidence review and restores keyboard focus", asyn
   page,
 }) => {
   await page.goto("/");
+  let analysisCalls = 0;
+  await page.route("**/api/analyses", (route) => {
+    analysisCalls++;
+    return route.abort();
+  });
   const opener = page.getByRole("button", {
-    name: "Debug report",
+    name: "Analyze with Nemotron",
     exact: true,
   });
   await opener.click();
   await expect(page.getByText(/Evidence ends at read_policy/)).toBeVisible();
+  const continueButton = page.getByRole("button", {
+    name: "Continue to analysis",
+    exact: true,
+  });
+  await expect(continueButton).toBeDisabled();
   await page.getByRole("button", { name: "View analysis options" }).click();
   await expect(
-    page.getByRole("heading", { name: "Analyze with Nemotron" }),
+    page.getByRole("heading", { name: "Analyze with Nemotron", level: 3 }),
   ).toBeInViewport();
   await expect(
     page.getByRole("button", { name: "Analyze selected evidence" }),
   ).toBeDisabled();
+  await page.getByRole("checkbox", { name: "I reviewed this report" }).check();
+  await expect(
+    page.getByRole("button", { name: "Copy debugging report", exact: true }),
+  ).toBeEnabled();
+  await continueButton.click();
+  await expect(
+    page.getByLabel("Analysis options", { exact: true }),
+  ).toBeFocused();
+  await expect(
+    page.getByRole("heading", { name: "Analyze with Nemotron", level: 3 }),
+  ).toBeInViewport();
+  expect(analysisCalls).toBe(0);
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(opener).toBeFocused();

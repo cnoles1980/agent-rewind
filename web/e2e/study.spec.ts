@@ -149,7 +149,9 @@ test("exhausted study allowance is visible in analysis and prevents sending", as
     return route.abort();
   });
   await page.goto("http://127.0.0.1:8766/");
-  await page.getByRole("button", { name: "Debug report", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Analyze with Nemotron", exact: true })
+    .click();
   await page.getByRole("checkbox", { name: "I reviewed this report" }).check();
   await page
     .getByRole("checkbox", { name: "Send this reviewed excerpt" })

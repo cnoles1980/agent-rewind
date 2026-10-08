@@ -39,7 +39,7 @@ For Python applications, prefer explicit `Recorder.model_call` and `Recorder.too
 
 ## Debugging report behavior
 
-Select a consequential event and click **Debug report**. Add your expected behavior. The report ends at that event and includes the configured number of preceding visible events (default four), observed tool inputs/results/errors, event IDs and timing, provenance, and capture limitations. It excludes full model/context payloads unless the event has a linked snapshot and you explicitly include it. It does not automatically include unrelated annotations or the entire recording.
+Select a consequential event and click **Analyze with Nemotron**. Add your expected behavior. The report ends at that event and includes the configured number of preceding visible events (default four), observed tool inputs/results/errors, event IDs and timing, provenance, and capture limitations. It excludes full model/context payloads unless the event has a linked snapshot and you explicitly include it. It does not automatically include unrelated annotations or the entire recording.
 
 Per-block previews are capped at 16,000 characters with an explicit truncation marker. Additional redaction applies to both the evidence and your observation. Review is required before copying or downloading and is reset when content changes. Markdown fences contain captured text; the receiving agent is told to treat it as untrusted evidence. This reduces prompt-injection confusion but does not make arbitrary log contents trustworthy. Review remains necessary.
 

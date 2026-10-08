@@ -29,7 +29,9 @@ test("settings imports Codex locally and prepares a reviewed, redacted debugging
   await page
     .getByRole("button", { name: "read_file Tool result", exact: false })
     .click();
-  await page.getByRole("button", { name: "Debug report", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Analyze with Nemotron", exact: true })
+    .click();
   await expect(
     page.getByRole("button", { name: "Copy debugging report" }),
   ).toBeDisabled();

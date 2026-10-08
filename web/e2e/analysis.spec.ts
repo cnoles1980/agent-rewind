@@ -20,7 +20,9 @@ test("copied analysis keeps multiline event IDs inside untrusted data fences", a
     }),
   );
   await page.goto("http://127.0.0.1:8766/");
-  await page.getByRole("button", { name: "Debug report", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Analyze with Nemotron", exact: true })
+    .click();
   await page.getByRole("checkbox", { name: "I reviewed this report" }).check();
   await page
     .getByRole("checkbox", { name: "Send this reviewed excerpt" })
@@ -64,7 +66,9 @@ test("metadata-only report explains missing evidence without sending analysis", 
     return route.abort();
   });
   await page.goto("http://127.0.0.1:8766/");
-  await page.getByRole("button", { name: "Debug report", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Analyze with Nemotron", exact: true })
+    .click();
   await expect(page.getByRole("alert")).toContainText("No model call was made");
   await page.getByRole("checkbox", { name: "I reviewed this report" }).check();
   await page
@@ -92,7 +96,9 @@ test("redacted event references never leave in analysis metadata", async ({
     return r.abort();
   });
   await page.goto("http://127.0.0.1:8766/");
-  await page.getByRole("button", { name: "Debug report", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Analyze with Nemotron", exact: true })
+    .click();
   const preview = await page
     .getByLabel("Debugging report preview")
     .inputValue();
@@ -133,7 +139,9 @@ test("editing during inference discards the old response", async ({ page }) => {
       .catch(() => {});
   });
   await page.goto("http://127.0.0.1:8766/");
-  await page.getByRole("button", { name: "Debug report", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Analyze with Nemotron", exact: true })
+    .click();
   await page.getByRole("checkbox", { name: "I reviewed this report" }).check();
   await page
     .getByRole("checkbox", { name: "Send this reviewed excerpt" })
@@ -220,7 +228,9 @@ test("reviewed Nemotron excerpt, safe cited findings, handoff, and event navigat
     await route.fulfill({ json: response(body.event_ids.at(-1)) });
   });
   await page.goto("http://127.0.0.1:8766/");
-  await page.getByRole("button", { name: "Debug report", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Analyze with Nemotron", exact: true })
+    .click();
   await page
     .getByLabel("What happened, and what did you expect?")
     .fill("customer-private expected free shipping");
@@ -318,7 +328,9 @@ test("editing evidence clears consent and earlier analysis; failed calls do not 
       });
   });
   await page.goto("http://127.0.0.1:8766/");
-  await page.getByRole("button", { name: "Debug report", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Analyze with Nemotron", exact: true })
+    .click();
   await page.getByRole("checkbox", { name: "I reviewed this report" }).check();
   await page
     .getByRole("checkbox", { name: "Send this reviewed excerpt" })

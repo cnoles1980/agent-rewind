@@ -159,6 +159,12 @@ export default function AnalysisPanel({
   return (
     <section className="analysis-panel" aria-label="Nemotron evidence analysis">
       <h3>Analyze with Nemotron</h3>
+      {!reviewed && (
+        <p className="callout">
+          Review the report for private data above before sending it for
+          analysis.
+        </p>
+      )}
       <p>
         Send this reviewed report and its event references to the server and
         Nebius Token Factory. The server keeps only request status, cost
@@ -190,6 +196,10 @@ export default function AnalysisPanel({
             }
           }}
         >
+          <p>
+            An invitation code protects the host’s paid allowance. Use your
+            owner, tester or judge code here—not a Nebius API key.
+          </p>
           <label>
             Invitation code for analysis
             <input

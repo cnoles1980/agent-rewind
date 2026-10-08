@@ -43,12 +43,16 @@ export default function DebugReport({
     setReviewed(false);
     setMessage("");
   }
+  function showAnalysis() {
+    analysisSection.current?.scrollIntoView({ block: "start" });
+    analysisSection.current?.focus({ preventScroll: true });
+  }
   return (
     <div className="report-panel">
       <p>
-        Review this event and up to {preceding} earlier events. Copy the report
-        to your agent’s chat, or request Nemotron analysis. Nothing is sent
-        automatically.
+        Review this event and up to {preceding} earlier events, then continue to
+        analysis. You can also copy or download the report for free. Nothing is
+        sent automatically.
       </p>
       <div className="callout">
         <strong>
@@ -61,14 +65,7 @@ export default function DebugReport({
           Later events are excluded. To include a failure, select it first. Need
           more earlier events? Adjust the report settings in Settings & sources.
         </p>
-        <button
-          onClick={() => {
-            analysisSection.current?.scrollIntoView({ block: "start" });
-            analysisSection.current?.focus({ preventScroll: true });
-          }}
-        >
-          View analysis options
-        </button>
+        <button onClick={showAnalysis}>View analysis options</button>
       </div>
       <label>
         What happened, and what did you expect?
@@ -131,8 +128,10 @@ export default function DebugReport({
         I reviewed this report for private data.
       </label>
       <div className="modal-actions">
+        <button className="primary" disabled={!reviewed} onClick={showAnalysis}>
+          Continue to analysis
+        </button>
         <button
-          className="primary"
           disabled={!reviewed}
           onClick={async () => {
             try {

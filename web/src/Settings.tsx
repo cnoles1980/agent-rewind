@@ -254,7 +254,7 @@ export default function Settings({
           {status?.analysis_blockers?.length
             ? " " + status.analysis_blockers.join("; ") + "."
             : ""}{" "}
-          Select an event, then open Debug report to request analysis.
+          Select an event, then choose Analyze with Nemotron above the timeline.
         </p>
         <p>
           {status?.authenticated
