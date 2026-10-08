@@ -212,9 +212,9 @@ async def analyze(config, body: AnalysisRequest, model_call=complete):
                 "content": evidence_message(prepared),
             },
         ],
-        # Reasoning shares the completion allowance. The original 3072-token cap
-        # cut off the JSON during the real Lightning probe; retain room for both.
-        max_tokens=6144,
+        # Reasoning shares the completion allowance. Live explanation probes
+        # exhausted 6144 tokens; leave room for the final structured answer.
+        max_tokens=8192,
         response_format={
             "type": "json_schema",
             "json_schema": {

@@ -54,7 +54,7 @@ export async function analyze(env: Env, body: AnalysisRequest) {
         signal: AbortSignal.timeout(60_000),
         body: JSON.stringify({
           model: env.MODEL,
-          max_tokens: 6144,
+          max_tokens: 8192,
           temperature: 0.2,
           messages: [
             { role: "system", content: contract.system },

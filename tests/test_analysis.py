@@ -115,7 +115,7 @@ async def test_model_boundary_redaction_no_tools_and_citations(tmp_path):
     )
     assert cfg.api_key not in json.dumps(captured) + parsed.model_dump_json()
     assert "tools" not in captured[0]
-    assert captured[0]["max_tokens"] == 6144
+    assert captured[0]["max_tokens"] == 8192
     assert captured[0]["response_format"]["type"] == "json_schema"
     assert "untrusted" in captured[0]["messages"][0]["content"]
     assert usage == {"total_tokens": 88}
