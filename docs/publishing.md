@@ -5,7 +5,7 @@ Agent Rewind has three access paths:
 | Audience | What they can use | Whose inference key pays for new runs? |
 |---|---|---|
 | Public visitors | Recorded examples, their own browser-local imports, notes, comparisons, local reports/exports, and links to published clips | None of these features calls a model |
-| Invited judges/testers on your hosted demo | The same tools, plus reviewed Nemotron analysis, allowlisted fresh coding runs and reviewed clip publication | Your dedicated server-side Nebius key, behind invitations and shared budget admission |
+| Invited judges/testers on your hosted demo | The same tools, plus reviewed Nemotron analysis and reviewed clip publication | Your dedicated server-side Nebius key, behind invitations and shared budget admission |
 | People cloning the public GitHub repository | Run the player/API locally; optionally configure analysis or their own live runner | Their own Nebius account/key for analysis; sandbox project/image additionally required for coding runs |
 
 Public source does not mean public access to your paid inference. Forks do not inherit your Cloudflare Worker secrets (or alternative Render settings). Do not provide the judge invitation in the public README, demo video, screenshots, repository issues, or source. The active [Cloudflare deployment](../cloudflare/README.md) supports invited analysis and clips; fresh coding runs remain disabled pending execution pricing, safety verification, and integration. Sandbox beta access was confirmed October 5.
@@ -21,7 +21,7 @@ Evidence analysis has its own enable/pricing flags and does not need sandbox pro
 5. For Cloudflare, use the [Worker secrets and deployment instructions](../cloudflare/README.md). The dedicated key is server-side. The optional Render blueprint uses `sync: false` placeholders if you choose that alternative; neither host receives keys through committed source.
 6. Generate a separate high-entropy judge invitation code; put only its hash in `REWIND_JUDGE_CODE_HASH` for Python, or `JUDGE_CODE_HASH` for Cloudflare. Give the plaintext code and demo URL to judges through the submission's private testing instructions. Judges enter the code during setup or through **Settings & sources → Manage invitation access**; they never receive the Nebius key.
 7. Before enabling launches, finish the real sandbox and pricing gates in `deployment.md`. Keep the eight-call cap, deadline, single-job limit, and reserved judge/test budgets. Invitation access still spends your budget; it is not free inference.
-8. In an incognito browser, verify that examples and local imports work without an invitation, and that unauthenticated `POST /api/demo-runs` is denied. Verify a judge can log in and launch a real run once configured. Inspect browser network responses and downloaded assets to confirm no key appears.
+8. In an incognito browser, verify that examples and local imports work without an invitation, and that unauthenticated analysis is denied. Verify a judge can log in, analyze reviewed evidence, reopen the saved report and share/revoke a clip. Inspect browser responses and downloaded assets to confirm no key appears. Fresh coding execution is deferred from the current submission; do not promise a launch to judges.
 
 The public hosted app does **not** currently accept a visitor's own API key. People wanting unrestricted live runs must self-host the source and configure their own server. A browser key-entry form would introduce an additional credential-handling surface and is deliberately absent.
 

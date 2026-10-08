@@ -123,7 +123,7 @@ Then choose **Open tape** in the browser. The importer reads only your selected 
 
 Select an event, then choose **Analyze with Nemotron**. Describe the observed problem and expected behavior, optionally include the event's explicitly linked context, redact extra phrases, and review the exact preview. After checking the review box, copy the Markdown into the agent's existing chat or download it. The report includes recorded evidence and capture limitations; it does not infer a root cause, send messages, invoke a model, or apply a repair. The number of preceding events is configurable in Settings. Context is excluded by default because it can include earlier private messages. Changed evidence or form fields invalidate the review.
 
-## Live invited demo
+## Hosted invited analysis
 
 ### Optional Nemotron evidence analysis
 
@@ -133,9 +133,9 @@ In **Analyze with Nemotron**, review the evidence preview, check the privacy-rev
 
 This feature makes a real runtime call to Nebius, requires invited access and a server-side key, and works independently of sandbox execution. Analysis is disabled until its separate pricing/configuration gate is complete. See [analysis setup, privacy, limits, and verification](docs/analysis.md). Local evidence-only reports still require no key.
 
-**Publishing on GitHub does not require sharing your Nebius key.** Public visitors can inspect recordings without a key. Judges use your invitation-protected hosted analysis and runner; your key stays in server environment settings. People cloning the source configure their own key for Nemotron analysis or fresh live runs. See the [step-by-step source, secrets, and judge-access guide](docs/publishing.md).
+**Publishing on GitHub does not require sharing your Nebius key.** Public visitors can inspect recordings without a key. Judges use invitation-protected hosted analysis and clip sharing; your key stays in server environment settings. People cloning the source configure their own key for Nemotron analysis. See the [step-by-step source, secrets, and judge-access guide](docs/publishing.md).
 
-See [deployment and provider setup](docs/deployment.md). The four agent tools are `read_file`, `read_policy`, `apply_patch`, and `run_tests`. Only a small, pure `shipping_fee(subtotal)` function can be edited. The server never executes generated Python; each evaluation uses a disposable remote Nebius sandbox with networking disabled and no credentials. An independent immutable acceptance harness tests exactly $50 after the agent finishes.
+**Deferred prototype:** the repository retains a Python coding runner with `read_file`, `read_policy`, `apply_patch`, and `run_tests`. It is designed to edit a tiny shipping function, use disposable remote execution, and check an immutable $50 acceptance test. Real sandbox isolation, cleanup and billing remain unverified; the hosted app does not offer fresh coding execution. This runner is outside the current submission claims. See [deployment and provider setup](docs/deployment.md).
 
 The stale variant deliberately supplies an archived policy. Its badge follows the actual acceptance result, even if the model behaves differently from the intended story. Replay never invokes the model or executes a tool. A fresh run requires an explicit launch.
 
