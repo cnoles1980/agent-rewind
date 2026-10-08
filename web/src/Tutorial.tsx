@@ -61,31 +61,28 @@ export function rememberWelcome() {
 export function TutorialPrompt({
   onOpen,
   onImport,
-  onAccess,
   onSkip,
   ready,
 }: {
   onOpen: () => void;
   onImport: () => void;
-  onAccess?: () => void;
   onSkip: () => void;
   ready: boolean;
 }) {
   return (
     <section className="tutorial-welcome" aria-label="First-use welcome">
-      <p className="welcome-eyebrow">A debugger for recorded AI agent runs</p>
-      <h2>Understand what went wrong. Bring evidence back to your agent.</h2>
+      <p className="welcome-eyebrow">Agent Rewind</p>
+      <h2>Find where your AI agent went wrong.</h2>
       <p>
-        Inspect what your agent saw and did. Copy the evidence into its chat to
-        help investigate.
+        Follow a recorded run, understand the mistake, and take a useful report
+        back to your agent.
       </p>
       <p className="muted">
-        No setup or key needed for examples. Nothing runs or is sent
-        automatically.
+        Start with a 3-minute example. No account or API key needed.
       </p>
       <div className="welcome-actions">
         <button className="primary" disabled={!ready} onClick={onOpen}>
-          Try the guided example · 3 min
+          Try an example
         </button>
         <button onClick={onSkip}>Skip for now</button>
       </div>
@@ -93,13 +90,7 @@ export function TutorialPrompt({
         <button className="text-button" onClick={onImport}>
           Open my own agent log
         </button>
-        {onAccess && (
-          <button className="text-button" onClick={onAccess}>
-            Enter invitation code
-          </button>
-        )}
       </div>
-      <p className="muted">Reopen anytime with Quick start.</p>
     </section>
   );
 }

@@ -36,6 +36,8 @@ def test_reviewed_evidence_parity(case):
 def test_excerpts_are_selected_by_id_and_text_always_comes_from_source():
     prepared = {"sources": [{"event_id": "evt", "content": "actual: []\n  expected: []"}]}
     draft = AnalysisDraft(
+        explanation={"text": "Both printed arrays are empty.", "excerpt_ids": [1]},
+        next_step={"text": "Check the comparison rule before changing the arrays.", "excerpt_ids": [1]},
         quotes=[{"excerpt_id": 1}],
         questions=[],
         missing_evidence=[],

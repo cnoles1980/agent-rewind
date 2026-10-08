@@ -133,16 +133,22 @@ export async function analyze(env: Env, body: AnalysisRequest) {
     );
     if (!validateResult(analysis))
       throw new AnalysisFailure("format", "result schema");
+    const findings = [
+      analysis.explanation,
+      analysis.next_step,
+      ...analysis.facts,
+      ...analysis.hypotheses,
+    ];
     if (
       analysis.missing_evidence
         .concat(analysis.verification_steps)
         .some((s) => !s || s.length > 2000) ||
-      analysis.facts
-        .concat(analysis.hypotheses)
-        .some((f) => f.event_ids.some((id) => !body.event_ids.includes(id)))
+      findings.some((f) =>
+        f.event_ids.some((id) => !body.event_ids.includes(id)),
+      )
     )
       throw new AnalysisFailure("evidence_mismatch");
-    for (const finding of analysis.facts.concat(analysis.hypotheses))
+    for (const finding of findings)
       finding.text = redact(finding.text, [env.NEBIUS_API_KEY]);
     analysis.missing_evidence = redact(analysis.missing_evidence, [
       env.NEBIUS_API_KEY,

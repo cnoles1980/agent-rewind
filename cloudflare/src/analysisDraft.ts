@@ -41,7 +41,17 @@ export function acceptDraft(
     if (!source) throw new AnalysisFailure("evidence_mismatch");
     return { text: source.text, event_ids: [source.event_id] };
   }
+  function interpretation(item: AnalysisDraft["explanation"]) {
+    const event_ids = item.excerpt_ids.map((id) => {
+      const source = excerpts[id - 1];
+      if (!source) throw new AnalysisFailure("evidence_mismatch");
+      return source.event_id;
+    });
+    return { text: item.text, event_ids: [...new Set(event_ids)] };
+  }
   return {
+    explanation: interpretation(draft.explanation),
+    next_step: interpretation(draft.next_step),
     facts: draft.quotes.map(quoted),
     hypotheses: draft.questions.map((item) => {
       const finding = quoted(item);

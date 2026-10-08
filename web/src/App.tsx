@@ -1323,11 +1323,6 @@ export default function App() {
             onOpen={() => guide(0)}
             onSkip={() => setModal(null)}
             onImport={() => setModal("settings")}
-            onAccess={
-              status?.study_supported && !status?.authenticated
-                ? () => setModal("feedback")
-                : undefined
-            }
           />
         </Modal>
       )}

@@ -1,12 +1,12 @@
 # Your first investigation in Agent Rewind
 
-Agent Rewind helps you understand a recorded AI agent mistake and bring evidence back to the agent's chat. Open a recording, inspect what the agent saw and did, then review and copy a debugging report. Optional AI analysis suggests investigation questions; it does not automatically repair code.
+Agent Rewind helps you understand a recorded AI agent mistake and bring evidence back to the agent's chat. Open a recording, inspect what the agent saw and did, then review and copy a debugging report. Optional AI analysis explains the selected evidence and suggests what to try next; it does not automatically repair code.
 
 **Where to find things:** Open recording is at the top right. Debug report, Compare and Clip & share belong to the selected run. Quick start, Feedback, Settings & sources, and Demo access & status are grouped under **Help & access** at the bottom of the left sidebar. On a phone, open **Workspace** to reach these controls, recent runs and Shared clips. The local-storage explanation can be expanded below the utility buttons.
 
 A short introduction opens once per browser. Choose **Try the guided example · 3 min**, or **Skip for now** to go straight to the workspace. Closing it or pressing Escape also skips it. Shared clips open directly without the introduction. No installation, invitation, API key, or personal log is needed. The optional five-step guide selects the policy, code change, failed test, and corrected comparison as you advance. **Show evidence** jumps to the relevant details. The last step opens an example debugging report. Use **Quick start** to reopen the introduction anytime. Clearing browser storage makes it appear again.
 
-Invited testers: choose **Enter invitation code**, paste your private code, and select **Unlock invited access**. Then choose **Start guided example**. You only need to enter the code once per session; it enables optional hosted analysis and private feedback. When finished, choose **Feedback**, add a rating and message, review, and submit. No recording is automatically attached.
+Invited testers: skip or finish the example, then choose **Enter invitation code** under Help & access, paste your private code, and select **Unlock invited access**. Then choose **Start guided example**. You only need to enter the code once per session; it enables optional hosted analysis and private feedback. When finished, choose **Feedback**, add a rating and message, review, and submit. No recording is automatically attached.
 
 ![Skippable first-use introduction](screenshots/welcome-popup.png)
 
@@ -43,13 +43,13 @@ Claude Code, n8n, Factory, and custom instructions are in the same settings pane
 
 ## 5. Create a handoff for your coding agent
 
-For hosted access, use **Enter invitation code** under Help & access or in the welcome. Enter the private code supplied by the host and choose **Unlock invited access**. This enables invited features; it does not enable sandbox runs while the execution gate is closed. Self-hosted Python deployments also offer **Settings & sources → Manage invitation access**.
+For hosted access, use **Enter invitation code** under Help & access. Enter the private code supplied by the host and choose **Unlock invited access**. This enables invited features; it does not enable sandbox runs while the execution gate is closed. Self-hosted Python deployments also offer **Settings & sources → Manage invitation access**.
 
 Select the consequential event and choose **Debug report**. Describe what happened and what you expected. Review the exact evidence preview, add extra redaction phrases if needed, and check the review box. Copy or download the Markdown, then paste it into your existing agent chat yourself.
 
 The report ends at the selected event. Later code changes or test failures are excluded. Select the failure first if you want its result included; increase **Earlier events in reports** under Settings & sources if earlier policy or code evidence is missing. **View analysis options** jumps to the analysis controls without sending data or bypassing review.
 
-This evidence-only report works without an API key. For **optional Nemotron analysis**, invited users enter their invitation code, review the excerpt, and explicitly consent to sending it. Choose **Analyze selected evidence**. Read the **Recorded excerpts** and follow their citations, then review the **Investigation questions** and suggested checks before copying the handoff. Rewind checks that quoted text exists in the selected evidence, but the questions may still be wrong. The handoff asks your agent to inspect the project and confirm the cause before changing anything.
+This evidence-only report works without an API key. For **optional Nemotron analysis**, invited users enter their invitation code, review the excerpt, and explicitly consent to sending it. Choose **Analyze selected evidence**. Start with **What happened** and **What to try next**. These are AI interpretations, not verified diagnoses. Expand **Supporting evidence and checks** to inspect exact quotations and follow their event links. **Still needed** identifies missing evidence, when applicable. Rewind validates source references, but that does not prove the interpretation is correct. The handoff asks your agent to inspect the project and confirm the cause before changing anything.
 
 If the report only contains event metadata, choose an event with captured input/output or an error. Rewind will explain that more evidence is needed without making a paid call. Keep JSON blocks intact when editing the preview. Each admitted hosted analysis sets aside 25 cents of the host's internal allowance; this is a spending safeguard, not the supplier's actual charge.
 

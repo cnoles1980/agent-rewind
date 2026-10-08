@@ -154,7 +154,7 @@ test("editing during inference discards the old response", async ({ page }) => {
   ).toBeDisabled();
   await expect(
     page.getByRole("heading", {
-      name: "Recorded excerpts",
+      name: "What happened",
       exact: true,
     }),
   ).toHaveCount(0);
@@ -177,6 +177,14 @@ function response(id: string) {
     provider: "Nebius Token Factory",
     usage: { total_tokens: 100 },
     analysis: {
+      explanation: {
+        text: "The policy excludes exactly $50. The later test is not included. <img src=x onerror=alert(1)>",
+        event_ids: [id],
+      },
+      next_step: {
+        text: "Confirm the intended threshold, then include the code and test result before choosing an edit.",
+        event_ids: [id],
+      },
       facts: [
         {
           text: "The policy says strictly above $50. <img src=x onerror=alert(1)>",
@@ -234,7 +242,7 @@ test("reviewed Nemotron excerpt, safe cited findings, handoff, and event navigat
   await analyze.click();
   await expect(
     page.getByRole("heading", {
-      name: "Recorded excerpts",
+      name: "What happened",
       exact: true,
     }),
   ).toBeVisible();
@@ -247,6 +255,18 @@ test("reviewed Nemotron excerpt, safe cited findings, handoff, and event navigat
   expect(JSON.stringify(requests[0])).not.toContain("customer-private");
   expect(requests[0].reviewed).toBe(true);
   await expect(page.locator(".analysis-results img")).toHaveCount(0);
+  await expect(
+    page.getByRole("heading", { name: "What to try next", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Recorded excerpts", exact: true }),
+  ).not.toBeVisible();
+  await page
+    .getByText("Supporting evidence and checks", { exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Recorded excerpts", exact: true }),
+  ).toBeVisible();
   const copy = page.getByRole("button", {
     name: "Copy investigation handoff",
   });
@@ -254,7 +274,7 @@ test("reviewed Nemotron excerpt, safe cited findings, handoff, and event navigat
   await page.getByRole("checkbox", { name: "I reviewed the analysis" }).check();
   await copy.click();
   expect(await page.evaluate(() => navigator.clipboard.readText())).toContain(
-    "not proven causes",
+    "Confirm the intended threshold, then include the code and test result",
   );
   expect(await page.evaluate(() => navigator.clipboard.readText())).toContain(
     "Do not weaken tests",
@@ -308,7 +328,7 @@ test("editing evidence clears consent and earlier analysis; failed calls do not 
     .click();
   await expect(
     page.getByRole("heading", {
-      name: "Recorded excerpts",
+      name: "What happened",
       exact: true,
     }),
   ).toBeVisible();
@@ -317,7 +337,7 @@ test("editing evidence clears consent and earlier analysis; failed calls do not 
     .fill("Changed expected behavior");
   await expect(
     page.getByRole("heading", {
-      name: "Recorded excerpts",
+      name: "What happened",
       exact: true,
     }),
   ).toHaveCount(0);

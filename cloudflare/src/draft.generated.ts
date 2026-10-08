@@ -5,6 +5,12 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
+export type Text = string;
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+export type ExcerptIds = number[];
 export type ExcerptId = number;
 /**
  * @maxItems 4
@@ -28,10 +34,16 @@ export type MissingEvidence = string[];
 export type VerificationSteps = string[];
 
 export interface AnalysisDraft {
+  explanation: Interpretation;
+  next_step: Interpretation;
   quotes: Quotes;
   questions: Questions;
   missing_evidence: MissingEvidence;
   verification_steps: VerificationSteps;
+}
+export interface Interpretation {
+  text: Text;
+  excerpt_ids: ExcerptIds;
 }
 export interface EvidenceQuote {
   excerpt_id: ExcerptId;

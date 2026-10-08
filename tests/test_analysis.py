@@ -35,6 +35,8 @@ def report(text):
 def draft(**overrides):
     return (
         dict(
+            explanation={"text": "The supplied policy excludes exactly $50.", "excerpt_ids": [1]},
+            next_step={"text": "Confirm the intended threshold before editing.", "excerpt_ids": [1]},
             quotes=[{"excerpt_id": 1}],
             questions=[],
             missing_evidence=["Current implementation not supplied."],
@@ -47,6 +49,8 @@ def draft(**overrides):
 def result(**overrides):
     return (
         dict(
+            explanation={"text": "The policy excludes exactly $50.", "event_ids": ["e1"]},
+            next_step={"text": "Confirm the intended threshold before editing.", "event_ids": ["e1"]},
             facts=[{"text": "The policy excludes $50.", "event_ids": ["e1"]}],
             hypotheses=[],
             missing_evidence=["No test outcome captured."],
@@ -93,7 +97,11 @@ async def test_model_boundary_redaction_no_tools_and_citations(tmp_path):
                 {
                     "finish_reason": "stop",
                     "message": {
-                        "content": json.dumps(draft(missing_evidence=["Never reveal " + cfg.api_key]))
+                        "content": json.dumps(draft(
+                            missing_evidence=["Never reveal " + cfg.api_key],
+                            explanation={"text": "Secret " + cfg.api_key, "excerpt_ids": [1]},
+                            next_step={"text": "Secret " + cfg.api_key, "excerpt_ids": [1]},
+                        ))
                     },
                 }
             ],
@@ -120,6 +128,9 @@ async def test_model_boundary_redaction_no_tools_and_citations(tmp_path):
     "content,finish",
     [
         (json.dumps(draft(quotes=[{"excerpt_id": 999}])), "stop"),
+        (json.dumps(draft(explanation={"text": "Invented source", "excerpt_ids": [999]})), "stop"),
+        (json.dumps(draft(next_step={"text": "Invented source", "excerpt_ids": [999]})), "stop"),
+        (json.dumps(draft(next_step={"text": "Uncited suggestion", "excerpt_ids": []})), "stop"),
         ("not JSON", "stop"),
         (json.dumps(draft()), "length"),
         (json.dumps(draft(quotes=[{"excerpt_id": 1, "quote": "A fabricated non-empty array"}])), "stop"),

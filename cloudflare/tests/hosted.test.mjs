@@ -17,6 +17,14 @@ let mf,
   providerMode = "ok",
   release;
 const result = {
+  explanation: {
+    text: "The policy excludes exactly $50. [REDACTED]",
+    event_ids: ["e1"],
+  },
+  next_step: {
+    text: "Confirm the intended threshold before editing.",
+    event_ids: ["e1"],
+  },
   facts: [
     {
       text: 'output:\nPolicy says free shipping above $50. File "[LOCAL PATH]" failed. expected behavior: free at $50. [REDACTED]\nenvironment:\n[REDACTED]',
@@ -75,12 +83,24 @@ function options() {
       if (providerMode === "failure")
         return new Response("secret provider error", { status: 500 });
       const answer = {
+        explanation: {
+          text: result.explanation.text.replace(
+            "[REDACTED]",
+            "synthetic-server-secret-12345",
+          ),
+          excerpt_ids: [1],
+        },
+        next_step: { text: result.next_step.text, excerpt_ids: [1] },
         quotes: [{ excerpt_id: 1 }],
         questions: [],
         missing_evidence: result.missing_evidence,
         verification_steps: result.verification_steps,
       };
       if (providerMode === "bad-citation") answer.quotes[0].excerpt_id = 999;
+      if (providerMode === "bad-explanation")
+        answer.explanation.excerpt_ids = [999];
+      if (providerMode === "bad-next-step")
+        answer.next_step.excerpt_ids = [999];
       if (providerMode === "bad-quote")
         answer.quotes[0].quote = "The captured array was not empty.";
       return Response.json({
@@ -260,7 +280,13 @@ test("concurrent sessions cannot admit two model calls", async () => {
 });
 test("provider errors and fabricated citations fail safely with reservations retained", async () => {
   const cookie = await login();
-  for (const mode of ["failure", "bad-citation", "bad-quote"]) {
+  for (const mode of [
+    "failure",
+    "bad-citation",
+    "bad-quote",
+    "bad-explanation",
+    "bad-next-step",
+  ]) {
     providerMode = mode;
     const response = await api(
       "/analyses",
@@ -282,7 +308,7 @@ test("provider errors and fabricated citations fail safely with reservations ret
   }
   providerMode = "ok";
   const status = await (await api("/status", "GET", undefined, cookie)).json();
-  assert.equal(status.budget_reserved_cents.tester, 300);
+  assert.equal(status.budget_reserved_cents.tester, 350);
 });
 test("metadata-only and malformed evidence never reserve budget or call provider", async () => {
   const cookie = await login();
@@ -332,7 +358,7 @@ test("reviewed clip publication, redaction, persistence, anonymous read, and rev
   assert.doesNotMatch(content, /seeded-private-key/);
   assert.match(content, /<script>/);
   const status = await (await api("/status", "GET", undefined, cookie)).json();
-  assert.equal(status.budget_reserved_cents.tester, 300);
+  assert.equal(status.budget_reserved_cents.tester, 350);
   for (let i = 0; i < 2; i++)
     assert.equal(
       (

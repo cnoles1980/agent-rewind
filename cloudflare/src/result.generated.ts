@@ -31,6 +31,8 @@ export type VerificationSteps = string[];
 export type RepairPrompt = string;
 
 export interface AnalysisResult {
+  explanation: Finding;
+  next_step: Finding;
   facts: Facts;
   hypotheses: Hypotheses;
   missing_evidence: MissingEvidence;

@@ -9,14 +9,14 @@ test("guided investigation selects actual evidence and opens a reviewed report w
   await page.goto("/");
   await expect(
     page.getByRole("heading", {
-      name: "Understand what went wrong. Bring evidence back to your agent.",
+      name: "Find where your AI agent went wrong.",
     }),
   ).toBeVisible();
   const writes: string[] = [];
   page.on("request", (r) => {
     if (r.method() !== "GET") writes.push(r.url());
   });
-  await page.getByRole("button", { name: "Try the guided example" }).click();
+  await page.getByRole("button", { name: "Try an example" }).click();
   const guide = page.getByRole("region", { name: "Guided investigation" });
   await expect(guide).toContainText("What did the agent read?");
   await expect(page.getByRole("dialog")).toHaveCount(0);
@@ -50,7 +50,7 @@ test("guided investigation selects actual evidence and opens a reviewed report w
   await expect(
     page.getByRole("dialog", { name: "Meet Agent Rewind" }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Try the guided example" }).click();
+  await page.getByRole("button", { name: "Try an example" }).click();
   await expect(guide).toContainText("Step 1 of 5");
   await page.setViewportSize({ width: 390, height: 844 });
   await page.getByRole("button", { name: "Workspace", exact: true }).click();
@@ -91,7 +91,7 @@ test("unavailable examples do not start a broken tour or block local import", as
   );
   await page.goto("/");
   await expect(
-    page.getByRole("button", { name: "Try the guided example" }),
+    page.getByRole("button", { name: "Try an example" }),
   ).toBeDisabled();
   await expect(
     page.getByRole("button", { name: "Quick start", exact: true }),
