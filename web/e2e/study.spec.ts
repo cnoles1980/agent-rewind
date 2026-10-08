@@ -30,13 +30,13 @@ test("tester invitation, explicit feedback, retry identity, no automatic attachm
   });
   await page.goto("http://127.0.0.1:8766/");
   await page
-    .getByRole("button", { name: "Enter invitation code", exact: true })
-    .first()
-    .click();
-  await page
-    .getByLabel("Private tester or owner invitation")
+    .getByLabel("Invitation code", { exact: true })
     .fill("synthetic-tester-invitation");
-  await page.getByRole("button", { name: "Unlock invited access" }).click();
+  await page
+    .getByRole("button", { name: "Unlock AI analysis", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Continue to workspace" }).click();
+  await page.getByRole("button", { name: "Feedback", exact: true }).click();
   await expect(
     page.getByText("0 analysis attempts remain", { exact: false }),
   ).toBeVisible();
@@ -153,15 +153,12 @@ test("exhausted study allowance is visible in analysis and prevents sending", as
     .getByRole("button", { name: "Analyze with Nemotron", exact: true })
     .click();
   await page.getByRole("checkbox", { name: "I reviewed this report" }).check();
-  await page
-    .getByRole("checkbox", { name: "Send this reviewed excerpt" })
-    .check();
   await expect(
     page.getByText("0 analysis attempts remain", { exact: false }),
   ).toBeVisible();
   await expect(
     page.getByRole("button", {
-      name: "Analyze selected evidence",
+      name: "Send to Nemotron",
       exact: true,
     }),
   ).toBeDisabled();

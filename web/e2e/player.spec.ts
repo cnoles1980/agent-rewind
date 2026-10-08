@@ -16,29 +16,14 @@ test("report navigation keeps evidence review and restores keyboard focus", asyn
   });
   await opener.click();
   await expect(page.getByText(/Evidence ends at read_policy/)).toBeVisible();
-  const continueButton = page.getByRole("button", {
-    name: "Continue to analysis",
-    exact: true,
-  });
-  await expect(continueButton).toBeDisabled();
-  await page.getByRole("button", { name: "View analysis options" }).click();
+  await expect(page.getByRole("checkbox")).toHaveCount(1);
   await expect(
-    page.getByRole("heading", { name: "Analyze with Nemotron", level: 3 }),
-  ).toBeInViewport();
-  await expect(
-    page.getByRole("button", { name: "Analyze selected evidence" }),
+    page.getByRole("button", { name: "Send to Nemotron", exact: true }),
   ).toBeDisabled();
   await page.getByRole("checkbox", { name: "I reviewed this report" }).check();
   await expect(
     page.getByRole("button", { name: "Copy debugging report", exact: true }),
   ).toBeEnabled();
-  await continueButton.click();
-  await expect(
-    page.getByLabel("Analysis options", { exact: true }),
-  ).toBeFocused();
-  await expect(
-    page.getByRole("heading", { name: "Analyze with Nemotron", level: 3 }),
-  ).toBeInViewport();
   expect(analysisCalls).toBe(0);
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toHaveCount(0);

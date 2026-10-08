@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 export const tutorialSteps = [
   {
@@ -63,11 +63,13 @@ export function TutorialPrompt({
   onImport,
   onSkip,
   ready,
+  access,
 }: {
   onOpen: () => void;
   onImport: () => void;
   onSkip: () => void;
   ready: boolean;
+  access?: ReactNode;
 }) {
   return (
     <section className="tutorial-welcome" aria-label="First-use welcome">
@@ -80,6 +82,7 @@ export function TutorialPrompt({
       <p className="muted">
         Start with a 3-minute example. No account or API key needed.
       </p>
+      {access}
       <div className="welcome-actions">
         <button className="primary" disabled={!ready} onClick={onOpen}>
           Try an example

@@ -38,6 +38,9 @@ test("settings imports Codex locally and prepares a reviewed, redacted debugging
   await page
     .getByLabel("What happened, and what did you expect?")
     .fill("private-customer: shipping should be free.");
+  await page
+    .getByText("Context and redaction (optional)", { exact: true })
+    .click();
   await page.getByLabel("Text to hide").fill("private-customer");
   await expect(page.getByLabel("Debugging report preview")).not.toHaveValue(
     /private-customer/,

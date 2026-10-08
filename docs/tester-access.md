@@ -13,9 +13,9 @@ Click **Refresh feedback** to check new messages. There are no email notificatio
 ## For testers
 
 1. Open [Agent Rewind](https://agent-rewind.cnoles1980.workers.dev/) on a laptop or desktop. No installation, API key or provider account is required.
-2. Click **Enter invitation code**, enter your private invitation, then **Unlock invited access**. Choose **Try an example** to begin, or close the dialog to explore. You can also sign in through Settings & sources → Manage invitation access.
+2. Enter your private invitation in the setup prompt, then choose **Unlock AI analysis**. Choose **Try an example** to begin, or close the dialog to explore. You can also sign in through Settings & sources → Manage invitation access.
 3. Use the bundled examples first. Personal logs are optional and stay in your browser until you explicitly request analysis or publish a clip.
-4. To try Nemotron, select an event, open **Analyze with Nemotron**, describe expected behavior, review the excerpt, and consent to sending it. Try one analysis initially so everyone gets a turn. Remaining attempts are shared across the group and shown in the analysis panel.
+4. To try Nemotron, select an event, open **Analyze with Nemotron**, describe expected behavior, review the excerpt, check the single privacy-review box, and choose **Send to Nemotron**. Try one analysis initially so everyone gets a turn. Remaining attempts are shared across the group and shown in the analysis panel.
 5. Click **Feedback** to rate the experience and explain what you tried, expected and observed. Review the text and choose **Send feedback**. Wait for **Feedback saved**. Feedback still works when the analysis allowance is used.
 
 Fresh coding runs remain unavailable until the sandbox gate is completed. Model questions are unverified leads. Rewind does not apply fixes or send anything to your coding-agent chat automatically.

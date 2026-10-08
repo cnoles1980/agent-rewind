@@ -1799,7 +1799,7 @@ label.checkbox {
   font:
     var(--text-code)/1.65 "IBM Plex Mono",
     monospace;
-  min-height: 290px;
+  min-height: 210px;
   resize: vertical;
 }
 .modal-actions {
@@ -1964,3 +1964,6 @@ dialog:has(.tutorial-welcome) { width: min(560px, calc(100vw - 32px)); }
   .run-actions { flex-direction: row; width: 100%; gap: 6px; }
   .run-actions button { flex: 1; justify-content: center; }
 }
+
+.access-setup { border-block: 1px solid #dbe4ec; padding-block: 12px; margin-block: 16px; }
+.report-panel details { margin-block: 12px; }

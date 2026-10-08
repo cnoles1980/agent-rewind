@@ -1,3 +1,7 @@
+import AccessSetup, {
+  accessWasOffered,
+  rememberAccessOffer,
+} from "./AccessSetup";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowCounterClockwise,
@@ -172,6 +176,7 @@ export default function App() {
       | "report"
       | "import"
       | "feedback"
+      | "access"
       | "welcome"
       | null
     >(() => (shouldShowWelcome() ? "welcome" : null)),
@@ -181,6 +186,26 @@ export default function App() {
   useEffect(() => {
     if (modal === "welcome") rememberWelcome();
   }, [modal]);
+  const accessOffered = useRef(accessWasOffered());
+  useEffect(() => {
+    if (
+      (modal === "welcome" &&
+        (status?.analysis_available || status?.study_supported)) ||
+      status?.authenticated
+    ) {
+      accessOffered.current = true;
+      rememberAccessOffer();
+    } else if (
+      !modal &&
+      status?.authenticated === false &&
+      (status?.analysis_available || status?.study_supported) &&
+      !accessOffered.current
+    ) {
+      accessOffered.current = true;
+      rememberAccessOffer();
+      setModal("access");
+    }
+  }, [modal, status]);
   const [code, setCode] = useState(""),
     [note, setNote] = useState(""),
     [variant, setVariant] = useState("stale"),
@@ -679,17 +704,18 @@ export default function App() {
           >
             <Question /> Quick start
           </button>
-          {status?.study_supported && !status?.authenticated && (
-            <button
-              className="nav"
-              onClick={() => {
-                setPlaying(false);
-                setModal("feedback");
-              }}
-            >
-              <LockSimple /> Enter invitation code
-            </button>
-          )}
+          {(status?.study_supported || status?.analysis_available) &&
+            !status?.authenticated && (
+              <button
+                className="nav"
+                onClick={() => {
+                  setPlaying(false);
+                  setModal("access");
+                }}
+              >
+                <LockSimple /> Enter invitation code
+              </button>
+            )}
           {status?.study_supported && (
             <button
               className="nav"
@@ -1320,11 +1346,32 @@ export default function App() {
       {modal === "welcome" && (
         <Modal title="Meet Agent Rewind" onClose={() => setModal(null)}>
           <TutorialPrompt
+            access={
+              status?.study_supported || status?.analysis_available ? (
+                <AccessSetup
+                  authenticated={!!status.authenticated}
+                  onAccessChange={refresh}
+                />
+              ) : undefined
+            }
             ready={tutorialReady}
             onOpen={() => guide(0)}
             onSkip={() => setModal(null)}
             onImport={() => setModal("settings")}
           />
+        </Modal>
+      )}
+      {modal === "access" && (
+        <Modal title="Set up AI access" onClose={() => setModal(null)}>
+          <AccessSetup
+            authenticated={!!status?.authenticated}
+            onAccessChange={refresh}
+          />
+          <button onClick={() => setModal(null)}>
+            {status?.authenticated
+              ? "Continue to workspace"
+              : "Continue without a code"}
+          </button>
         </Modal>
       )}
       {modal === "feedback" && (
@@ -1402,22 +1449,18 @@ export default function App() {
             status={status}
             onDemo={() => {
               refresh();
-              setModal("demo");
+              setModal("access");
             }}
           />
         </Modal>
       )}
       {modal === "report" && tape && event && (
-        <Modal
-          title="Analyze with Nemotron"
-          onClose={() => setModal(null)}
-        >
+        <Modal title="Analyze with Nemotron" onClose={() => setModal(null)}>
           <DebugReport
             key={tape.run.id + event.id}
             tape={tape}
             event={event}
             preceding={preferences.reportPreceding}
-            onAccessChange={refresh}
             onSelect={(id) => {
               const linked = tape.events.find((e) => e.id === id);
               if (linked) {

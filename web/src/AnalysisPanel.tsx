@@ -23,20 +23,17 @@ export default function AnalysisPanel({
   eventIds,
   reviewed,
   onSelect,
-  onAccessChange,
+  onSubmitted,
 }: {
   report: string;
   eventIds: string[];
   reviewed: boolean;
   onSelect: (id: string) => void;
-  onAccessChange: () => void;
+  onSubmitted: () => void;
 }) {
   const [status, setStatus] = useState<Status | null>(null);
-  const [code, setCode] = useState("");
-  const [consent, setConsent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<Result | null>(null);
-  const [outputReviewed, setOutputReviewed] = useState(false);
   const [message, setMessage] = useState("");
   const request = useRef<AbortController | null>(null);
   const bytes = new TextEncoder().encode(report).length;
@@ -62,9 +59,7 @@ export default function AnalysisPanel({
     return () => controller.abort();
   }, []);
   useEffect(() => {
-    setConsent(false);
     setResult(null);
-    setOutputReviewed(false);
     setMessage("");
     setBusy(false);
     return () => {
@@ -76,7 +71,9 @@ export default function AnalysisPanel({
   async function run() {
     if (
       !reviewed ||
-      !consent ||
+      !status?.authenticated ||
+      !status?.analysis_available ||
+      status?.study?.remaining_calls === 0 ||
       oversized ||
       evidenceProblem ||
       !eventIds.length ||
@@ -86,9 +83,9 @@ export default function AnalysisPanel({
     const controller = new AbortController();
     request.current = controller;
     setBusy(true);
+    onSubmitted();
     setMessage("");
     setResult(null);
-    setOutputReviewed(false);
     try {
       const response = await api<Result>("/analyses", {
         method: "POST",
@@ -102,12 +99,10 @@ export default function AnalysisPanel({
       });
       if (!controller.signal.aborted) {
         setResult(response);
-        setConsent(false); // Consent covers one paid call, even after success.
       }
     } catch (e) {
       if (!controller.signal.aborted) {
         setMessage(e instanceof Error ? e.message : "Analysis failed.");
-        setConsent(false); // A new paid attempt always requires renewed consent.
       }
     } finally {
       if (!controller.signal.aborted)
@@ -158,60 +153,26 @@ export default function AnalysisPanel({
     : "";
   return (
     <section className="analysis-panel" aria-label="Nemotron evidence analysis">
-      <h3>Analyze with Nemotron</h3>
-      {!reviewed && (
-        <p className="callout">
-          Review the report for private data above before sending it for
-          analysis.
+      <p id="analysis-send-notice">
+        Send this excerpt to Nebius for one paid analysis. No tools run or code
+        changes.
+      </p>
+      <details>
+        <summary>Privacy and usage</summary>
+        <p>
+          The server stores request status, cost reservations and token counts,
+          not the report or response. Nebius data policies apply.
         </p>
-      )}
-      <p>
-        Send this reviewed report and its event references to the server and
-        Nebius Token Factory. The server keeps only request status, cost
-        reservations and token counts; it does not save the report or response.
-        Nebius data policies apply.
-      </p>
-      <p className="muted">
-        {status?.model ?? "NVIDIA Nemotron"} · One model call · No tools or
-        automatic fixes · {Math.ceil(bytes / 1000)} / 48 KB
-      </p>
-      {!status?.authenticated && (
-        <form
-          className="analysis-access"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            try {
-              await api("/session", {
-                method: "POST",
-                body: JSON.stringify({ code }),
-              });
-              setCode("");
-              setStatus(await api<Status>("/status"));
-              onAccessChange();
-              setMessage("");
-            } catch (err) {
-              setMessage(
-                err instanceof Error ? err.message : "Sign-in failed.",
-              );
-            }
-          }}
-        >
-          <p>
-            An invitation code protects the host’s paid allowance. Use your
-            owner, tester or judge code here—not a Nebius API key.
-          </p>
-          <label>
-            Invitation code for analysis
-            <input
-              type="password"
-              value={code}
-              autoComplete="off"
-              maxLength={200}
-              onChange={(e) => setCode(e.target.value)}
-            />
-          </label>
-          <button disabled={code.length < 12}>Unlock analysis</button>
-        </form>
+        <p className="muted">
+          {status?.model ?? "NVIDIA Nemotron"} · {Math.ceil(bytes / 1000)} / 48
+          KB
+        </p>
+      </details>
+      {status?.authenticated === false && (
+        <p className="callout">
+          AI access is locked. Sign in through Settings &amp; sources → Manage
+          invitation access, then reopen this report. Free export still works.
+        </p>
       )}
       {status?.study && (
         <p role="status">
@@ -241,20 +202,10 @@ export default function AnalysisPanel({
         </p>
       )}
       {evidenceProblem && <p role="alert">{evidenceProblem}</p>}
-      <label className="checkbox">
-        <input
-          type="checkbox"
-          checked={consent}
-          disabled={busy}
-          onChange={(e) => setConsent(e.target.checked)}
-        />
-        Send this reviewed excerpt to Nebius for one paid analysis.
-      </label>
       <button
         className="primary"
         disabled={
           !reviewed ||
-          !consent ||
           busy ||
           oversized ||
           !!evidenceProblem ||
@@ -263,9 +214,10 @@ export default function AnalysisPanel({
           status?.study?.remaining_calls === 0 ||
           !eventIds.length
         }
+        aria-describedby="analysis-send-notice"
         onClick={run}
       >
-        {busy ? "Analyzing evidence…" : "Analyze selected evidence"}
+        {busy ? "Analyzing evidence…" : "Send to Nemotron"}
       </button>
       {busy && (
         <p role="status">
@@ -361,8 +313,8 @@ export default function AnalysisPanel({
           </details>
           <h4>Take this back to your agent</h4>
           <p>
-            Copy the explanation and evidence into your agent’s chat. Ask it to
-            verify the suggestion in your project.
+            Review before pasting into your agent’s chat. Ask it to verify the
+            suggestion against your code and tests.
           </p>
           <details>
             <summary>Exact analysis handoff to copy or download</summary>
@@ -373,17 +325,8 @@ export default function AnalysisPanel({
               value={handoff}
             />
           </details>
-          <label className="checkbox">
-            <input
-              type="checkbox"
-              checked={outputReviewed}
-              onChange={(e) => setOutputReviewed(e.target.checked)}
-            />
-            I reviewed the analysis and included evidence before sharing.
-          </label>
           <div className="modal-actions">
             <button
-              disabled={!outputReviewed}
               onClick={async () => {
                 try {
                   await navigator.clipboard.writeText(handoff);
@@ -400,7 +343,6 @@ export default function AnalysisPanel({
               Copy investigation handoff
             </button>
             <button
-              disabled={!outputReviewed}
               onClick={() =>
                 downloadText(handoff, "agent-rewind-nemotron-analysis.md")
               }

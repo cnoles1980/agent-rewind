@@ -25,12 +25,8 @@ test("copied analysis keeps multiline event IDs inside untrusted data fences", a
     .click();
   await page.getByRole("checkbox", { name: "I reviewed this report" }).check();
   await page
-    .getByRole("checkbox", { name: "Send this reviewed excerpt" })
-    .check();
-  await page
-    .getByRole("button", { name: "Analyze selected evidence", exact: true })
+    .getByRole("button", { name: "Send to Nemotron", exact: true })
     .click();
-  await page.getByRole("checkbox", { name: "I reviewed the analysis" }).check();
   await page
     .getByRole("button", { name: "Copy investigation handoff", exact: true })
     .click();
@@ -71,12 +67,9 @@ test("metadata-only report explains missing evidence without sending analysis", 
     .click();
   await expect(page.getByRole("alert")).toContainText("No model call was made");
   await page.getByRole("checkbox", { name: "I reviewed this report" }).check();
-  await page
-    .getByRole("checkbox", { name: "Send this reviewed excerpt" })
-    .check();
   await expect(
     page.getByRole("button", {
-      name: "Analyze selected evidence",
+      name: "Send to Nemotron",
       exact: true,
     }),
   ).toBeDisabled();
@@ -104,14 +97,14 @@ test("redacted event references never leave in analysis metadata", async ({
     .inputValue();
   const ids = [...preview.matchAll(/"event": "([^"]+)"/g)].map((m) => m[1]);
   expect(ids.length).toBeGreaterThan(0);
+  await page
+    .getByText("Context and redaction (optional)", { exact: true })
+    .click();
   await page.getByLabel("Text to hide").fill(ids.join("\n"));
   await page.getByRole("checkbox", { name: "I reviewed this report" }).check();
-  await page
-    .getByRole("checkbox", { name: "Send this reviewed excerpt" })
-    .check();
   await expect(
     page.getByRole("button", {
-      name: "Analyze selected evidence",
+      name: "Send to Nemotron",
       exact: true,
     }),
   ).toBeDisabled();
@@ -144,10 +137,7 @@ test("editing during inference discards the old response", async ({ page }) => {
     .click();
   await page.getByRole("checkbox", { name: "I reviewed this report" }).check();
   await page
-    .getByRole("checkbox", { name: "Send this reviewed excerpt" })
-    .check();
-  await page
-    .getByRole("button", { name: "Analyze selected evidence", exact: true })
+    .getByRole("button", { name: "Send to Nemotron", exact: true })
     .click();
   await started;
   await page
@@ -156,7 +146,7 @@ test("editing during inference discards the old response", async ({ page }) => {
   release();
   await expect(
     page.getByRole("button", {
-      name: "Analyze selected evidence",
+      name: "Send to Nemotron",
       exact: true,
     }),
   ).toBeDisabled();
@@ -167,7 +157,7 @@ test("editing during inference discards the old response", async ({ page }) => {
     }),
   ).toHaveCount(0);
   await expect(
-    page.getByRole("checkbox", { name: "Send this reviewed excerpt" }),
+    page.getByRole("checkbox", { name: "I reviewed this report" }),
   ).not.toBeChecked();
 });
 
@@ -234,18 +224,18 @@ test("reviewed Nemotron excerpt, safe cited findings, handoff, and event navigat
   await page
     .getByLabel("What happened, and what did you expect?")
     .fill("customer-private expected free shipping");
+  await page
+    .getByText("Context and redaction (optional)", { exact: true })
+    .click();
   await page.getByLabel("Text to hide").fill("customer-private");
   const analyze = page.getByRole("button", {
-    name: "Analyze selected evidence",
+    name: "Send to Nemotron",
     exact: true,
   });
   await expect(analyze).toBeDisabled();
   await page.getByRole("checkbox", { name: "I reviewed this report" }).check();
-  await expect(analyze).toBeDisabled();
+  await expect(analyze).toBeEnabled();
   expect(requests).toHaveLength(0);
-  await page
-    .getByRole("checkbox", { name: "Send this reviewed excerpt" })
-    .check();
   const preview = await page
     .getByLabel("Debugging report preview")
     .inputValue();
@@ -259,7 +249,7 @@ test("reviewed Nemotron excerpt, safe cited findings, handoff, and event navigat
   expect(requests).toHaveLength(1);
   await expect(analyze).toBeDisabled();
   await expect(
-    page.getByRole("checkbox", { name: "Send this reviewed excerpt" }),
+    page.getByRole("checkbox", { name: "I reviewed this report" }),
   ).not.toBeChecked();
   expect(requests[0].evidence).toBe(preview);
   expect(JSON.stringify(requests[0])).not.toContain("customer-private");
@@ -280,8 +270,7 @@ test("reviewed Nemotron excerpt, safe cited findings, handoff, and event navigat
   const copy = page.getByRole("button", {
     name: "Copy investigation handoff",
   });
-  await expect(copy).toBeDisabled();
-  await page.getByRole("checkbox", { name: "I reviewed the analysis" }).check();
+  await expect(copy).toBeEnabled();
   await copy.click();
   expect(await page.evaluate(() => navigator.clipboard.readText())).toContain(
     "Confirm the intended threshold, then include the code and test result",
@@ -333,10 +322,7 @@ test("editing evidence clears consent and earlier analysis; failed calls do not 
     .click();
   await page.getByRole("checkbox", { name: "I reviewed this report" }).check();
   await page
-    .getByRole("checkbox", { name: "Send this reviewed excerpt" })
-    .check();
-  await page
-    .getByRole("button", { name: "Analyze selected evidence", exact: true })
+    .getByRole("button", { name: "Send to Nemotron", exact: true })
     .click();
   await expect(
     page.getByRole("heading", {
@@ -354,21 +340,18 @@ test("editing evidence clears consent and earlier analysis; failed calls do not 
     }),
   ).toHaveCount(0);
   await expect(
-    page.getByRole("checkbox", { name: "Send this reviewed excerpt" }),
+    page.getByRole("checkbox", { name: "I reviewed this report" }),
   ).not.toBeChecked();
   await page.getByRole("checkbox", { name: "I reviewed this report" }).check();
   await page
-    .getByRole("checkbox", { name: "Send this reviewed excerpt" })
-    .check();
-  await page
-    .getByRole("button", { name: "Analyze selected evidence", exact: true })
+    .getByRole("button", { name: "Send to Nemotron", exact: true })
     .click();
   await expect(
     page.getByRole("status").filter({ hasText: "valid, cited analysis" }),
   ).toBeVisible();
   await expect(
     page.getByRole("button", {
-      name: "Analyze selected evidence",
+      name: "Send to Nemotron",
       exact: true,
     }),
   ).toBeDisabled();

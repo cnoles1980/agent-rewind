@@ -12,7 +12,7 @@ This is a controlled-use hackathon prototype. The offline examples are **illustr
 
 ## Run locally
 
-**First visit?** A short, skippable introduction appears once per browser. Choose **Try an example**, or **Skip for now** for a clear workspace. The optional guide selects recorded evidence and opens a debugging report you can review and paste into your agent's chat. No setup or key is needed. Reopen the introduction with **Quick start**; see the [written walkthrough](docs/first-use.md) for imports, optional analysis, and sharing. Invited testers can use **Enter invitation code** under **Help & access**.
+**First visit?** A short, skippable introduction appears once per browser. Choose **Try an example**, or **Skip for now** for a clear workspace. The optional guide selects recorded evidence and opens a debugging report you can review and paste into your agent's chat. No setup or key is needed. Reopen the introduction with **Quick start**; see the [written walkthrough](docs/first-use.md) for imports, optional analysis, and sharing. Invited testers enter their code during welcome/session setup, or through **Settings & sources → Manage invitation access**. Code entry is optional for free exploration.
 
 Requires Python 3.12, [uv](https://docs.astral.sh/uv/getting-started/installation/), and Node.js 24 LTS. The source is a separate project and has no dependency on Agent Bridge.
 
@@ -127,7 +127,7 @@ Select an event, then choose **Analyze with Nemotron**. Describe the observed pr
 
 ### Optional Nemotron evidence analysis
 
-In **Analyze with Nemotron**, review the evidence preview and explicitly consent to **Analyze selected evidence**. Nemotron returns cited facts, uncertain explanations, missing evidence, verification steps, and a repair prompt. Review the output, then copy it with the source excerpt to your coding agent. It never executes a fix. Editing evidence clears consent and the prior analysis.
+In **Analyze with Nemotron**, review the evidence preview, check the privacy-review box, and choose **Send to Nemotron** for one paid call. Context and redaction are available under optional controls. Nemotron returns cited facts, uncertain explanations, missing evidence, verification steps, and a repair prompt. Review the output, then copy it with the source excerpt to your coding agent. It never executes a fix. Editing evidence clears consent and the prior analysis.
 
 This feature makes a real runtime call to Nebius, requires invited access and a server-side key, and works independently of sandbox execution. Analysis is disabled until its separate pricing/configuration gate is complete. See [analysis setup, privacy, limits, and verification](docs/analysis.md). Local evidence-only reports still require no key.
 

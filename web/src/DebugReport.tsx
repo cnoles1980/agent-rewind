@@ -1,23 +1,19 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Copy, DownloadSimple } from "@phosphor-icons/react";
 import { debuggingReport, downloadText, reportEvents } from "./report";
 import AnalysisPanel from "./AnalysisPanel";
 import { clock, type Event, type Tape } from "./engine";
-
 export default function DebugReport({
   tape,
   event,
   preceding,
   onSelect,
-  onAccessChange,
 }: {
   tape: Tape;
   event: Event;
   preceding: number;
   onSelect: (id: string) => void;
-  onAccessChange: () => void;
 }) {
-  const analysisSection = useRef<HTMLDivElement>(null);
   const [observation, setObservation] = useState(""),
     [phrases, setPhrases] = useState("");
   const [includeContext, setIncludeContext] = useState(false),
@@ -43,30 +39,22 @@ export default function DebugReport({
     setReviewed(false);
     setMessage("");
   }
-  function showAnalysis() {
-    analysisSection.current?.scrollIntoView({ block: "start" });
-    analysisSection.current?.focus({ preventScroll: true });
-  }
   return (
     <div className="report-panel">
       <p>
-        Review this event and up to {preceding} earlier events, then continue to
-        analysis. You can also copy or download the report for free. Nothing is
-        sent automatically.
+        Explain the problem, review the excerpt, then send it for AI analysis.
       </p>
-      <div className="callout">
+      <p className="callout">
         <strong>
           Evidence ends at {event.name} ·{" "}
           {event.elapsed_ms === null
             ? "time unknown"
             : clock(event.elapsed_ms, true)}
         </strong>
-        <p>
-          Later events are excluded. To include a failure, select it first. Need
-          more earlier events? Adjust the report settings in Settings & sources.
-        </p>
-        <button onClick={showAnalysis}>View analysis options</button>
-      </div>
+        <br />
+        Includes up to {preceding} earlier events. Select the failure to include
+        its result.
+      </p>
       <label>
         What happened, and what did you expect?
         <textarea
@@ -80,43 +68,46 @@ export default function DebugReport({
           placeholder="At exactly $50, shipping should be free, but the boundary test failed."
         />
       </label>
-      <label className="checkbox">
-        <input
-          type="checkbox"
-          checked={includeContext}
-          onChange={(e) => {
-            changed();
-            setIncludeContext(e.target.checked);
-          }}
-        />
-        Include this event’s recorded context
-      </label>
-      {includeContext && (
-        <p className="callout">
-          Context may include earlier messages and private data. Review it
-          before sharing.
-        </p>
-      )}
+      <details>
+        <summary>Context and redaction (optional)</summary>
+        <label className="checkbox">
+          <input
+            type="checkbox"
+            checked={includeContext}
+            onChange={(e) => {
+              changed();
+              setIncludeContext(e.target.checked);
+            }}
+          />
+          Include this event’s recorded context
+        </label>
+        {includeContext && (
+          <p className="callout">
+            Context may include earlier messages and private data. Review it
+            before sharing.
+          </p>
+        )}
+        <label>
+          Text to hide (one phrase per line)
+          <textarea
+            rows={2}
+            value={phrases}
+            maxLength={4000}
+            onChange={(e) => {
+              changed();
+              setPhrases(e.target.value);
+            }}
+          />
+        </label>
+      </details>
       <label>
-        Text to hide (one phrase per line)
-        <textarea
-          rows={2}
-          value={phrases}
-          maxLength={4000}
-          onChange={(e) => {
-            changed();
-            setPhrases(e.target.value);
-          }}
-        />
-      </label>
-      <label>
-        Exact report preview
+        Excerpt to review
         <textarea
           aria-label="Debugging report preview"
           className="report-preview"
           readOnly
           value={report}
-          rows={15}
+          rows={8}
         />
       </label>
       <label className="checkbox">
@@ -127,10 +118,18 @@ export default function DebugReport({
         />
         I reviewed this report for private data.
       </label>
+      <div aria-label="Analysis options">
+        <AnalysisPanel
+          report={report}
+          eventIds={reportEvents(tape, event, preceding)
+            .map((e) => e.id)
+            .filter((id) => report.includes(JSON.stringify(id)))}
+          reviewed={reviewed}
+          onSelect={onSelect}
+          onSubmitted={() => setReviewed(false)}
+        />
+      </div>
       <div className="modal-actions">
-        <button className="primary" disabled={!reviewed} onClick={showAnalysis}>
-          Continue to analysis
-        </button>
         <button
           disabled={!reviewed}
           onClick={async () => {
@@ -160,17 +159,6 @@ export default function DebugReport({
         </button>
       </div>
       {message && <p role="status">{message}</p>}
-      <div ref={analysisSection} tabIndex={-1} aria-label="Analysis options">
-        <AnalysisPanel
-          report={report}
-          eventIds={reportEvents(tape, event, preceding)
-            .map((e) => e.id)
-            .filter((id) => report.includes(JSON.stringify(id)))}
-          reviewed={reviewed}
-          onSelect={onSelect}
-          onAccessChange={onAccessChange}
-        />
-      </div>
     </div>
   );
 }
