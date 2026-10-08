@@ -57,6 +57,8 @@ Only the reviewed excerpt is sent to Nebius. Analysis uses the host's server-sid
 
 ## 6. Export or share a narrow clip
 
+**Find an earlier analysis:** choose **Saved reports** above the timeline. Completed Nemotron reports are archived with this recording, including the exact excerpt analyzed. Select a dated entry to reopen or download it without spending allowance. Archives stay in this browser; download reports separately before clearing browser data or removing the recording. They are not included in tape exports or clips.
+
 Choose **Clip & share**, set the range, and read the full preview. Supporting context is excluded by default because it can contain earlier private messages. Add redactions, then check the review box.
 
 **Export clip** saves a local file without uploading it. **Create share link** requires invited access and publishes that reviewed clip. Anyone with its unlisted link can read it. Revoke it under **Shared clips** in the same browser. Clearing browser storage loses its saved management credential.

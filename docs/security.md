@@ -3,6 +3,7 @@
 This is a prototype for invited, bounded execution. It is not a public arbitrary-code service or a production multi-tenant telemetry backend.
 
 - Imported personal tapes are parsed, redacted and stored in IndexedDB. No telemetry or third-party fonts/scripts are loaded. Do not serve this application alongside untrusted scripts on the same origin.
+- Completed Nemotron analyses and their reviewed excerpts are archived in the same browser database by run ID. They are historical records, not updated diagnoses. Removing the tape removes its archives; clearing browser data does too. They are excluded from tape/clip exports and publication. Download reports separately for backup. Browser storage is not an encrypted vault and is accessible to scripts on the same origin.
 - The Python recorder redacts before writing. It excludes known credential fields, authorization/cookie values, encrypted reasoning payloads, configured secrets and sensitive keys. It cannot discover every private business detail, so sharing requires review.
 - Context means captured messages/tool definitions and explicit application state. Missing context and timing are unknown. Imported Codex summaries do not imply access to hidden reasoning or full requests.
 - Request size limits apply before JSON parsing (100 MB local tapes, 10,000 events, 2 MB hosted clips). Analysis allows a 320,000-byte JSON envelope and validates a 48,000-byte UTF-8 excerpt; other API mutation bodies are capped at 8 KB. Hosted clip storage has a 128 MB global ceiling.

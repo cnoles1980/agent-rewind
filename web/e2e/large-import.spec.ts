@@ -53,13 +53,11 @@ test("production worker opens and persists a 24 MB Codex log without uploads", a
   }
   const buffer = Buffer.from(rows.map((r) => JSON.stringify(r)).join("\n"));
   expect(buffer.byteLength).toBeGreaterThan(24 * 1024 * 1024);
-  await page
-    .locator("input[type=file]")
-    .setInputFiles({
-      name: "synthetic-large.jsonl",
-      mimeType: "application/jsonl",
-      buffer,
-    });
+  await page.locator("input[type=file]").setInputFiles({
+    name: "synthetic-large.jsonl",
+    mimeType: "application/jsonl",
+    buffer,
+  });
   await expect(
     page.getByRole("heading", { name: "Imported Codex run", exact: false }),
   ).toBeVisible({ timeout: 30000 });
@@ -68,7 +66,7 @@ test("production worker opens and persists a 24 MB Codex log without uploads", a
   );
   const retained = await page.evaluate(async () => {
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
-      const req = indexedDB.open("agent-rewind", 1);
+      const req = indexedDB.open("agent-rewind");
       req.onsuccess = () => resolve(req.result);
       req.onerror = () => reject(req.error);
     });
@@ -108,15 +106,13 @@ test("import cancellation terminates the worker without saving a tape", async ({
     await held;
     await route.abort().catch(() => {});
   });
-  await page
-    .locator("input[type=file]")
-    .setInputFiles({
-      name: "cancel.jsonl",
-      mimeType: "application/jsonl",
-      buffer: Buffer.from(
-        '{"type":"event_msg","payload":{"type":"agent_message","message":"Cancelled fixture"}}',
-      ),
-    });
+  await page.locator("input[type=file]").setInputFiles({
+    name: "cancel.jsonl",
+    mimeType: "application/jsonl",
+    buffer: Buffer.from(
+      '{"type":"event_msg","payload":{"type":"agent_message","message":"Cancelled fixture"}}',
+    ),
+  });
   await page
     .getByRole("button", { name: "Cancel import", exact: true })
     .click();

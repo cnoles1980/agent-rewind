@@ -127,6 +127,8 @@ Select an event, then choose **Analyze with Nemotron**. Describe the observed pr
 
 ### Optional Nemotron evidence analysis
 
+Completed analyses are saved automatically with their recording in this browser. Use **Saved reports** beside the analysis button to reopen, copy, download, or delete them without another model call. Download important reports separately; clearing browser data or removing the recording deletes its reports. Tape exports and shared clips do not include saved analyses.
+
 In **Analyze with Nemotron**, review the evidence preview, check the privacy-review box, and choose **Send to Nemotron** for one paid call. Context and redaction are available under optional controls. Nemotron returns cited facts, uncertain explanations, missing evidence, verification steps, and a repair prompt. Review the output, then copy it with the source excerpt to your coding agent. It never executes a fix. Editing evidence clears consent and the prior analysis.
 
 This feature makes a real runtime call to Nebius, requires invited access and a server-side key, and works independently of sandbox execution. Analysis is disabled until its separate pricing/configuration gate is complete. See [analysis setup, privacy, limits, and verification](docs/analysis.md). Local evidence-only reports still require no key.

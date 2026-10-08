@@ -1,3 +1,4 @@
+import SavedReports from "./SavedReports";
 import AccessSetup, {
   accessWasOffered,
   rememberAccessOffer,
@@ -174,6 +175,7 @@ export default function App() {
       | "shares"
       | "settings"
       | "report"
+      | "reports"
       | "import"
       | "feedback"
       | "access"
@@ -186,6 +188,14 @@ export default function App() {
   useEffect(() => {
     if (modal === "welcome") rememberWelcome();
   }, [modal]);
+  useEffect(() => {
+    const blocked = () =>
+      setError(
+        "Close other Agent Rewind tabs, then reload to finish updating local storage. Your saved recordings are kept.",
+      );
+    window.addEventListener("rewind-storage-blocked", blocked);
+    return () => window.removeEventListener("rewind-storage-blocked", blocked);
+  }, []);
   const accessOffered = useRef(accessWasOffered());
   useEffect(() => {
     if (
@@ -880,6 +890,14 @@ export default function App() {
                   Analyze with Nemotron
                 </button>
                 <button
+                  onClick={() => {
+                    setPlaying(false);
+                    setModal("reports");
+                  }}
+                >
+                  Saved reports
+                </button>
+                <button
                   onClick={() => setComparing(!comparing)}
                   className={comparing ? "selected-button" : ""}
                 >
@@ -1454,6 +1472,23 @@ export default function App() {
           />
         </Modal>
       )}
+      {modal === "reports" && tape && (
+        <Modal title="Saved Nemotron reports" onClose={() => setModal(null)}>
+          <SavedReports
+            key={tape.run.id}
+            runId={tape.run.id}
+            onSelect={(id) => {
+              const linked = tape.events.find((e) => e.id === id);
+              if (linked) {
+                select(linked);
+                setModal(null);
+                return true;
+              }
+              return false;
+            }}
+          />
+        </Modal>
+      )}
       {modal === "report" && tape && event && (
         <Modal title="Analyze with Nemotron" onClose={() => setModal(null)}>
           <DebugReport
@@ -1801,6 +1836,11 @@ export default function App() {
           <p>
             These recordings are stored on this device. Export important tapes
             before clearing browser data.
+          </p>
+          <p>
+            Removing a recording also removes its saved reports. Download
+            reports separately from Saved reports; tape exports and shared clips
+            do not include them.
           </p>
           {tapes.map((t) => (
             <div className="library-row" key={t.run.id}>

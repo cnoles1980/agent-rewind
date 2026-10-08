@@ -121,6 +121,8 @@ export default function DebugReport({
       <div aria-label="Analysis options">
         <AnalysisPanel
           report={report}
+          tape={tape}
+          event={event}
           eventIds={reportEvents(tape, event, preceding)
             .map((e) => e.id)
             .filter((id) => report.includes(JSON.stringify(id)))}
