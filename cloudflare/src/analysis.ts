@@ -55,7 +55,8 @@ export async function analyze(env: Env, body: AnalysisRequest) {
         body: JSON.stringify({
           model: env.MODEL,
           max_tokens: 8192,
-          temperature: 0.2,
+          temperature: 1.0,
+          top_p: 0.95,
           messages: [
             { role: "system", content: contract.system },
             {

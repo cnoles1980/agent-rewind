@@ -1,5 +1,7 @@
 # Report-quality evaluation — October 4, 2026
 
+Historical evaluation. The [October 7 follow-up](report-quality-2026-10-07.md) adds separately labeled plain-English explanations and next steps while retaining application-owned quotations. The limitations below remain relevant.
+
 **The diagnostic-quality gate is not passed.** Real recordings exposed material mistakes that successful API requests and valid event citations do not catch. Treat generated reports as investigation aids requiring source review, not verified diagnoses or automatic repair instructions.
 
 ## Method and privacy

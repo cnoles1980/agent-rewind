@@ -223,7 +223,8 @@ async def analyze(config, body: AnalysisRequest, model_call=complete):
                 "schema": AnalysisDraft.model_json_schema(),
             },
         },
-        temperature=0.2,
+        temperature=1.0,
+        top_p=0.95,
     )
     choice = result["choices"][0]
     if choice.get("finish_reason") != "stop" or choice["message"].get("tool_calls"):
