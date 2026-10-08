@@ -55,9 +55,9 @@ If the report only contains event metadata, choose an event with captured input/
 
 Only the reviewed excerpt is sent to Nebius. Analysis uses the host's server-side key and budget. Judges receive a private invitation and need no API key. Self-hosters configure their own key using [analysis setup](analysis.md). Rewind never posts into your agent chat or repairs code automatically.
 
-## 6. Export or share a narrow clip
-
 **Find an earlier analysis:** choose **Saved reports** above the timeline. Completed Nemotron reports are archived with this recording, including the exact excerpt analyzed. Select a dated entry to reopen or download it without spending allowance. Archives stay in this browser; download reports separately before clearing browser data or removing the recording. They are not included in tape exports or clips.
+
+## 6. Export or share a narrow clip
 
 Choose **Clip & share**, set the range, and read the full preview. Supporting context is excluded by default because it can contain earlier private messages. Add redactions, then check the review box.
 
