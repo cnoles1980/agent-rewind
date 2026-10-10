@@ -1,0 +1,144 @@
+1
+00:00:00,200 --> 00:00:03,800
+Your agent failed. Find out why.
+
+2
+00:00:04,200 --> 00:00:10,304
+Agent Rewind opens a Codex session log
+directly in your browser. Choose Codex,
+
+3
+00:00:10,304 --> 00:00:16,409
+select one log, and inspect the imported
+events. No account connection is needed.
+
+4
+00:00:16,409 --> 00:00:21,574
+This small synthetic sample demonstrates
+the importer. The capture details explain
+
+5
+00:00:21,574 --> 00:00:25,800
+what is missing, and the original file
+stays unchanged.
+
+6
+00:00:26,200 --> 00:00:32,446
+Now let's use the labeled checkout example
+to investigate a mistake. Play, pause, or
+
+7
+00:00:32,446 --> 00:00:37,800
+select a moment. Replay inspects recorded
+events without executing the tools again.
+
+8
+00:00:38,200 --> 00:00:45,361
+Shipping should be free at fifty dollars or
+more. But the returned policy says strictly
+
+9
+00:00:45,361 --> 00:00:52,045
+above fifty. Here is the recorded code
+change: it follows that stricter rule. And
+
+10
+00:00:52,045 --> 00:00:58,252
+here is the consequence. At exactly fifty
+dollars, the boundary check expected free
+
+11
+00:00:58,252 --> 00:01:05,413
+shipping but recorded a five-dollar charge.
+We can follow the policy into the code and
+
+12
+00:01:05,413 --> 00:01:07,800
+then into the failed test.
+
+13
+00:01:08,200 --> 00:01:13,833
+I select the failure and state what I
+expected. Before requesting NVIDIA Nemotron
+
+14
+00:01:13,833 --> 00:01:19,900
+analysis through Nebius Token Factory, I
+review the excerpt that will be sent. My
+
+15
+00:01:19,900 --> 00:01:23,800
+whole recording does not need to leave the
+browser.
+
+16
+00:01:24,200 --> 00:01:29,960
+Here is the saved result from our
+successful Nemotron rehearsal request. It
+
+17
+00:01:29,960 --> 00:01:35,240
+explains the mismatch: greater than fifty
+excludes exactly fifty. It suggests
+
+18
+00:01:35,240 --> 00:01:40,040
+checking the implementation against the
+inclusive requirement and rerunning the
+
+19
+00:01:40,040 --> 00:01:45,800
+boundary test. This is a suggestion to
+verify, not an automatic fix.
+
+20
+00:01:46,200 --> 00:01:51,738
+The source buttons connect the explanation
+to the evidence. One click takes me back to
+
+21
+00:01:51,738 --> 00:01:55,800
+the recorded failed assertion, where I can
+check the actual values.
+
+22
+00:01:56,200 --> 00:02:03,400
+The report stays with this recording in my
+browser. I can reopen it without another
+
+23
+00:02:03,400 --> 00:02:10,600
+model call, review the exact handoff, then
+copy or download it. I can bring that
+
+24
+00:02:10,600 --> 00:02:17,320
+explanation and its evidence back to my
+coding agent to verify against the actual
+
+25
+00:02:17,320 --> 00:02:17,800
+project.
+
+26
+00:02:18,200 --> 00:02:24,342
+Finally, I can jump to the first behavior
+difference and compare the recorded policy
+
+27
+00:02:24,342 --> 00:02:30,045
+responses. That gives me paired evidence to
+inspect, without assuming that the first
+
+28
+00:02:30,045 --> 00:02:31,800
+difference proves the cause.
+
+29
+00:02:32,200 --> 00:02:37,565
+Agent Rewind is open source: a personal
+debugger for understanding recorded agent
+
+30
+00:02:37,565 --> 00:02:39,800
+runs. Same agents. Clearer stories.

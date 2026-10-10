@@ -4,7 +4,7 @@ Prepared for **Friday, October 9, 2026**. The submission story is the working de
 
 ## Start here
 
-**October 10 update:** A silent 2:40 promo has now been assembled. Use the [prepared-cut voiceover script](promo-voiceover.md) to record your narration; you no longer need to capture the screen footage yourself. See [production notes and shot list](promo-production.md). The steps below remain available if you prefer to record a new live-request version.
+**October 10 update:** Use the revised **screen-led 2:40 demo** and [version 2 voiceover script](promo-v2-voiceover.md). It now shows actual import, investigation, source-link, copy/download and comparison interactions. [Production notes and shot list](promo-v2-production.md) describe the edit. The optional paste-into-Codex insert has short manual instructions in the script; the existing Copy/Download footage works without it. The steps below remain available if you prefer to record a new live-request version.
 
 1. Read the [video script and screen instructions](video-script.md). It targets **2:40**, leaving room below the limit. You can record short sections and assemble them; no need for a perfect continuous take.
 2. Open [Agent Rewind](https://agent-rewind.cnoles1980.workers.dev/) in the browser you will record. Enter your existing invitation **before** recording. Never show the invitation or provider key.
