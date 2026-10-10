@@ -4,6 +4,8 @@ Prepared for **Friday, October 9, 2026**. The submission story is the working de
 
 ## Start here
 
+**October 10 update:** A silent 2:40 promo has now been assembled. Use the [prepared-cut voiceover script](promo-voiceover.md) to record your narration; you no longer need to capture the screen footage yourself. See [production notes and shot list](promo-production.md). The steps below remain available if you prefer to record a new live-request version.
+
 1. Read the [video script and screen instructions](video-script.md). It targets **2:40**, leaving room below the limit. You can record short sections and assemble them; no need for a perfect continuous take.
 2. Open [Agent Rewind](https://agent-rewind.cnoles1980.workers.dev/) in the browser you will record. Enter your existing invitation **before** recording. Never show the invitation or provider key.
 3. Follow the preparation steps in the script, especially **Earlier events in reports → 10 events**. Select the failing acceptance test before analysis so the excerpt includes policy, code and result.
@@ -25,7 +27,7 @@ Prepared for **Friday, October 9, 2026**. The submission story is the working de
 
 ## What still needs you
 
-- Record the narration/screens and review/publish the final video and entry.
+- Record the narration (and optional camera footage), then review/publish the final voiced video and entry.
 - Confirm hackathon registration and personal eligibility.
 - Send the prepared access question to organizers and retain their answer. The finite protected judge allowance is not automatically equivalent to unrestricted judging access.
 - Review the logo/asset provenance before publication. The proposed video uses original examples, your narration and the app itself; no third-party music is needed.

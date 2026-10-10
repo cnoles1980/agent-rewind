@@ -1,0 +1,131 @@
+1
+00:00:00,300 --> 00:00:05,838
+When a coding agent makes a mistake, the
+answer is often buried in a long
+
+2
+00:00:05,838 --> 00:00:11,008
+conversation. Agent Rewind turns that
+history into a timeline, so I can find the
+
+3
+00:00:11,008 --> 00:00:14,700
+evidence and take a useful explanation back
+to my agent.
+
+4
+00:00:15,300 --> 00:00:22,424
+This is a labeled, illustrative checkout
+example. Shipping should be free at fifty
+
+5
+00:00:22,424 --> 00:00:30,096
+dollars or more. But the returned policy
+says strictly above fifty. The code follows
+
+6
+00:00:30,096 --> 00:00:37,768
+that rule, and the boundary check charges
+five dollars at exactly fifty. Rewind lets
+
+7
+00:00:37,768 --> 00:00:42,700
+me inspect each step without executing the
+tools again.
+
+8
+00:00:43,300 --> 00:00:49,605
+I select the failure, state what I
+expected, and review the excerpt before
+
+9
+00:00:49,605 --> 00:00:55,910
+sending it to NVIDIA Nemotron through
+Nebius Token Factory. Here is a saved
+
+10
+00:00:55,910 --> 00:01:01,730
+result from our successful rehearsal
+request. Reopening it does not make another
+
+11
+00:01:01,730 --> 00:01:02,700
+model call.
+
+12
+00:01:03,300 --> 00:01:09,817
+Nemotron explains the mismatch: greater
+than fifty excludes exactly fifty. It
+
+13
+00:01:09,817 --> 00:01:15,149
+suggests checking the implementation
+against the inclusive requirement, then
+
+14
+00:01:15,149 --> 00:01:22,258
+rerunning the boundary test. The source
+buttons link the explanation to the
+
+15
+00:01:22,258 --> 00:01:29,960
+recorded evidence. This is a suggestion to
+verify against the actual project. The
+
+16
+00:01:29,960 --> 00:01:34,700
+analysis does not change code or run tests.
+
+17
+00:01:35,300 --> 00:01:40,685
+The completed analysis stays with this
+recording in my browser, including the
+
+18
+00:01:40,685 --> 00:01:47,866
+exact excerpt it used. I can reopen it in
+Saved reports, or copy and download a
+
+19
+00:01:47,866 --> 00:01:53,700
+handoff for my coding agent to check
+against the actual code and tests.
+
+20
+00:01:54,300 --> 00:02:00,592
+I can compare the corrected example,
+inspect what changed, and prepare a
+
+21
+00:02:00,592 --> 00:02:07,408
+reviewed clip. Differences point me to
+evidence; they do not automatically prove a
+
+22
+00:02:07,408 --> 00:02:13,700
+root cause. Reports and clips let another
+person inspect the same facts.
+
+23
+00:02:14,300 --> 00:02:20,505
+You can also open a Codex log locally. This
+synthetic sample demonstrates the importer
+
+24
+00:02:20,505 --> 00:02:26,268
+and its limits. Missing context stays
+unknown. Import and replay stay in the
+
+25
+00:02:26,268 --> 00:02:30,700
+browser; AI analysis and publishing a clip
+are separate actions.
+
+26
+00:02:31,300 --> 00:02:37,229
+Agent Rewind is open source: a personal
+debugger for understanding recorded agent
+
+27
+00:02:37,229 --> 00:02:39,700
+runs. Same agents. Clearer stories.
