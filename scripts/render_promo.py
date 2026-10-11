@@ -208,8 +208,8 @@ def frame(index: int, playback: Path | None = None) -> Image.Image:
 
     if layout in {"hero", "end"}:
         logo = Image.open(ROOT / "web/src/assets/ar-logo.png").convert("RGBA")
-        logo.thumbnail((255, 255), Image.Resampling.LANCZOS)
-        canvas.paste(logo, (1390, 300), logo)
+        logo.thumbnail((760, 760), Image.Resampling.LANCZOS)
+        canvas.paste(logo, (1030, 160), logo)
         text(draw, (110, 235), title, 96, bold=True, spacing=4)
         text(draw, (117, 485 if layout == "hero" else 555), body, 46, MUTED)
         if layout == "hero":

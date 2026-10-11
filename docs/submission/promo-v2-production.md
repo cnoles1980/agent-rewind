@@ -14,6 +14,8 @@ A concrete winner reference is [Gemini Movie Detectives](https://devpost.com/sof
 
 `Agent-Rewind-Demo-v2-Silent-1080p.mp4`: 160 seconds, 1920 × 1080, 30 fps H.264 output. Audio is intentionally absent pending Corey's narration. The first cut remains available separately.
 
+The opening and closing cards were revised on October 10 to make the AR logo approximately three times larger, filling the right-hand space while preserving all text, shot durations and narration timing. The delivery video, storyboard and editable bundle include this revision.
+
 There are **148 seconds of actual browser interaction capture** and **12 seconds of title/end cards**. Captures preserve their measured timing, apart from trimming the final fractions of a second at take boundaries. Screenshots were sampled about seven times per second and encoded at 30 fps; the result is not a native 30 fps screen recording. Editorial close-ups crop/resize actual captured pixels without rewriting their contents. Brief fades separate the takes.
 
 | Time | Actual footage |
