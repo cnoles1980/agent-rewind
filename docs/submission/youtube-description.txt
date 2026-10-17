@@ -1,0 +1,24 @@
+Your AI agent made a mistake. Agent Rewind helps you find the evidence, understand what happened, and take a clearer debugging report back to your coding agent.
+
+Built for individual AI-assisted builders, Agent Rewind combines local log imports, a visual timeline, run comparison, and NVIDIA Nemotron analysis through Nebius Token Factory.
+
+This 2:40 demo follows a shipping-policy mismatch: the requirement says free shipping at $50 or more, but the recorded policy and code exclude exactly $50. See the evidence, review a saved Nemotron explanation, follow its sources, and copy the report for your agent.
+
+Try the app: https://agent-rewind.cnoles1980.workers.dev/
+Public MIT-licensed source: https://github.com/cnoles1980/agent-rewind
+
+00:00 Why I built Agent Rewind
+00:17 Open a Codex log locally
+00:39 Replay a recorded run
+00:51 Follow the policy, code, and failed test
+01:15 Review evidence and Nemotron analysis
+01:50 Verify the source
+02:00 Save and copy the report
+02:18 Compare runs and wrap up
+
+The Codex sample and checkout recordings are labeled synthetic/illustrative examples. The Nemotron report shown is a saved response from a real Nebius request. Replay does not execute tools, and analysis does not apply repairs. Imports stay in the browser; requesting analysis sends the reviewed excerpt.
+
+Public exploration needs no API key. Hosted AI analysis and clip publishing require an invitation; self-hosters configure their own server-side Nebius key. Judge credentials are supplied privately with the submission.
+
+Created by Corey for the Nebius x NVIDIA Global AI Hackathon — Best Apps and Agents.
+Same agents. Clearer stories.

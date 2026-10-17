@@ -1,5 +1,7 @@
 # Devpost copy — review before publication
 
+**Historical October 7 draft. Use [the final October 17 copy](devpost-final.md) for submission.** Corey changed the selected track to Best Apps and Agents on October 17; the old track below records the earlier plan.
+
 **Project:** Agent Rewind
 
 **Tagline:** Find the evidence behind an AI agent mistake—and take a clearer report back to your coding agent.

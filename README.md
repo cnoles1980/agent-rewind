@@ -2,7 +2,7 @@
 
 **Record a run. Find the consequential moment. Compare the evidence.**
 
-A personal debugger for recorded agent runs: a Python recorder, local Codex importer, browser-local timeline player, paired comparison, annotations, and reviewed clips. Built for the Nebius × NVIDIA hackathon's Coding and Agentic Engineering track.
+A personal debugger for recorded agent runs: a Python recorder, local Codex importer, browser-local timeline player, paired comparison, annotations, and reviewed clips. Prepared for the Nebius × NVIDIA hackathon's Best Apps and Agents track.
 
 **Try the hosted app:** [Agent Rewind on Cloudflare](https://agent-rewind.cnoles1980.workers.dev/). Start the tutorial without an account. Judges and invited testers can unlock reviewed Nemotron analysis and clip publication using their private invitation; no provider key is needed.
 

@@ -4,6 +4,8 @@ Prepared for **Friday, October 9, 2026**. The submission story is the working de
 
 ## Start here
 
+**Approved video and final text:** Corey approved the narrated edit on October 17 and selected **Best Apps and Agents**. Start with [the final submission checklist](submit-checklist.md), [YouTube title](youtube-title.txt), [YouTube description](youtube-description.txt) and [Devpost copy](devpost-final.md). The recording instructions below are retained for reference; no new recording is needed.
+
 **October 17 update:** Corey's iPhone narration has been edited, cleaned and synchronized with the demo, including a short personal-purpose excerpt. The finished 2:40 video, captioned alternative, subtitle file and cleaned audio are in `Downloads/Agent-Rewind-Submission-Video`. See [final production notes](final-video-production.md). Narration is complete; the next step is reviewing the video before public upload.
 
 **October 10 update:** Use the revised **screen-led 2:40 demo** and [version 2 voiceover script](promo-v2-voiceover.md). It now shows actual import, investigation, source-link, copy/download and comparison interactions. [Production notes and shot list](promo-v2-production.md) describe the edit. The optional paste-into-Codex insert has short manual instructions in the script; the existing Copy/Download footage works without it. The steps below remain available if you prefer to record a new live-request version.

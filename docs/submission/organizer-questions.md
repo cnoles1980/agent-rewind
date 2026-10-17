@@ -2,14 +2,13 @@
 
 Corey can post this in the hackathon discussion forum or send it to the organizer contact. No message has been sent on your behalf.
 
-**Subject: Agent Rewind — judge access and developer-tool track fit**
+**Subject: Agent Rewind — clarification on protected judge inference allowance**
 
-Hi, I'm preparing Agent Rewind for Coding and Agentic Engineering. It is a debugger for recorded agent runs: local log imports, a timeline, evidence comparison, and real NVIDIA Nemotron analysis through Nebius Token Factory. It does not offer live sandbox execution in this submission.
+Hi, I'm preparing Agent Rewind for Best Apps and Agents. It is a debugger for recorded agent runs: local log imports, a timeline, evidence comparison, and real NVIDIA Nemotron analysis through Nebius Token Factory.
 
-Two questions before I finalize:
+One access question before I finalize:
 
-1. Does this evidence-debugging developer tool fit the Coding and Agentic Engineering track as described, even though it analyzes recorded code/tool activity rather than writing and executing code itself?
-2. Judges can access the hosted demo free using a private invitation, without API keys. Paid inference has a protected $30 internal allowance, 25-cent reservations per attempt, and a per-session request limit. Local investigation remains free. Does this satisfy the rules' unrestricted-access provision, and how should we handle extra judge access if the allowance is exhausted?
+Judges can access the hosted demo free using a private invitation, without API keys. Paid inference has a protected $30 internal allowance, 25-cent reservations per attempt, and a per-session request limit. Local investigation remains free. Does this satisfy the rules' unrestricted-access provision, and what access arrangement do you require if the allowance is exhausted?
 
 Demo: https://agent-rewind.cnoles1980.workers.dev/
 
