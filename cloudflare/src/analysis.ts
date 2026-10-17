@@ -69,14 +69,9 @@ export async function analyze(env: Env, body: AnalysisRequest) {
               content: evidenceMessage(prepared),
             },
           ],
-          response_format: {
-            type: "json_schema",
-            json_schema: {
-              name: "evidence_analysis",
-              strict: true,
-              schema: contract.draft,
-            },
-          },
+          // The prompt supplies the schema; validate it locally below. Provider
+          // schema mode returned closed JSON with cut-off prose in a live check.
+          response_format: { type: "json_object" },
         }),
       },
     );

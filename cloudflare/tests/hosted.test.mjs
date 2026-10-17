@@ -271,6 +271,7 @@ test("analysis validates, redacts, rejects replay, and reserves prior spending",
     reasoning_tokens: 20,
   });
   assert.equal(lastRequest.max_tokens, 8192);
+  assert.deepEqual(lastRequest.response_format, { type: "json_object" });
   assert.deepEqual(lastRequest.extra_body, {
     chat_template_kwargs: { enable_thinking: true },
     thinking_token_budget: 4096,

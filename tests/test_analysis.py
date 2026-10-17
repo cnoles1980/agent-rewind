@@ -122,7 +122,7 @@ async def test_model_boundary_redaction_no_tools_and_citations(tmp_path):
     }
     assert captured[0]["temperature"] == 1.0
     assert captured[0]["top_p"] == 0.95
-    assert captured[0]["response_format"]["type"] == "json_schema"
+    assert captured[0]["response_format"]["type"] == "json_object"
     assert "untrusted" in captured[0]["messages"][0]["content"]
     assert usage == {"total_tokens": 88}
     assert parsed.facts[0].text.startswith("output:\npolicy says strictly above $50.")

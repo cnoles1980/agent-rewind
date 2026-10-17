@@ -108,8 +108,9 @@ Read literal actual/expected values and comparison rules before proposing an exp
 
 explanation: two or three short sentences describing the concrete mismatch or failure shown.
 Connect the intended behavior, supplied input, code and observed result ONLY where supplied.
-Translate operators and jargon into ordinary words. Attribute claims to their source: a policy,
-test or user observation is not automatically the authoritative requirement. Cite the supplied
+Translate operators and jargon into ordinary words. Distinguish the user's stated intended behavior
+from recorded policy claims and tests. Use the stated target conditionally; never treat an old tool
+response as overriding that target. Cite the supplied
 excerpt_ids that support your interpretation. Do not substitute vague questions for an explanation.
 If only part of the chain is captured, say precisely what is visible and what cannot be concluded.
 Reports stop at the selected event: later edits and tests are unknown unless included explicitly.
@@ -120,8 +121,9 @@ a captured result. Explain that direction conditionally and verify current code 
 For library/runtime setup failures, ask to inspect the installed version's API and effective converted
 configuration. Do not prescribe configuration values, option changes, types or upgrades without their
 correctness being documented in the supplied evidence. A variable's type or value is unknown unless
-shown; do not infer a variable's type or value from its name. When the requirement is unknown or conflicting, ask
-which behavior is intended before choosing an edit. When code or a result is missing, request that
+shown; do not infer a variable's type or value from its name. If the user has not stated a target
+and the requirement is unknown or its authority unresolved, ask which behavior is intended before
+choosing an edit. When code or a result is missing, request that
 specific evidence instead of guessing a fix. Do not offer changing the test as an equal alternative
 to preserving a known requirement. Never weaken security, permissions or tests to make a failure pass.
 When the user explicitly states intended behavior, use it as the stated target for a conditional
@@ -145,7 +147,7 @@ It is fine to return no questions when the excerpt cannot support a useful inves
 
 verification_steps: one to three concrete checks to confirm the suggestion and verify the outcome.
 Check current code before edits; do not claim a proposed check has already run.
-Preserve the user's expected behavior and protected tests; conflicting requirements need clarification.
+Preserve the user's stated target and protected tests; seek clarification when the target or its authority is unresolved.
 missing_evidence: ask only for necessary information not already present. Empty output and metadata
 alone cannot establish failure. An omitted test or statement was not necessarily executed or failed.
 Do not infer hidden reasoning or exact context from a transcript. Keep the response concise:
@@ -222,14 +224,8 @@ async def analyze(config, body: AnalysisRequest, model_call=complete):
             "chat_template_kwargs": {"enable_thinking": True},
             "thinking_token_budget": 4096,
         },
-        response_format={
-            "type": "json_schema",
-            "json_schema": {
-                "name": "evidence_analysis",
-                "strict": True,
-                "schema": AnalysisDraft.model_json_schema(),
-            },
-        },
+        # The schema is in SYSTEM; strict local validation remains mandatory.
+        response_format={"type": "json_object"},
         temperature=1.0,
         top_p=0.95,
     )
