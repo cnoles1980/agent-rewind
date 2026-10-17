@@ -9,7 +9,7 @@ Prepared October 17, 2026. Corey selected **Best Apps and Agents**. Copy the pro
 - **Track:** Best Apps and Agents
 - **Try it / demo URL:** https://agent-rewind.cnoles1980.workers.dev/
 - **Source URL:** https://github.com/cnoles1980/agent-rewind
-- **Video URL:** Add the public YouTube watch URL after upload; this is the only missing public link.
+- **Video URL:** https://www.youtube.com/watch?v=QBV3VAzc_XA
 - **Built with:** NVIDIA Nemotron, Nebius Token Factory, React, TypeScript, Vite, Python, FastAPI, Pydantic, Cloudflare Workers, Cloudflare Durable Objects, IndexedDB.
 - **Technology feedback:** Use the separate [technology feedback](technology-feedback.md) if the form has a dedicated question.
 - **Team/eligibility/development dates:** Corey completes and confirms these from his own records. Do not infer them from Git timestamps.

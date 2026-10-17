@@ -14,7 +14,7 @@ Corey has confirmed the submission focuses on the working debugger and real Nemo
 | Judge access | Fresh-profile UI login, investigation, local import/report, notes, comparison and clip lifecycle passed October 17; new successful analysis/archive/citation sequence still required |
 | Public source and setup | Public MIT source; fresh Windows clone/setup/build/local HTTP check passed; configured-secret/history scan clear |
 | Dependencies | Frontend/Python audits clear; patched sharp in Cloudflare development tooling and verified its build/integration tests |
-| Video and submission copy | Narrated video approved October 17; final text ready; public YouTube URL and Devpost publication remain |
+| Video and submission copy | [Public 2:40 video](https://www.youtube.com/watch?v=QBV3VAzc_XA) verified signed out October 17; final text ready; Devpost publication remains |
 | Organizer/owner confirmations | Finite judge allowance/request limits, registration/eligibility and final asset review remain open; track selected |
 
 Read the [full verification record](submission/verification-2026-10-07.md) for scope, failures and evidence. Test success is not a model-quality guarantee.
@@ -31,10 +31,10 @@ The completed product is submitted under Best Apps and Agents as a Nemotron-powe
 
 ## What Corey needs to do
 
-1. Upload the approved narrated video publicly on YouTube using the [prepared title](submission/youtube-title.txt) and [description](submission/youtube-description.txt). The video retains labels for illustrative examples and the saved real inference result.
+1. Video upload is complete: [public YouTube demo](https://www.youtube.com/watch?v=QBV3VAzc_XA). Signed-out player metadata confirmed the expected title, 160-second duration, playback availability and public visibility on October 17. The video retains labels for illustrative examples and the saved real inference result.
 2. Read the private local recording/access instructions under `.local/friday-kit/`; never film or publish credentials. Put only the judge invitation in private testing instructions.
 3. Send the organizer questions, confirm registration/eligibility and review logo/asset provenance. No personal recording is needed for the proposed video.
-4. Use the [final Devpost copy](submission/devpost-final.md), insert the final public video URL, and publish the approved materials after the open checks. Test every public link signed out and the judge workflow in a fresh browser.
+4. Use the [final Devpost copy](submission/devpost-final.md), which now includes the video URL, and publish the approved materials after the open checks. Resolve the analysis failure and verify the judge workflow before submission.
 5. Retain provider/hosting access, billing oversight, backups and recovery through judging. Do not reset the spending ledger or increase the ceiling automatically.
 
 ## What is deliberately not claimed
