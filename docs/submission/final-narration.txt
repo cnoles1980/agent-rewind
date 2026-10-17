@@ -1,0 +1,62 @@
+So your agent failed.
+Find out why.
+This specifically targets the prosumer,
+who might have an issue trying to debug
+or trying to really work through an agent
+and find a problem,
+get a quick suggestion
+and have something they can just dump back in.
+Agent Rewind opens a Codex session log
+directly in your browser.
+Choose Codex, select one log,
+and inspect the imported events.
+No account connection is needed.
+This small synthetic sample demonstrates the importer.
+The capture details explain what is missing,
+and the original file stays unchanged.
+Now let's use the labeled checkout example
+to investigate a mistake.
+You can play, pause, or select a moment.
+Replay inspects recorded events
+without executing the tools again.
+Shipping should be free at $50 or more,
+but the return policy sits strictly above $50.
+So here is the recorded code change.
+It follows the stricter rule,
+and here is the consequence.
+At exactly $50,
+the boundary check expected free shipping.
+So we can follow the policy into the code,
+and then into the failed test.
+I select the failure and state what I expected.
+Before requesting NVIDIA Nemotron analysis
+through Nebius Token Factory,
+I review the excerpt that will be sent.
+My whole recording does not need to leave the browser.
+Here is the saved result from our
+successful Nemotron rehearsal request.
+It explains the mismatch:
+greater than $50 excludes exactly $50.
+It suggests checking the implementation
+against the inclusive requirement
+and rerunning the boundary test.
+This is a suggestion to verify,
+not an automatic fix.
+The source buttons connect the explanation
+to the evidence.
+One click takes me back to the recorded failed assertion,
+where I can check the actual values.
+The report stays with this recording in my browser.
+I can reopen it without another model call,
+review the exact handoff,
+then copy or download it.
+I can bring that explanation and its evidence
+back to my coding agent
+to verify against the actual project.
+Finally, I can jump to the first behavior difference
+and compare recorded policy responses.
+That gives me paired evidence to inspect,
+without assuming the first difference proves the cause.
+Agent Rewind is open source:
+a personal debugger for understanding recorded agent runs.
+Same agents. Clearer stories.

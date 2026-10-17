@@ -1,8 +1,10 @@
-# Your Friday recording kit
+# Submission video and review kit
 
 Prepared for **Friday, October 9, 2026**. The submission story is the working debugger plus real Nemotron analysis. Fresh sandbox coding execution is deferred, as Corey confirmed October 7.
 
 ## Start here
+
+**October 17 update:** Corey's iPhone narration has been edited, cleaned and synchronized with the demo, including a short personal-purpose excerpt. The finished 2:40 video, captioned alternative, subtitle file and cleaned audio are in `Downloads/Agent-Rewind-Submission-Video`. See [final production notes](final-video-production.md). Narration is complete; the next step is reviewing the video before public upload.
 
 **October 10 update:** Use the revised **screen-led 2:40 demo** and [version 2 voiceover script](promo-v2-voiceover.md). It now shows actual import, investigation, source-link, copy/download and comparison interactions. [Production notes and shot list](promo-v2-production.md) describe the edit. The optional paste-into-Codex insert has short manual instructions in the script; the existing Copy/Download footage works without it. The steps below remain available if you prefer to record a new live-request version.
 
@@ -27,7 +29,7 @@ Prepared for **Friday, October 9, 2026**. The submission story is the working de
 
 ## What still needs you
 
-- Record the narration (and optional camera footage), then review/publish the final voiced video and entry.
+- Review the finished narrated video, then publish the approved video and entry. No additional narration is required for the current edit.
 - Confirm hackathon registration and personal eligibility.
 - Send the prepared access question to organizers and retain their answer. The finite protected judge allowance is not automatically equivalent to unrestricted judging access.
 - Review the logo/asset provenance before publication. The proposed video uses original examples, your narration and the app itself; no third-party music is needed.
