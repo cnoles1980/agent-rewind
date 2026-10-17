@@ -1,21 +1,26 @@
-# Ready-to-send organizer clarification
+# Organizer message — ready to send
 
-Corey can post this in the hackathon discussion forum or send it to the organizer contact. No message has been sent on your behalf.
+**To:** janet@devpost.com (the hackathon manager linked on the official overview)
+**Subject:** Agent Rewind — judge access and inference limits
 
-**Subject: Agent Rewind — clarification on protected judge inference allowance**
+Hi Janet,
 
-Hi, I'm preparing Agent Rewind for Best Apps and Agents. It is a debugger for recorded agent runs: local log imports, a timeline, evidence comparison, and real NVIDIA Nemotron analysis through Nebius Token Factory.
+I'm preparing Agent Rewind for the Best Apps and Agents track. It helps users investigate recorded agent runs, with live NVIDIA Nemotron analysis through Nebius Token Factory.
 
-One access question before I finalize:
+Judges can use the hosted app free with an invitation supplied in the private testing attachment. They won't need a provider account or API key, and I plan to maintain access through December 15.
 
-Judges can access the hosted demo free using a private invitation, without API keys. Paid inference has a protected $30 internal allowance, 25-cent reservations per attempt, and a per-session request limit. Local investigation remains free. Does this satisfy the rules' unrestricted-access provision, and what access arrangement do you require if the allowance is exhausted?
+To keep this solo project within its budget, live AI analysis has a dedicated judge allowance. It currently supports 110 additional analysis attempts shared across judges, with a limit of 10 attempts per session per hour. If that shared allowance is exhausted, new AI analyses stop. Importing logs, replaying recordings, comparing runs and reopening saved reports remain available without consuming that allowance.
+
+Does this arrangement meet the Testing requirement for access “free of charge and without any restriction”? If not, what usage allowance or access arrangement would you require for an API-backed prototype?
 
 Demo: https://agent-rewind.cnoles1980.workers.dev/
+Project: https://devpost.com/software/agent-rewind
 
-Source: https://github.com/cnoles1980/agent-rewind
-
-Thank you!
+Thanks for helping me get this right,
+Corey Noles
 
 ---
 
-The invitation itself is supported by the rules' private-project testing instructions. The unresolved issue is the finite allowance/request limit, not the existence of a login. Keep the answer with submission records. Do not increase spending, expose the provider key, or claim approval before receiving it. [Official rules](https://nebiusglobalaihackathon.devpost.com/rules)
+Draft only; not sent. The count reflects $27.50 remaining in conservative internal reservations at $0.25 per attempt as of October 17, 2026, not actual Nebius billing. Do not include invitation codes or provider keys in this email. Retain the organizer’s answer before claiming approval or changing the access policy.
+
+Sources checked October 17: [official overview/contact](https://nebiusglobalaihackathon.devpost.com/) and [official rules, Testing](https://nebiusglobalaihackathon.devpost.com/rules).
