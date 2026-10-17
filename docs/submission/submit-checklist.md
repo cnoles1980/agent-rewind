@@ -1,6 +1,6 @@
 # Final submission steps — October 17, 2026
 
-Corey published the approved narrated video on October 17: [watch on YouTube](https://www.youtube.com/watch?v=QBV3VAzc_XA). Devpost publication remains. Final track: **Best Apps and Agents**, selected by Corey October 17.
+Corey published the approved narrated video on October 17: [watch on YouTube](https://www.youtube.com/watch?v=QBV3VAzc_XA). Devpost is filled and saved as Draft, 4/5 steps complete; final submission remains. [Review the draft](https://devpost.com/submit-to/30790-nebius-x-nvidia-global-ai-hackathon/manage/submissions/1198672-agent-rewind/finalization). Final track: **Best Apps and Agents**, selected by Corey October 17.
 
 ## What is ready
 
@@ -14,14 +14,14 @@ Corey published the approved narrated video on October 17: [watch on YouTube](ht
 
 1. **Done: upload the approved video to YouTube.** Corey supplied the published link; signed-out playback metadata confirms Public visibility and 2:40 duration. [Published video](https://www.youtube.com/watch?v=QBV3VAzc_XA)
 2. **Done: add and check the video URL.** The canonical watch URL is in the final Devpost field guide and local submission package.
-3. **Complete Devpost's actual form.** Use the final copy, choose Best Apps and Agents, enter demo/source/video links, attach selected screenshots, and supply technology feedback. Confirm registration, eligibility, team details, development dates and asset rights. Only paste the judge invitation into an explicitly private testing field.
+3. **Done: fill and save the Devpost draft.** Project story, Best Apps and Agents track, demo/source/video links, logo, three captioned screenshots and detailed technical feedback are saved. Corey confirmed personal eligibility/entrant answers and approved the three ratings. The limited judge invitation and instructions were attached only under “For judges and organizers”; no Nebius API key was uploaded. Devpost shows Draft, 4/5 steps complete. Review the story, asset rights, rules and terms before final submission.
 4. **Resolve judge access before submitting.** The finite allowance and request limits may conflict with the access provision. Use [the prepared organizer question](organizer-questions.md), retain their answer, and implement any required solution within the approved budget. Do not remove spending protections or increase the ceiling without a deliberate decision. No organizer approval is on record.
 5. **Done: fix completion and repeat the judge workflow.** Six final real requests completed, including a browser result with verified saved report, citations, reload and download. The narrow completion blocker is cleared for this prototype. Keep the documented limitations: suggestions may be wrong, unnecessarily ask for clarification or overstate a predicted outcome. This is not a general diagnostic-quality pass.
 6. **Submit, then verify receipt.** Target October 29; the stated deadline is October 30 at noon Central. Preview the published entry, test all links signed out, and retain the submission confirmation. Keep the app, inference account and judge access available through December 15. [Official rules](https://nebiusglobalaihackathon.devpost.com/rules)
 
 ## What the assistant can handle
 
-Inspect the actual form, update copy as requirements change, and prepare any requested screenshot sizes. The completion fix and relevant technical checks are finished. No further feature work or sandbox implementation is needed for the current submission story. Corey has published the video. Devpost publication and organizer outreach have not been performed by the assistant.
+The actual form is filled and saved. Update copy if requirements change and verify the submission receipt after Corey’s final approval/action. The completion fix and relevant technical checks are finished. No further feature work or sandbox implementation is needed for the current submission story. Corey has published the video. Devpost publication and organizer outreach have not been performed by the assistant.
 
 ## File choices
 

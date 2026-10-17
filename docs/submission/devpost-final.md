@@ -1,6 +1,6 @@
 # Agent Rewind — final Devpost copy
 
-Prepared October 17, 2026. Corey selected **Best Apps and Agents**. Copy the project-story sections into Devpost; the field guide and private-access notes are instructions, not part of the public story. The current form's field names/limits have not been inspected.
+Prepared October 17, 2026. Corey selected **Best Apps and Agents**. Copy the project-story sections into Devpost; the field guide and private-access notes are instructions, not part of the public story. The actual form was inspected and populated October 17. Devpost shows Draft, 4/5 steps complete; final terms acceptance and submission remain. See the [saved technical feedback answers](devpost-form-answers.md).
 
 ## Field guide
 

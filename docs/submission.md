@@ -14,8 +14,8 @@ Corey has confirmed the submission focuses on the working debugger and real Nemo
 | Judge access | Final real analysis/archive/reload/citations passed in an authenticated judge session; surrounding import/comparison/clip checks passed again. Repeated fresh logins reached the unchanged temporary rate limit |
 | Public source and setup | Public MIT source; fresh Windows clone/setup/build/local HTTP check passed; configured-secret/history scan clear |
 | Dependencies | Frontend/Python audits clear; patched sharp in Cloudflare development tooling and verified its build/integration tests |
-| Video and submission copy | [Public 2:40 video](https://www.youtube.com/watch?v=QBV3VAzc_XA) verified signed out October 17; final text ready; Devpost publication remains |
-| Organizer/owner confirmations | Finite judge allowance/request limits, registration/eligibility and final asset review remain open; track selected |
+| Video and submission copy | [Public 2:40 video](https://www.youtube.com/watch?v=QBV3VAzc_XA) verified signed out October 17; Devpost draft filled (4/5 steps); final submission remains |
+| Organizer/owner confirmations | Finite judge allowance/request limits and final asset/rules review remain open; Corey confirmed eligibility/entrant answers; track selected |
 
 Read the [completion fix and final verification](submission/completion-fix-2026-10-17.md) for scope, failures and evidence. Test success is not a model-quality guarantee.
 
@@ -33,8 +33,8 @@ The completed product is submitted under Best Apps and Agents as a Nemotron-powe
 
 1. Video upload is complete: [public YouTube demo](https://www.youtube.com/watch?v=QBV3VAzc_XA). Signed-out player metadata confirmed the expected title, 160-second duration, playback availability and public visibility on October 17. The video retains labels for illustrative examples and the saved real inference result.
 2. Read the private local recording/access instructions under `.local/friday-kit/`; never film or publish credentials. Put only the judge invitation in private testing instructions.
-3. Send the organizer questions, confirm registration/eligibility and review logo/asset provenance. No personal recording is needed for the proposed video.
-4. Use the [final Devpost copy](submission/devpost-final.md), which now includes the video URL, and publish the approved materials after the open checks. The targeted completion fix and repeated judge workflow are verified; retain the documented quality limits in the submission.
+3. Resolve the organizer access question and review logo/asset provenance. Corey confirmed the form’s eligibility/entrant answers on October 17. No personal recording is needed for the proposed video.
+4. Review the [saved Devpost draft](https://devpost.com/submit-to/30790-nebius-x-nvidia-global-ai-hackathon/manage/submissions/1198672-agent-rewind/finalization), now 4/5 steps complete, and submit after the open checks. Final rules/terms acceptance is still unchecked. The targeted completion fix and repeated judge workflow are verified; retain the documented quality limits in the submission.
 5. Retain provider/hosting access, billing oversight, backups and recovery through judging. Do not reset the spending ledger or increase the ceiling automatically.
 
 ## What is deliberately not claimed
