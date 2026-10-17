@@ -8,6 +8,8 @@ Agent Rewind uses NVIDIA Nemotron 3.5 Lightning through Nebius Token Factory to 
 
 **Useful improvements:** clearer guidance for predictable reasoning/output budgets with structured responses; examples that preserve uncertainty when evidence conflicts; and provider diagnostics that distinguish output-budget exhaustion, timeout and schema issues without exposing sensitive request content. A model should ask which requirement is authoritative rather than infer one or propose weakening tests.
 
+**October 17 final walkthrough:** the complete shipping example also returned an incomplete-response error after 33.058 seconds in a fresh judge browser session. The preview contained the policy, code/test evidence and the inclusive requirement. We made one request without retry. This narrows the earlier success claim to that particular rehearsal; current end-to-end technical sign-off is withheld pending diagnosis and successful verification. See the [walkthrough record](verification-2026-10-17.md).
+
 **Sandbox feedback:** beta access was approved and read-only image access worked. We did not establish execution pricing or verify runtime isolation/cancellation/cleanup, so the sandbox experiment is deferred from this submission. Account-specific beta pricing and practical lifecycle examples would help evaluate this integration responsibly.
 
 These observations come from small, selected cases. They are product integration feedback, not a general model benchmark. See the [October 7 report evaluation](../report-quality-2026-10-07.md) and [submission rehearsal](verification-2026-10-07.md).

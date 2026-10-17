@@ -44,7 +44,7 @@ Nemotron interprets the reviewed evidence and suggests a next check. Rewind vali
 
 Making a report readable was not enough. Early feedback asked for a direct explanation of the mismatch and a useful next step, rather than a dense technical breakdown. I revised the report structure, simplified onboarding and access, made analysis easier to find, and saved reports beside their recordings.
 
-Evidence quality also matters. A partial log cannot reveal context that was never captured, and a plausible model response can still be wrong. Evaluation exposed unsupported advice and incomplete responses on harder cases. The interface preserves capture gaps and surfaces failures; users must verify suggestions against the actual project.
+Evidence quality also matters. A partial log cannot reveal context that was never captured, and a plausible model response can still be wrong. Evaluation exposed unsupported advice and incomplete responses, including a repeat of the complete shipping example during the final walkthrough. The interface preserves capture gaps and surfaces failures; users must verify suggestions against the actual project. Reliable completion remains an open issue.
 
 ## Accomplishments that we're proud of
 

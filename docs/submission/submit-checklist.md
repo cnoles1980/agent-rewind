@@ -6,8 +6,8 @@ The narrated video is approved by Corey. YouTube and Devpost have not been publi
 
 - Approved 2:40 narrated video, captioned alternative, separate SRT and final production notes.
 - [YouTube title](youtube-title.txt), [description](youtube-description.txt), [Devpost copy](devpost-final.md), [technology feedback](technology-feedback.md) and judge walkthrough.
-- Public MIT-licensed repository confirmed October 17; CI for commit `37c74de` passed.
-- Hosted `/api/health` returned OK October 17. Existing judge invitation authenticated with a Secure cookie, analysis enabled and the expected Nemotron model. The check logged out afterward and made no paid call. Reserved usage remained tester $18.50 / $20 and judge $0 / $30. This was not a new full inference/browser acceptance test.
+- Public MIT-licensed repository confirmed October 17; CI for commit `120dacb` passed.
+- Hosted health, fresh-profile judge login, local investigation/import/report, notes, comparison and clip export/publication/anonymous access/revocation passed October 17. **Technical sign-off is blocked:** the single real shipping-example analysis returned incomplete after 33.058 seconds. Judge reservations are $0.25 / $30; tester reservations remain $18.50 / $20. No retry or limit increase. See the [walkthrough record](verification-2026-10-17.md).
 
 ## Corey: finish these steps
 
@@ -15,7 +15,7 @@ The narrated video is approved by Corey. YouTube and Devpost have not been publi
 2. **Send the final YouTube watch URL here.** We can place it in the local submission materials and check the public link.
 3. **Complete Devpost's actual form.** Use the final copy, choose Best Apps and Agents, enter demo/source/video links, attach selected screenshots, and supply technology feedback. Confirm registration, eligibility, team details, development dates and asset rights. Only paste the judge invitation into an explicitly private testing field.
 4. **Resolve judge access before submitting.** The finite allowance and request limits may conflict with the access provision. Use [the prepared organizer question](organizer-questions.md), retain their answer, and implement any required solution within the approved budget. Do not remove spending protections or increase the ceiling without a deliberate decision. No organizer approval is on record.
-5. **Run the final judge walkthrough in a fresh browser.** We can handle technical verification within the existing allowance: invitation login, one reviewed Nemotron request, saved report/citation/reload, and clip export/sharing/revocation. This has not been repeated end to end on October 17. Check that no credentials appear in public files or screenshots.
+5. **Resolve the failed real-analysis check before submission.** The October 17 fresh-browser walkthrough found an incomplete response on the complete documented example. Diagnose the response condition, validate a targeted remedy and repeat analysis quality plus saved report/citation/reload/download with a new successful result. The surrounding investigation/import/clip checks passed. Keep spending protections and avoid blind retries; technical diagnosis and verification can be handled by the assistant.
 6. **Submit, then verify receipt.** Target October 29; the stated deadline is October 30 at noon Central. Preview the published entry, test all links signed out, and retain the submission confirmation. Keep the app, inference account and judge access available through December 15. [Official rules](https://nebiusglobalaihackathon.devpost.com/rules)
 
 ## What the assistant can handle

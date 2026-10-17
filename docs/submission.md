@@ -9,9 +9,9 @@ Corey has confirmed the submission focuses on the working debugger and real Nemo
 | Area | Status |
 |---|---|
 | Hosted product | Working investigation, imports, comparison, clips and local saved analyses |
-| Real inference | Main shipping example explained correctly in the actual browser workflow; archive/reload/citation/download verified |
-| Report reliability | Open limitation: three harder controls returned incomplete responses; prior unsupported advice remains relevant |
-| Judge access | Isolated judge login/cookie/authorization and clip lifecycle checks passed; final human fresh-browser walkthrough still recommended |
+| Real inference | **Blocked at October 17 sign-off:** documented shipping request returned HTTP 502 incomplete; October 7 success remains historical |
+| Report reliability | Complete example now also failed; three earlier harder controls were incomplete and prior unsupported advice remains relevant |
+| Judge access | Fresh-profile UI login, investigation, local import/report, notes, comparison and clip lifecycle passed October 17; new successful analysis/archive/citation sequence still required |
 | Public source and setup | Public MIT source; fresh Windows clone/setup/build/local HTTP check passed; configured-secret/history scan clear |
 | Dependencies | Frontend/Python audits clear; patched sharp in Cloudflare development tooling and verified its build/integration tests |
 | Video and submission copy | Narrated video approved October 17; final text ready; public YouTube URL and Devpost publication remain |
@@ -19,7 +19,7 @@ Corey has confirmed the submission focuses on the working debugger and real Nemo
 
 Read the [full verification record](submission/verification-2026-10-07.md) for scope, failures and evidence. Test success is not a model-quality guarantee.
 
-October 17 refresh: hosted health OK, GitHub public/MIT and CI `37c74de` passed, judge invitation login/status/logout passed with analysis enabled. Reserved usage remained tester $18.50 and judge $0. This refresh did not make a paid call or repeat the full browser workflow. Earlier setup, security and inference results above retain their October 7 scope.
+October 17 final walkthrough: CI `120dacb` passed. One reviewed judge analysis returned incomplete after 33.058 seconds; no retry was made. Judge reservations are now $0.25 of $30; tester reservations remain $18.50 of $20. The surrounding browser checks passed and the session was logged out. See the [current verification record](submission/verification-2026-10-17.md). Technical sign-off is withheld until the failure is diagnosed and the fresh analysis/archive/citation sequence succeeds.
 
 ## Rules and product scope
 
