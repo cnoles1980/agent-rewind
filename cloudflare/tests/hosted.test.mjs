@@ -130,6 +130,10 @@ function options() {
           prompt_tokens: 100,
           completion_tokens: 50,
           total_tokens: 150,
+          completion_tokens_details: {
+            reasoning_tokens: 20,
+            private: "private reasoning",
+          },
           forbidden: "private",
         },
       });
@@ -258,7 +262,19 @@ test("analysis validates, redacts, rejects replay, and reserves prior spending",
   );
   const r = await api("/analyses", "POST", analysis("first-analysis"), cookie);
   assert.equal(r.status, 200);
-  assert.deepEqual((await r.json()).analysis, result);
+  const completed = await r.json();
+  assert.deepEqual(completed.analysis, result);
+  assert.deepEqual(completed.usage, {
+    prompt_tokens: 100,
+    completion_tokens: 50,
+    total_tokens: 150,
+    reasoning_tokens: 20,
+  });
+  assert.equal(lastRequest.max_tokens, 8192);
+  assert.deepEqual(lastRequest.extra_body, {
+    chat_template_kwargs: { enable_thinking: true },
+    thinking_token_budget: 4096,
+  });
   assert.doesNotMatch(JSON.stringify(lastRequest), /synthetic-secret-value/);
   assert.doesNotMatch(
     JSON.stringify(lastRequest),

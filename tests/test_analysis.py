@@ -116,6 +116,10 @@ async def test_model_boundary_redaction_no_tools_and_citations(tmp_path):
     assert cfg.api_key not in json.dumps(captured) + parsed.model_dump_json()
     assert "tools" not in captured[0]
     assert captured[0]["max_tokens"] == 8192
+    assert captured[0]["extra_body"] == {
+        "chat_template_kwargs": {"enable_thinking": True},
+        "thinking_token_budget": 4096,
+    }
     assert captured[0]["temperature"] == 1.0
     assert captured[0]["top_p"] == 0.95
     assert captured[0]["response_format"]["type"] == "json_schema"
@@ -144,6 +148,23 @@ async def test_rejects_invented_citations_malformed_and_truncated_results(tmp_pa
 
     with pytest.raises((ValueError, ValidationError)):
         await analyze(config(tmp_path), AnalysisRequest(**payload()), model)
+
+
+@pytest.mark.parametrize("details, expected", [
+    ({"reasoning_tokens": 4095, "private": "private reasoning"}, {"reasoning_tokens": 4095}),
+    ({"reasoning_tokens": True}, {}),
+    ({"reasoning_tokens": -1}, {}),
+    ({"reasoning_tokens": 1_000_001}, {}),
+    ({"reasoning_tokens": "private count"}, {}),
+    (None, {}),
+    ([], {}),
+])
+async def test_reasoning_usage_is_bounded_metadata_only(tmp_path, details, expected):
+    async def model(*args, **kwargs):
+        return {"choices": [{"finish_reason": "stop", "message": {"content": json.dumps(draft())}}],
+                "usage": {"completion_tokens_details": details}}
+    _, usage = await analyze(config(tmp_path), AnalysisRequest(**payload()), model)
+    assert usage == expected
 
 
 def test_missing_evidence_rejected_before_budget_or_inference(tmp_path):

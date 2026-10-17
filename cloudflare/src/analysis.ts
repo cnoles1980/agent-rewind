@@ -55,6 +55,11 @@ export async function analyze(env: Env, body: AnalysisRequest) {
         body: JSON.stringify({
           model: env.MODEL,
           max_tokens: 8192,
+          // Keep reasoning enabled, but reserve room for the final JSON answer.
+          extra_body: {
+            chat_template_kwargs: { enable_thinking: true },
+            thinking_token_budget: 4096,
+          },
           temperature: 1.0,
           top_p: 0.95,
           messages: [
@@ -174,6 +179,16 @@ export async function analyze(env: Env, body: AnalysisRequest) {
       )
         usage[key] = n;
     }
+    const details = raw.usage?.completion_tokens_details as
+      { reasoning_tokens?: unknown } | undefined;
+    const reasoning = details?.reasoning_tokens;
+    if (
+      typeof reasoning === "number" &&
+      Number.isInteger(reasoning) &&
+      reasoning >= 0 &&
+      reasoning <= 1_000_000
+    )
+      usage.reasoning_tokens = reasoning;
     return {
       analysis,
       usage,

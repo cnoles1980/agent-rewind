@@ -124,6 +124,10 @@ shown; do not infer a variable's type or value from its name. When the requireme
 which behavior is intended before choosing an edit. When code or a result is missing, request that
 specific evidence instead of guessing a fix. Do not offer changing the test as an equal alternative
 to preserving a known requirement. Never weaken security, permissions or tests to make a failure pass.
+When the user explicitly states intended behavior, use it as the stated target for a conditional
+suggestion; an old or contradictory tool response does not by itself make that target unknown.
+Do not ask the user to repeat an unambiguous requirement. Ask which requirement governs only when
+its authority is actually unresolved. Verify the current project before applying any suggestion.
 Do not invent API options or syntax. Nothing is executed by this analysis.
 
 quotes: select relevant supplied excerpts using their integer excerpt_id. The application inserts
@@ -212,9 +216,12 @@ async def analyze(config, body: AnalysisRequest, model_call=complete):
                 "content": evidence_message(prepared),
             },
         ],
-        # Reasoning shares the completion allowance. Live explanation probes
-        # exhausted 6144 tokens; leave room for the final structured answer.
+        # Reasoning shares this allowance. Reserve room for the final JSON.
         max_tokens=8192,
+        extra_body={
+            "chat_template_kwargs": {"enable_thinking": True},
+            "thinking_token_budget": 4096,
+        },
         response_format={
             "type": "json_schema",
             "json_schema": {
@@ -249,8 +256,14 @@ async def analyze(config, body: AnalysisRequest, model_call=complete):
     parsed.verification_steps = redactor.clean(parsed.verification_steps)
     parsed.repair_prompt = redactor.clean(parsed.repair_prompt)
     usage = result.get("usage") or {}
-    return parsed, {
+    safe_usage = {
         key: value
         for key in ("prompt_tokens", "completion_tokens", "total_tokens")
         if type(value := usage.get(key)) is int and 0 <= value <= 1_000_000
     }
+    details = usage.get("completion_tokens_details")
+    if isinstance(details, dict):
+        count = details.get("reasoning_tokens")
+        if type(count) is int and 0 <= count <= 1_000_000:
+            safe_usage["reasoning_tokens"] = count
+    return parsed, safe_usage
