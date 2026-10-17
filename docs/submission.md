@@ -9,17 +9,17 @@ Corey has confirmed the submission focuses on the working debugger and real Nemo
 | Area | Status |
 |---|---|
 | Hosted product | Working investigation, imports, comparison, clips and local saved analyses |
-| Real inference | **Blocked at October 17 sign-off:** documented shipping request returned HTTP 502 incomplete; October 7 success remains historical |
-| Report reliability | Complete example now also failed; three earlier harder controls were incomplete and prior unsupported advice remains relevant |
-| Judge access | Fresh-profile UI login, investigation, local import/report, notes, comparison and clip lifecycle passed October 17; new successful analysis/archive/citation sequence still required |
+| Real inference | Completion fix deployed; six final real requests completed in 15.7–16.8 seconds |
+| Report reliability | Narrow completion check passed; redundant clarification and overconfident suggestions remain possible; no general diagnostic-quality pass |
+| Judge access | Final real analysis/archive/reload/citations passed in an authenticated judge session; surrounding import/comparison/clip checks passed again. Repeated fresh logins reached the unchanged temporary rate limit |
 | Public source and setup | Public MIT source; fresh Windows clone/setup/build/local HTTP check passed; configured-secret/history scan clear |
 | Dependencies | Frontend/Python audits clear; patched sharp in Cloudflare development tooling and verified its build/integration tests |
 | Video and submission copy | [Public 2:40 video](https://www.youtube.com/watch?v=QBV3VAzc_XA) verified signed out October 17; final text ready; Devpost publication remains |
 | Organizer/owner confirmations | Finite judge allowance/request limits, registration/eligibility and final asset review remain open; track selected |
 
-Read the [full verification record](submission/verification-2026-10-07.md) for scope, failures and evidence. Test success is not a model-quality guarantee.
+Read the [completion fix and final verification](submission/completion-fix-2026-10-17.md) for scope, failures and evidence. Test success is not a model-quality guarantee.
 
-October 17 final walkthrough: CI `120dacb` passed. One reviewed judge analysis returned incomplete after 33.058 seconds; no retry was made. Judge reservations are now $0.25 of $30; tester reservations remain $18.50 of $20. The surrounding browser checks passed and the session was logged out. See the [current verification record](submission/verification-2026-10-17.md). Technical sign-off is withheld until the failure is diagnosed and the fresh analysis/archive/citation sequence succeeds.
+October 17 follow-up: deployed `64564ad` and its CI passed. Bounded reasoning and JSON generation with strict local validation completed all six final samples. The new browser report saved, reloaded, exported and linked to its evidence correctly. The narrow completion blocker is cleared for the prototype; broader quality limitations remain. Judge reservations are $2.50 of $30 ($27.50 remaining); tester reservations reached $20 of $20, so tester/owner analysis is capped. No allowance was reset or increased. The [earlier failed walkthrough](submission/verification-2026-10-17.md) remains historical evidence.
 
 ## Rules and product scope
 
@@ -34,7 +34,7 @@ The completed product is submitted under Best Apps and Agents as a Nemotron-powe
 1. Video upload is complete: [public YouTube demo](https://www.youtube.com/watch?v=QBV3VAzc_XA). Signed-out player metadata confirmed the expected title, 160-second duration, playback availability and public visibility on October 17. The video retains labels for illustrative examples and the saved real inference result.
 2. Read the private local recording/access instructions under `.local/friday-kit/`; never film or publish credentials. Put only the judge invitation in private testing instructions.
 3. Send the organizer questions, confirm registration/eligibility and review logo/asset provenance. No personal recording is needed for the proposed video.
-4. Use the [final Devpost copy](submission/devpost-final.md), which now includes the video URL, and publish the approved materials after the open checks. Resolve the analysis failure and verify the judge workflow before submission.
+4. Use the [final Devpost copy](submission/devpost-final.md), which now includes the video URL, and publish the approved materials after the open checks. The targeted completion fix and repeated judge workflow are verified; retain the documented quality limits in the submission.
 5. Retain provider/hosting access, billing oversight, backups and recovery through judging. Do not reset the spending ledger or increase the ceiling automatically.
 
 ## What is deliberately not claimed

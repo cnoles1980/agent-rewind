@@ -1,6 +1,8 @@
 # Final judge walkthrough — October 17, 2026 Central
 
-**Result: not ready for technical sign-off.** The real Nemotron request failed on the complete, documented shipping example. The surrounding investigation, import and sharing workflows passed. Corey can continue uploading the approved video, but this result needs resolution before submission.
+**Follow-up:** the targeted completion fix and repeated judge checks are now complete. See the [current verification record](completion-fix-2026-10-17.md) for results, quality limitations and remaining submission actions. The original failure below is retained unchanged as historical evidence.
+
+**Initial result: not ready for technical sign-off.** The real Nemotron request failed on the complete, documented shipping example. The surrounding investigation, import and sharing workflows passed. Corey can continue uploading the approved video, but this result needs resolution before submission.
 
 ## Method and results
 
