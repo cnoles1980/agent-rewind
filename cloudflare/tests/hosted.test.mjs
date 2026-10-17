@@ -82,6 +82,22 @@ function options() {
         });
       if (providerMode === "failure")
         return new Response("secret provider error", { status: 500 });
+      if (providerMode === "truncated" || providerMode === "private-finish")
+        return Response.json({
+          choices: [
+            {
+              finish_reason:
+                providerMode === "truncated"
+                  ? "length"
+                  : "private provider data",
+              message: { content: null, reasoning: "private reasoning" },
+            },
+          ],
+          usage: {
+            completion_tokens:
+              providerMode === "truncated" ? 8192 : "private count",
+          },
+        });
       const answer = {
         explanation: {
           text: result.explanation.text.replace(
@@ -330,6 +346,48 @@ test("metadata-only and malformed evidence never reserve budget or call provider
   const after = await (await api("/status", "GET", undefined, cookie)).json();
   assert.deepEqual(after.budget_reserved_cents, before.budget_reserved_cents);
 });
+
+test("incomplete diagnostics expose only safe metadata and never retry", async () => {
+  const session = await api("/session", "POST", { code: tester }, undefined, {
+    "CF-Connecting-IP": "192.0.2.10",
+  });
+  assert.equal(session.status, 200);
+  const cookie = session.headers.get("set-cookie").split(";")[0];
+  const before = await (await api("/status", "GET", undefined, cookie)).json();
+  const beforeCalls = calls;
+  try {
+    for (const mode of ["truncated", "private-finish"]) {
+      providerMode = mode;
+      const r = await api(
+        "/analyses",
+        "POST",
+        analysis("diagnostic-" + mode),
+        cookie,
+      );
+      assert.equal(r.status, 502);
+      const error = await r.text();
+      assert.match(error, /\[incomplete\]/);
+      assert.match(
+        error,
+        mode === "truncated"
+          ? /finish=length; completion_tokens=8192; answer=absent/
+          : /finish=unknown; completion_tokens=unknown/,
+      );
+      assert.doesNotMatch(
+        error,
+        /private provider|private reasoning|private count/,
+      );
+    }
+  } finally {
+    providerMode = "ok";
+  }
+  assert.equal(calls, beforeCalls + 2);
+  const after = await (await api("/status", "GET", undefined, cookie)).json();
+  assert.equal(
+    after.budget_reserved_cents.tester,
+    before.budget_reserved_cents.tester + 50,
+  );
+});
 test("reviewed clip publication, redaction, persistence, anonymous read, and revocation", async () => {
   const cookie = await login(),
     tape = JSON.parse(readFileSync("../examples/stale.json", "utf8"));
@@ -358,7 +416,7 @@ test("reviewed clip publication, redaction, persistence, anonymous read, and rev
   assert.doesNotMatch(content, /seeded-private-key/);
   assert.match(content, /<script>/);
   const status = await (await api("/status", "GET", undefined, cookie)).json();
-  assert.equal(status.budget_reserved_cents.tester, 350);
+  assert.equal(status.budget_reserved_cents.tester, 400);
   for (let i = 0; i < 2; i++)
     assert.equal(
       (

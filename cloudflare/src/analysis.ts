@@ -92,7 +92,10 @@ export async function analyze(env: Env, body: AnalysisRequest) {
       choice.message?.tool_calls ||
       typeof choice.message?.content !== "string"
     )
-      throw new AnalysisFailure("incomplete");
+      throw new AnalysisFailure(
+        "incomplete",
+        incompleteDiagnostic(choice, raw?.usage),
+      );
     let content = choice.message.content.trim();
     if (content.startsWith("```json\n") && content.endsWith("```"))
       content = content.slice(8, -3).trim();
@@ -186,4 +189,33 @@ export async function analyze(env: Env, body: AnalysisRequest) {
       throw new HttpError(504, "Analysis timed out; review before retrying");
     throw new AnalysisFailure("provider");
   }
+}
+
+// Only fixed labels and bounded token counts may leave the provider boundary.
+// Never echo response text, reasoning, arbitrary finish reasons or tool data.
+function incompleteDiagnostic(
+  choice:
+    | {
+        finish_reason?: string;
+        message?: { tool_calls?: unknown; content?: unknown };
+      }
+    | undefined,
+  usage: Record<string, unknown> | undefined,
+): string {
+  const reason =
+    ["stop", "length", "content_filter", "tool_calls"].find(
+      (value) => value === choice?.finish_reason,
+    ) ?? "unknown";
+  const tokens = usage?.completion_tokens;
+  const count =
+    typeof tokens === "number" &&
+    Number.isInteger(tokens) &&
+    tokens >= 0 &&
+    tokens <= 1_000_000
+      ? String(tokens)
+      : "unknown";
+  const answer =
+    typeof choice?.message?.content === "string" &&
+    choice.message.content.length > 0;
+  return `finish=${reason}; completion_tokens=${count}; answer=${answer ? "present" : "absent"}; tools=${choice?.message?.tool_calls ? "present" : "absent"}`;
 }
